@@ -161,62 +161,7 @@ def calculate_optimal_choice_from_db(event_data: dict) -> int:
 
 
 
-def calculate_optimal_choice(choice_data: dict) -> int:
-    """Calculate the optimal choice based on proven stat weights and analysis"""
-    if not choice_data:
-        return 1
-    
-    log.info(f"🧮 Calculating optimal choice from {len(choice_data)} options")
-    
-    # Proven stat weights (Energy is crucial for training!)
-    stat_weights = {
-        'speed': 3, 'power': 3,                    # Primary racing stats
-        'stamina': 2, 'guts': 2, 'wit': 2,        # Secondary racing stats
-        'energy': 2,                               # Important for training continuity
-        'skill_pts': 1.5,                          # Skill points are valuable
-        'motivation': 1                            # Low priority
-    }
-    
-    choice_scores = {}
-    
-    for choice_num, effects in choice_data.items():
-        total_score = 0
-        
-        log.info(f"   🔢 Choice {choice_num}:")
-        
-        if effects:
-            for effect in effects:
-                stat = effect['stat']
-                value = effect['value']
-                weight = stat_weights.get(stat, 1)
-                
-                weighted_score = value * weight
-                total_score += weighted_score
-                
-                log.info(f"      {stat} {value:+d} × {weight} = {weighted_score}")
-        else:
-            log.info(f"      No stat effects found")
-        
-        # Risk analysis for complex choices (like success/fail outcomes)
-        if choice_num == 2 and len(effects) > 3:  # Choice 2 with many effects suggests risk
-            risk_penalty = -5
-            total_score += risk_penalty
-            log.info(f"      Risk penalty: {risk_penalty} (complex outcome detected)")
-        
-        choice_scores[choice_num] = total_score
-        log.info(f"   Choice {choice_num} total: {total_score}")
-    
-    if choice_scores:
-        # Return the choice with highest score
-        optimal_choice = max(choice_scores.items(), key=lambda x: x[1])
-        best_choice = optimal_choice[0]
-        best_score = optimal_choice[1]
-        
-        log.info(f"🏆 Optimal choice: {best_choice} (Score: {best_score})")
-        return best_choice
-    else:
-        log.warning(f"⚠️ No valid choices scored, defaulting to 1")
-        return 1
+# Removed calculate_optimal_choice function - no longer needed after removing web scraping
 
 # Cache for automatic event choices to avoid repeated web requests
 auto_choice_cache = {}
