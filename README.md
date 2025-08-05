@@ -51,7 +51,7 @@ This project is a **Global Server adaptation** of the original China Server vers
 - ✅ **Automatic Training**: Complete training scenarios for all Uma Musume
 - ✅ **Customizable Targets**: Training attributes, racing tactics, additional races
 - ✅ **Skill Learning**: Optimized skill acquisition for 3-star factor farming
-- ✅ **Inheritance Compatibility**: Improved breeding strategy support
+- ✅ **Inheritance Compatibility**: Improved training strategy support
 
 ### **Advanced Web Interface**
 - 🎛️ **Race Management**: Advanced filtering and selection tools
