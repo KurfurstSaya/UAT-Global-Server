@@ -136,7 +136,7 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 #### **ADB Device Detection**
 - **No devices found**: Ensure emulator is running and ADB is enabled
 - **ADB server issues**: The app automatically restarts ADB server if needed
-- **Device not detected**: Check emulator's ADB settings and USB debugging
+- **Device not detected**: Check emulator's ADB settings
 
 #### **PowerShell Script Issues**
 - **Script crashes**: Open console first to see error messages
@@ -147,7 +147,6 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 - **Recognition errors**: Manual operation to next turn, reset task in WebUI
 
 #### **Web Interface Issues**
-- **MIME type errors**: Check for Chinese characters in user folder path
 - **Module loading fails**: Ensure proper file permissions and paths
 
 ### **Error Recovery**
