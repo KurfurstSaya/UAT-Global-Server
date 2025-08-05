@@ -95,7 +95,13 @@ UAT running on http://127.0.0.1:8071
 
 Access the web interface at `http://127.0.0.1:8071` to configure and start tasks.
 
-![Web Interface](docs/1.png)
+![Main Web Interface](docs/1.png)
+
+### **Race Selection Interface**
+![Race Selection](docs/2.png)
+
+### **Skill Selection Interface**
+![Skill Selection](docs/3.png)
 
 ## ⚠️ **Important Notes**
 
