@@ -1038,13 +1038,21 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
             
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
-            const matchesTrainingPeriod = characterPeriods && 
-              characterPeriods['Junior Year'] && 
-              characterPeriods['Junior Year'].includes(race.date);
+            const matchesTrainingPeriod = characterPeriods && (
+              (characterPeriods['Junior Year'] && characterPeriods['Junior Year'].includes(race.date)) ||
+              (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
+              (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
+            );
             
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
@@ -1079,13 +1087,21 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
             
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
-            const matchesTrainingPeriod = characterPeriods && 
-              characterPeriods['Classic Year'] && 
-              characterPeriods['Classic Year'].includes(race.date);
+            const matchesTrainingPeriod = characterPeriods && (
+              (characterPeriods['Junior Year'] && characterPeriods['Junior Year'].includes(race.date)) ||
+              (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
+              (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
+            );
             
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
@@ -1120,13 +1136,21 @@ export default {
           const character = this.characterList.find(c => c.name === this.selectedCharacter);
           if (character) {
             // Check if race matches character's aptitude (terrain and distance)
-            const matchesAptitude = race.terrain === character.terrain && race.distance === character.distance;
+            const matchesTerrain = race.terrain === character.terrain;
+            
+            // Handle multiple distances (e.g., "Medium, Long")
+            const characterDistances = character.distance.split(', ').map(d => d.trim());
+            const matchesDistance = characterDistances.includes(race.distance);
+            
+            const matchesAptitude = matchesTerrain && matchesDistance;
             
             // Check if race date is within character's training periods
             const characterPeriods = this.characterTrainingPeriods[this.selectedCharacter];
-            const matchesTrainingPeriod = characterPeriods && 
-              characterPeriods['Senior Year'] && 
-              characterPeriods['Senior Year'].includes(race.date);
+            const matchesTrainingPeriod = characterPeriods && (
+              (characterPeriods['Junior Year'] && characterPeriods['Junior Year'].includes(race.date)) ||
+              (characterPeriods['Classic Year'] && characterPeriods['Classic Year'].includes(race.date)) ||
+              (characterPeriods['Senior Year'] && characterPeriods['Senior Year'].includes(race.date))
+            );
             
             matchesCharacter = matchesAptitude && matchesTrainingPeriod;
           }
