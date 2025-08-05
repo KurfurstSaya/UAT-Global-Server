@@ -29,7 +29,7 @@ TITLE = [
     "Successfully Acquired Skill",
     "Training End Confirmation",
     "Uma Musume Details",
-    "Fan Count Below Target Race Requirement",
+    "Insufficient Fans",
     "Outing",
     "Skip Confirmation",
     "Rest Confirmation",
