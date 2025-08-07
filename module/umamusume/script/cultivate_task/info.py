@@ -156,20 +156,16 @@ def script_info(ctx: UmamusumeContext):
             result = image_match(img_gray, UI_RACE_FAIL)
             
             if result.find_match:
-                log.info("🏁 Race fail screen detected via image matching")
-                ctx.ctrl.click_by_point(RACE_FAIL_CONFIRM)
-                log.info("✅ Clicked race fail confirmation at (513, 919)")
+                ctx.cultivate_detail.clock_used -= 1
+            if ctx.cultivate_detail.clock_use_limit > ctx.cultivate_detail.clock_used:
+                ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_USE_CLOCK)
+                ctx.cultivate_detail.clock_used += 1
+                log.info("🔋 Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit))
             else:
-                # Fallback to original logic
-                if ctx.prev_ui is INFO:
-                    ctx.cultivate_detail.clock_used -= 1
-                if ctx.cultivate_detail.clock_use_limit > ctx.cultivate_detail.clock_used:
-                    ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_USE_CLOCK)
-                    ctx.cultivate_detail.clock_used += 1
-                else:
-                    ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
-                log.debug("Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit),
-                          str(ctx.cultivate_detail.clock_used))
+                ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
+                log.info("🔋 Reached Clock limit, cancel race")
+            log.debug("Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit),
+                        str(ctx.cultivate_detail.clock_used))
         if title_text == TITLE[5]:
             ctx.ctrl.click_by_point(GET_TITLE_CONFIRM)
         if title_text == TITLE[6]:
@@ -226,12 +222,28 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[20]:  # "Goal Not Reached" - Navigate to races to fulfill goal
             # For Oguri Cap G1 race goals, go to race selection instead of failing
             log.info("🏆 Goal Not Reached detected - navigating to races to fulfill G1 requirements")
-            ctx.ctrl.click_by_point(CULTIVATE_OPERATION_COMMON_CONFIRM)  # Close the goal screen first
+            # Set a race operation so the race list logic knows what to do
+            from module.umamusume.types import TurnOperation, TurnOperationType
+            ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
+            ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_RACE
+            ctx.cultivate_detail.turn_info.turn_operation.race_id = 0  # Unknown race ID - will search for any available race
+            log.info("🏁 Set race operation for G1 goal farming")
+            ctx.ctrl.click_by_point(WIN_TIMES_NOT_ENOUGH_RETURN)  # Close the goal screen first
             time.sleep(1)
             ctx.ctrl.click_by_point(CULTIVATE_RACE)  # Navigate to race menu
             log.info("📋 Navigated to race selection to work towards G1 goals")
-        if title_text == TITLE[21]:  # Target Fan Count Insufficient (was TITLE[19])
+        if title_text == TITLE[21]:  # insufficient fans (was TITLE[19])
+            log.info("🏆 insufficient fans detected - navigating to races to fulfill fan goals")
+            # Set a race operation so the race list logic knows what to do
+            from module.umamusume.types import TurnOperation, TurnOperationType
+            ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
+            ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_RACE
+            ctx.cultivate_detail.turn_info.turn_operation.race_id = 0  # Unknown race ID - will search for any available race
+            log.info("🏁 Set race operation for fan farming")
             ctx.ctrl.click_by_point(CULTIVATE_FAN_NOT_ENOUGH_RETURN)
+            time.sleep(1)
+            ctx.ctrl.click_by_point(CULTIVATE_RACE)
+            log.info("📋 Navigated to race selection to work towards fan goals")
         if title_text == TITLE[22]:  # Consecutive Racing (was TITLE[20])
             ctx.ctrl.click_by_point(CULTIVATE_TOO_MUCH_RACE_WARNING_CONFIRM)
         if title_text == TITLE[23]:  # Infirmary Confirmation (was TITLE[21])

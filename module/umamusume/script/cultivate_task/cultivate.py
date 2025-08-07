@@ -260,6 +260,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             # Let the AI decide based on stamina, motivation, etc.
             # The AI will choose the best action (training, rest, medic, trip)
             return
+    else:
+        # No operation decided yet - go back to main menu to let AI decide
+        log.info("🤔 No operation decided yet - returning to main menu for AI decision")
+        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+        return
     
     if not ctx.cultivate_detail.turn_info.parse_main_menu_finish:
         ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
