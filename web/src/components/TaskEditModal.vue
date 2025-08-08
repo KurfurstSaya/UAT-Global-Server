@@ -215,6 +215,19 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <div class="form-check">
+                    <input type="checkbox" v-model="prioritizeRecreation" class="form-check-input" id="prioritizeRecreation">
+                    <label class="form-check-label" for="prioritizeRecreation">
+                      ⭐ Prioritize Recreation (Pal Type Support Card)
+                    </label>
+                  </div>
+                  <small class="form-text text-muted">(optional) only use this if you bring Pal type Support Card like Tazuna in Career</small>
+                </div>
+              </div>
+            </div>
             <div>
               <div class="form-group">
                 <div class="advanced-options-header" @click="switchAdvanceOption">
@@ -1071,6 +1084,7 @@ export default {
       motivationThresholdYear1: 3,
       motivationThresholdYear2: 4,
       motivationThresholdYear3: 4,
+      prioritizeRecreation: false,
 
       // URA配置
       skillEventWeight: [0, 0, 0],
@@ -1565,6 +1579,7 @@ export default {
           "motivation_threshold_year1": this.motivationThresholdYear1,
           "motivation_threshold_year2": this.motivationThresholdYear2,
           "motivation_threshold_year3": this.motivationThresholdYear3,
+          "prioritize_recreation": this.prioritizeRecreation,
           // 限时: 富士奇石的表演秀
           "fujikiseki_show_mode": this.fujikisekiShowMode,
           "fujikiseki_show_difficulty": this.fujikisekiShowDifficulty,
@@ -1614,6 +1629,7 @@ export default {
       this.motivationThresholdYear1 = parseInt(this.presetsUse.motivation_threshold_year1) || 3
       this.motivationThresholdYear2 = parseInt(this.presetsUse.motivation_threshold_year2) || 4
       this.motivationThresholdYear3 = parseInt(this.presetsUse.motivation_threshold_year3) || 4
+      this.prioritizeRecreation = this.presetsUse.prioritize_recreation || false
 
       if ('extraWeight' in this.presetsUse && this.presetsUse.extraWeight != []) {
         this.extraWeight1 = this.presetsUse.extraWeight[0].map(v => Math.max(-1, Math.min(1, v)));
@@ -1785,6 +1801,7 @@ export default {
         motivation_threshold_year1: this.motivationThresholdYear1,
         motivation_threshold_year2: this.motivationThresholdYear2,
         motivation_threshold_year3: this.motivationThresholdYear3,
+        prioritize_recreation: this.prioritizeRecreation,
         // New skill system data
         selectedSkills: [...this.selectedSkills],
         blacklistedSkills: [...this.blacklistedSkills],

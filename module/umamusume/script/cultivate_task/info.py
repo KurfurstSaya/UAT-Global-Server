@@ -156,14 +156,18 @@ def script_info(ctx: UmamusumeContext):
             result = image_match(img_gray, UI_RACE_FAIL)
             
             if result.find_match:
-                ctx.cultivate_detail.clock_used -= 1
-            if ctx.cultivate_detail.clock_use_limit > ctx.cultivate_detail.clock_used:
-                ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_USE_CLOCK)
-                ctx.cultivate_detail.clock_used += 1
-                log.info("🔋 Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit), str(ctx.cultivate_detail.clock_used))
+                # Only use clock if we haven't reached the limit
+                if ctx.cultivate_detail.clock_used < ctx.cultivate_detail.clock_use_limit:
+                    ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_USE_CLOCK)
+                    ctx.cultivate_detail.clock_used += 1
+                    log.info("🔋 Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit), str(ctx.cultivate_detail.clock_used))
+                else:
+                    ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
+                    log.info("🔋 Reached Clock limit, cancel race")
             else:
+                # Not a race fail screen, just confirm
                 ctx.ctrl.click_by_point(RACE_FAIL_CONTINUE_CANCEL)
-                log.info("🔋 Reached Clock limit, cancel race")
+                log.info("🔋 Not a race fail screen - canceling")
             log.debug("Clock limit %s, used %s", str(ctx.cultivate_detail.clock_use_limit),
                         str(ctx.cultivate_detail.clock_used))
         if title_text == TITLE[5]: #Earned Title

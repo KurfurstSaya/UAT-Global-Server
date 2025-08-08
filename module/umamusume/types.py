@@ -179,6 +179,7 @@ class CultivateContextDetail:
     motivation_threshold_year1: int
     motivation_threshold_year2: int
     motivation_threshold_year3: int
+    prioritize_recreation: bool
 
     def __init__(self):
         self.expect_attribute = None
@@ -200,6 +201,7 @@ class CultivateContextDetail:
         self.motivation_threshold_year1 = 3  # Default values
         self.motivation_threshold_year2 = 4
         self.motivation_threshold_year3 = 4
+        self.prioritize_recreation = False
 
     def reset_skill_learn(self):
         self.learn_skill_done = False
