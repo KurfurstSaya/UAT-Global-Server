@@ -279,9 +279,14 @@ def script_info(ctx: UmamusumeContext):
             # Get current date and calculate next period
             current_date = ctx.cultivate_detail.turn_info.date
             next_period = current_date + 1
+            
+            # Save the calculated next period as the new current date
+            ctx.cultivate_detail.turn_info.date = next_period
+            
             current_date_name = get_date_name(current_date)
             next_period_name = get_date_name(next_period)
             log.info(f"📅 Current date: {current_date} ({current_date_name}), checking next period: {next_period} ({next_period_name})")
+            log.info(f"🔄 Updated game date to: {next_period} ({next_period_name})")
             
             # Check for races in the next period
             from module.umamusume.asset.race_data import get_races_for_period
@@ -346,9 +351,14 @@ def script_info(ctx: UmamusumeContext):
             # Get current date and calculate next period
             current_date = ctx.cultivate_detail.turn_info.date
             next_period = current_date + 1
+            
+            # Save the calculated next period as the new current date
+            ctx.cultivate_detail.turn_info.date = next_period
+            
             current_date_name = get_date_name(current_date)
             next_period_name = get_date_name(next_period)
             log.info(f"📅 Current date: {current_date} ({current_date_name}), checking next period: {next_period} ({next_period_name})")
+            log.info(f"🔄 Updated game date to: {next_period} ({next_period_name})")
             
             # Check for races in the next period
             from module.umamusume.asset.race_data import get_races_for_period
