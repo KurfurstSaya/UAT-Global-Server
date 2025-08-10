@@ -954,12 +954,12 @@ export default {
       cultivatePresets: [],
       cultivateDefaultPresets: [
         {
-          name: "默认",
+          name: "Default",
           race_list: [],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [800, 800, 800, 400, 400],
-          follow_support_card: { id: 10001, name: '在耀眼景色的前方', desc: '无声铃鹿' },
+          follow_support_card: { id: 10001, name: 'Beyond This Shining Moment', desc: 'Silence Suzuka' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -969,12 +969,12 @@ export default {
 
         },
         {
-          name: "小栗帽基础育成赛程",
+          name: "Oguri Cap Basic Training Schedule",
           race_list: [1701, 2303, 2401, 5208, 5407, 5904],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [800, 650, 800, 300, 400],
-          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
+          follow_support_card: { id: 20004, name: 'Piece of Mind', desc: 'Super Creek' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -983,12 +983,12 @@ export default {
           race_tactic_3: 4,
         },
         {
-          name: "大和赤骥基础育成赛程",
+          name: "Daiwa Scarlet Basic Training Schedule",
           race_list: [1701, 2303],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [800, 600, 600, 300, 400],
-          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
+          follow_support_card: { id: 20004, name: 'Piece of Mind', desc: 'Super Creek' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
@@ -997,32 +997,18 @@ export default {
           race_tactic_3: 4,
         },
         {
-          name: "目白麦昆基础育成赛程",
+          name: "Mejiro Mcqueen Basic Training Schedule",
           race_list: [2203, 2401],
           skill: "",
           skill_priority_list: [],
           expect_attribute: [700, 700, 600, 350, 400],
-          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
+          follow_support_card: { id: 20004, name: 'Piece of Mind', desc: 'Super Creek' },
           follow_support_card_level: 50,
           clock_use_limit: 99,
           learn_skill_threshold: 9999,
           race_tactic_1: 4,
           race_tactic_2: 4,
           race_tactic_3: 4,
-        },
-        {
-          name: "历战小栗帽35战60w粉丝(需求觉醒3,借满破小海湾,种马速耐,支援卡带赛后加成高的)",
-          race_list: [1601, 1701, 1902, 2103, 2302, 2401, 2701, 2905, 3103, 3303, 3404, 3601, 4102, 4203, 4408, 4506, 4607, 4804, 4902, 5208, 5407, 5601, 5709, 5904, 6006, 6602, 6701, 6807, 7007, 7111, 7204],
-          skill: "大胃王",
-          skill_priority_list: [],
-          expect_attribute: [700, 500, 700, 350, 350],
-          follow_support_card: { id: 20004, name: '一颗安心糖', desc: '超级溪流' },
-          follow_support_card_level: 50,
-          clock_use_limit: 2,
-          learn_skill_threshold: 450,
-          race_tactic_1: 4,
-          race_tactic_2: 3,
-          race_tactic_3: 3
         }
       ],
       expectSpeedValue: 650,
@@ -1034,13 +1020,13 @@ export default {
       supportCardLevel: 50,
 
       presetsUse: {
-        name: "默认",
+        name: "Default",
         race_list: [],
         skill: "",
         skill_priority_list: [],
         skill_blacklist: "",
         expect_attribute: [650, 800, 650, 400, 400],
-        follow_support_card: { id: 10001, name: '在耀眼景色的前方', desc: '无声铃鹿' },
+        follow_support_card: { id: 10001, name: 'Beyond This Shining Moment', desc: 'Silence Suzuka' },
         follow_support_card_level: 50,
         clock_use_limit: 99,
         learn_skill_threshold: 9999,
@@ -1404,7 +1390,7 @@ export default {
       )
     },
     initSelect: function () {
-      this.selectedSupportCard = { id: 10001, name: '在耀眼景色的前方', desc: '无声铃鹿' }
+      this.selectedSupportCard = { id: 10001, name: 'Beyond This Shining Moment', desc: 'Silence Suzuka' }
       this.selectedUmamusumeTaskType = this.umamusumeTaskTypeList[0]
     },
     switchRaceList: function () {
@@ -1866,11 +1852,11 @@ export default {
     renderSupportCardText(card) {
       if (!card) return '';
       let type = '';
-      if (card.id >= 10000 && card.id < 20000) type = '速';
-      else if (card.id >= 20000 && card.id < 30000) type = '耐';
-      else if (card.id >= 30000 && card.id < 40000) type = '力';
-      else if (card.id >= 40000 && card.id < 50000) type = '根';
-      else if (card.id >= 50000 && card.id < 60000) type = '智';
+      if (card.id >= 10000 && card.id < 20000) type = 'Speed';
+      else if (card.id >= 20000 && card.id < 30000) type = 'Stamina';
+      else if (card.id >= 30000 && card.id < 40000) type = 'Power';
+      else if (card.id >= 40000 && card.id < 50000) type = 'Guts';
+      else if (card.id >= 50000 && card.id < 60000) type = 'Wit';
       if (type) {
         return `【${card.name}】${type}·${card.desc}`;
       } else {
