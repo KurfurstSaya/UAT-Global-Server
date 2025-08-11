@@ -193,27 +193,37 @@ def run_health_checks():
     
     # Test screenshot quality (THIS IS THE KEY TEST)
     try:
+        print(" Testing screenshot quality...")
         import uiautomator2 as u2
+        print("   🔌 Connecting to device...")
         device = u2.connect(selected_device)
+        print("   ✅ Device connected successfully")
         
         # Take multiple screenshots to test consistency
         screenshots = []
+        print("   Taking screenshots (this may take a moment)...")
         for i in range(3):
+            print(f"      Screenshot {i+1}/3...")
             screenshot = device.screenshot(format='opencv')
             if screenshot is not None:
                 screenshots.append(screenshot)
+                print(f"      ✅ Screenshot {i+1}: {screenshot.shape[1]}x{screenshot.shape[0]} pixels")
+            else:
+                print(f"      ❌ Screenshot {i+1}: FAILED")
             time.sleep(0.5)
         
         if len(screenshots) < 3:
             print("❌ Screenshot consistency: FAILED")
             return False
             
+        print("   🔍 Analyzing screenshot quality...")
         # Check if screenshots are identical (corrupted/static)
         if screenshots[0].std() < 5:  # Very low variance = corrupted
             print("❌ Screenshot quality: CORRUPTED (static image)")
             return False
             
         # Check if screenshots are too similar (display pipeline stuck)
+        print("   🔄 Checking for display pipeline issues...")
         diff1 = cv2.absdiff(screenshots[0], screenshots[1])
         diff2 = cv2.absdiff(screenshots[1], screenshots[2])
         if diff1.mean() < 1 and diff2.mean() < 1:
