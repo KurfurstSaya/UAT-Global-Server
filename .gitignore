@@ -137,4 +137,5 @@ brayscript/
 
 # Project specific
 userdata/
+!userdata/umamusume/starter_presets/
 **/__pycache__/
