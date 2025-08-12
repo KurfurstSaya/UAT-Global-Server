@@ -1534,42 +1534,52 @@ export default {
     switchRaceList: function () {
       this.showRaceList = !this.showRaceList
     },
+    // Helper: check whether a race matches the currently selected character's aptitude and schedule
+    isRaceCompatibleWithSelectedCharacter(race) {
+      if (!this.selectedCharacter) return true
+      const character = this.characterList.find(c => c.name === this.selectedCharacter)
+      if (!character) return true
+      // Terrain/distance aptitude
+      const matchesTerrain = race.terrain === character.terrain
+      const characterDistances = character.distance.split(', ').map(d => d.trim())
+      const matchesDistance = characterDistances.includes(race.distance)
+      const matchesAptitude = matchesTerrain && matchesDistance
+      if (!matchesAptitude) return false
+      // Training period (by date label string)
+      const periods = this.characterTrainingPeriods[this.selectedCharacter]
+      if (!periods) return true
+      const inPeriod = (periods['Junior Year'] && periods['Junior Year'].includes(race.date)) ||
+                       (periods['Classic Year'] && periods['Classic Year'].includes(race.date)) ||
+                       (periods['Senior Year'] && periods['Senior Year'].includes(race.date))
+      return !!inPeriod
+    },
     // Quick selection methods
     selectAllGI: function () {
-      const allGIRaces = [
-        ...this.umamusumeRaceList_1.filter(race => race.type === 'GI'),
-        ...this.umamusumeRaceList_2.filter(race => race.type === 'GI'),
-        ...this.umamusumeRaceList_3.filter(race => race.type === 'GI')
-      ];
-      allGIRaces.forEach(race => {
-        if (!this.extraRace.includes(race.id)) {
-          this.extraRace.push(race.id);
-        }
-      });
+      const pool = [
+        ...this.umamusumeRaceList_1,
+        ...this.umamusumeRaceList_2,
+        ...this.umamusumeRaceList_3
+      ].filter(race => race.type === 'G1')
+       .filter(race => this.isRaceCompatibleWithSelectedCharacter(race))
+      pool.forEach(race => { if (!this.extraRace.includes(race.id)) this.extraRace.push(race.id) })
     },
     selectAllGII: function () {
-      const allGIIRaces = [
-        ...this.umamusumeRaceList_1.filter(race => race.type === 'GII'),
-        ...this.umamusumeRaceList_2.filter(race => race.type === 'GII'),
-        ...this.umamusumeRaceList_3.filter(race => race.type === 'GII')
-      ];
-      allGIIRaces.forEach(race => {
-        if (!this.extraRace.includes(race.id)) {
-          this.extraRace.push(race.id);
-        }
-      });
+      const pool = [
+        ...this.umamusumeRaceList_1,
+        ...this.umamusumeRaceList_2,
+        ...this.umamusumeRaceList_3
+      ].filter(race => race.type === 'G2')
+       .filter(race => this.isRaceCompatibleWithSelectedCharacter(race))
+      pool.forEach(race => { if (!this.extraRace.includes(race.id)) this.extraRace.push(race.id) })
     },
     selectAllGIII: function () {
-      const allGIIIRaces = [
-        ...this.umamusumeRaceList_1.filter(race => race.type === 'GIII'),
-        ...this.umamusumeRaceList_2.filter(race => race.type === 'GIII'),
-        ...this.umamusumeRaceList_3.filter(race => race.type === 'GIII')
-      ];
-      allGIIIRaces.forEach(race => {
-        if (!this.extraRace.includes(race.id)) {
-          this.extraRace.push(race.id);
-        }
-      });
+      const pool = [
+        ...this.umamusumeRaceList_1,
+        ...this.umamusumeRaceList_2,
+        ...this.umamusumeRaceList_3
+      ].filter(race => race.type === 'G3')
+       .filter(race => this.isRaceCompatibleWithSelectedCharacter(race))
+      pool.forEach(race => { if (!this.extraRace.includes(race.id)) this.extraRace.push(race.id) })
     },
     clearAllRaces: function () {
       this.extraRace = [];
