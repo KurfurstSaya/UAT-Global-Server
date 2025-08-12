@@ -2,10 +2,15 @@
   <div id="support-card-select-modal" class="modal fade" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content" @click.stop>
-        <div class="modal-header">
-          <h5>Borrowing Support Card</h5>
+        <div class="modal-header d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">Borrowing Support Card</h5>
+          <div>
+            <button class="btn btn-sm btn-outline-secondary me-2" @click="handleCancel">Cancel</button>
+            <button class="btn btn-sm btn--primary" @click="handleConfirm">Confirm</button>
+          </div>
         </div>
         <div class="modal-body support-card-modal-body">
+          <div class="section-card p-3 mb-2">
           <div class="type-btn-row">
             <button
               v-for="type in supportCardTypes"
@@ -69,11 +74,9 @@
               ></div>
             </div>
           </div>
+          </div>
         </div>
-        <div class="modal-footer support-card-modal-footer">
-          <span class="btn cancel-btn" @click="handleCancel">Cancel</span>
-          <span class="btn auto-btn" style="margin-left:8px;" @click="handleConfirm">Confirm</span>
-        </div>
+        <div class="modal-footer d-none"></div>
       </div>
     </div>
   </div>
@@ -408,24 +411,12 @@ export default {
 #support-card-select-modal .modal-dialog {
   z-index: 1061;
 }
+.section-card{border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,.06);} 
 .support-card-modal-body {
   max-height: 600px;
   overflow-y: auto;
   /* 让footer固定时，body不被footer遮挡 */
   padding-bottom: 80px;
-}
-.support-card-modal-footer {
-  position: sticky;
-  bottom: 0;
-  background: #fff;
-  z-index: 2;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  /* 保证footer始终在底部 */
-  padding-top: 16px;
-  padding-bottom: 16px;
 }
 .support-card-img-grid {
   display: flex;
