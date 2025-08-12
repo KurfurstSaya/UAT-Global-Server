@@ -89,40 +89,69 @@
               <div class="col-8">
                 <div class="form-group">
                   <label for="race-select">⭐ Use Preset</label>
-                  <div class="form-inline">
-                    <select v-model="presetsUse" style="text-overflow: ellipsis;width: 40em;" class="form-control"
-                      id="use_presets">
+                  <div class="input-group input-group-sm">
+                    <select v-model="presetsUse" class="form-control" id="use_presets">
                       <option v-for="set in cultivatePresets" :value="set">{{ set.name }}</option>
                     </select>
-                    <span class="btn auto-btn ml-2" v-on:click="applyPresetRace">Apply</span>
+                    <div class="input-group-append">
+                      <button type="button" class="btn auto-btn" @click="applyPresetRace">Apply</button>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <label for="presetNameEditInput">Save as Preset</label>
-                  <div class="form-inline">
-                    <input v-model="presetNameEdit" type="text" class="form-control" id="presetNameEditInput"
-                      placeholder="Preset Name">
-                    <span class="btn auto-btn ml-2" v-on:click="addPresets">Save</span>
+                  <label>Save Preset</label>
+                  <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Preset actions">
+                    <button type="button" class="btn auto-btn" :class="{ active: presetAction==='add' }" @click="togglePresetAction('add')">Add new preset</button>
+                    <button type="button" class="btn auto-btn" :class="{ active: presetAction==='overwrite' }" @click="togglePresetAction('overwrite')">Overwrite preset</button>
+                    <button type="button" class="btn auto-btn" :class="{ active: presetAction==='delete' }" @click="togglePresetAction('delete')">Delete saved preset</button>
+                  </div>
+                  <div v-if="presetAction==='add'" class="mt-1">
+                    <div class="input-group input-group-sm">
+                      <input v-model="presetNameEdit" type="text" class="form-control" placeholder="Preset Name">
+                      <div class="input-group-append">
+                        <button class="btn auto-btn" type="button" @click="confirmAddPreset">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="presetAction==='overwrite'" class="mt-1">
+                    <div class="input-group input-group-sm">
+                      <select v-model="overwritePresetName" class="form-control">
+                        <option v-for="set in cultivatePresets.filter(p=>p.name!=='Default')" :key="set.name" :value="set.name">{{ set.name }}</option>
+                      </select>
+                      <div class="input-group-append">
+                        <button class="btn auto-btn" type="button" @click="confirmOverwritePreset">Overwrite</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="presetAction==='delete'" class="mt-1">
+                    <div class="input-group input-group-sm">
+                      <select v-model="deletePresetName" class="form-control">
+                        <option v-for="set in cultivatePresets.filter(p=>p.name!=='Default')" :key="set.name" :value="set.name">{{ set.name }}</option>
+                      </select>
+                      <div class="input-group-append">
+                        <button class="btn btn-danger btn-sm" type="button" @click="confirmDeletePreset">Delete</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="row">
-              <div class="col-5">
+              <div class="col-6">
                 <div class="form-group">
                   <label>⭐ Friend Support Card Selection</label>
-                  <div style="display: flex; align-items: center;">
-                    <input type="text" class="form-control" :value="renderSupportCardText(selectedSupportCard)" readonly
-                      id="selectedSupportCard">
-                    <span class="btn auto-btn ml-2" style="white-space:nowrap;"
-                      v-on:click="openSupportCardSelectModal">Change</span>
+                  <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" :value="renderSupportCardText(selectedSupportCard)" readonly id="selectedSupportCard">
+                    <div class="input-group-append">
+                      <button type="button" class="btn auto-btn" @click="openSupportCardSelectModal">Change</button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-2">
+              <div class="col-3">
                 <div class="form-group">
                   <label for="selectSupportCardLevel">Support Card Level (≥)</label>
                   <input v-model="supportCardLevel" type="number" class="form-control" id="selectSupportCardLevel"
@@ -138,39 +167,52 @@
               </div>
             </div>
             <div class="form-group">
-              <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)
-              </div>
+              <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)</div>
             </div>
             <div class="row">
               <div class="col">
                 <div class="form-group">
                   <label for="speed-value-input">Speed</label>
-                  <input type="number" v-model="expectSpeedValue" class="form-control" id="speed-value-input">
+                  <div class="input-group input-group-sm">
+                    <input type="number" v-model="expectSpeedValue" class="form-control" id="speed-value-input">
+                    <div class="input-group-append"><span class="input-group-text">pt</span></div>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="stamina-value-input">Stamina</label>
-                  <input type="number" v-model="expectStaminaValue" class="form-control" id="stamina-value-input">
+                  <div class="input-group input-group-sm">
+                    <input type="number" v-model="expectStaminaValue" class="form-control" id="stamina-value-input">
+                    <div class="input-group-append"><span class="input-group-text">pt</span></div>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="power-value-input">Power</label>
-                  <input type="number" v-model="expectPowerValue" class="form-control" id="power-value-input">
+                  <div class="input-group input-group-sm">
+                    <input type="number" v-model="expectPowerValue" class="form-control" id="power-value-input">
+                    <div class="input-group-append"><span class="input-group-text">pt</span></div>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="will-value-input">Guts</label>
-                  <input type="number" v-model="expectWillValue" class="form-control" id="will-value-input">
+                  <div class="input-group input-group-sm">
+                    <input type="number" v-model="expectWillValue" class="form-control" id="will-value-input">
+                    <div class="input-group-append"><span class="input-group-text">pt</span></div>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="intelligence-value-input">Wit</label>
-                  <input type="number" v-model="expectIntelligenceValue" class="form-control"
-                    id="intelligence-value-input">
+                  <div class="input-group input-group-sm">
+                    <input type="number" v-model="expectIntelligenceValue" class="form-control" id="intelligence-value-input">
+                    <div class="input-group-append"><span class="input-group-text">pt</span></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -181,37 +223,43 @@
               <div class="col">
                 <div class="form-group">
                   <label for="motivation-year1">Year 1</label>
-                  <select v-model="motivationThresholdYear1" class="form-control" id="motivation-year1">
-                    <option :value=1>Awful</option>
-                    <option :value=2>Bad</option>
-                    <option :value=3>Normal</option>
-                    <option :value=4>Good</option>
-                    <option :value=5>Great</option>
-                  </select>
+                  <div class="input-group input-group-sm">
+                    <select v-model="motivationThresholdYear1" class="form-control" id="motivation-year1">
+                      <option :value=1>Awful</option>
+                      <option :value=2>Bad</option>
+                      <option :value=3>Normal</option>
+                      <option :value=4>Good</option>
+                      <option :value=5>Great</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="motivation-year2">Year 2</label>
-                  <select v-model="motivationThresholdYear2" class="form-control" id="motivation-year2">
-                    <option :value=1>Awful</option>
-                    <option :value=2>Bad</option>
-                    <option :value=3>Normal</option>
-                    <option :value=4>Good</option>
-                    <option :value=5>Great</option>
-                  </select>
+                  <div class="input-group input-group-sm">
+                    <select v-model="motivationThresholdYear2" class="form-control" id="motivation-year2">
+                      <option :value=1>Awful</option>
+                      <option :value=2>Bad</option>
+                      <option :value=3>Normal</option>
+                      <option :value=4>Good</option>
+                      <option :value=5>Great</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="motivation-year3">Year 3</label>
-                  <select v-model="motivationThresholdYear3" class="form-control" id="motivation-year3">
-                    <option :value=1>Awful</option>
-                    <option :value=2>Bad</option>
-                    <option :value=3>Normal</option>
-                    <option :value=4>Good</option>
-                    <option :value=5>Great</option>
-                  </select>
+                  <div class="input-group input-group-sm">
+                    <select v-model="motivationThresholdYear3" class="form-control" id="motivation-year3">
+                      <option :value=1>Awful</option>
+                      <option :value=2>Bad</option>
+                      <option :value=3>Normal</option>
+                      <option :value=4>Good</option>
+                      <option :value=5>Great</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -288,34 +336,40 @@
               <div class="col">
                 <div class="form-group">
                   <label for="selectTactic1">Year 1</label>
-                  <select v-model="selectedRaceTactic1" class="form-control" id="selectTactic1">
-                    <option :value=1>End-Closer</option>
-                    <option :value=2>Late-Surger</option>
-                    <option :value=3>Pace-Chaser</option>
-                    <option :value=4>Front-Runner</option>
-                  </select>
+                  <div class="input-group input-group-sm">
+                    <select v-model="selectedRaceTactic1" class="form-control" id="selectTactic1">
+                      <option :value=1>End-Closer</option>
+                      <option :value=2>Late-Surger</option>
+                      <option :value=3>Pace-Chaser</option>
+                      <option :value=4>Front-Runner</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="selectTactic2">Year 2</label>
-                  <select v-model="selectedRaceTactic2" class="form-control" id="selectTactic2">
-                    <option :value=1>End-Closer</option>
-                    <option :value=2>Late-Surger</option>
-                    <option :value=3>Pace-Chaser</option>
-                    <option :value=4>Front-Runner</option>
-                  </select>
+                  <div class="input-group input-group-sm">
+                    <select v-model="selectedRaceTactic2" class="form-control" id="selectTactic2">
+                      <option :value=1>End-Closer</option>
+                      <option :value=2>Late-Surger</option>
+                      <option :value=3>Pace-Chaser</option>
+                      <option :value=4>Front-Runner</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="col">
                 <div class="form-group">
                   <label for="selectTactic3">Year 3</label>
-                  <select v-model="selectedRaceTactic3" class="form-control" id="selectTactic3">
-                    <option :value=1>End-Closer</option>
-                    <option :value=2>Late-Surger</option>
-                    <option :value=3>Pace-Chaser</option>
-                    <option :value=4>Front-Runner</option>
-                  </select>
+                  <div class="input-group input-group-sm">
+                    <select v-model="selectedRaceTactic3" class="form-control" id="selectTactic3">
+                      <option :value=1>End-Closer</option>
+                      <option :value=2>Late-Surger</option>
+                      <option :value=3>Pace-Chaser</option>
+                      <option :value=4>Front-Runner</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1106,6 +1160,9 @@ export default {
       learnSkillThreshold: 9999,
       recoverTP: false,
       presetNameEdit: "",
+      presetAction: null,
+      overwritePresetName: "",
+      deletePresetName: "",
       successToast: undefined,
       extraWeight1: [0, 0, 0, 0, 0],
       extraWeight2: [0, 0, 0, 0, 0],
@@ -1946,6 +2003,47 @@ export default {
           this.getPresets()
         }
       )
+    },
+    togglePresetAction: function (which) {
+      this.presetAction = this.presetAction === which ? null : which;
+    },
+    confirmAddPreset() {
+      if (!this.presetNameEdit || this.presetNameEdit.trim() === "") return;
+      if (this.presetNameEdit.trim() === 'Default') {
+        window.alert('"Default" is reserved. Please choose another name.');
+        return;
+      }
+      const exists = this.cultivatePresets.some(p => p.name === this.presetNameEdit);
+      if (exists && !window.confirm(`Preset "${this.presetNameEdit}" exists. Overwrite?`)) {
+        return;
+      }
+      const toastBody = document.querySelector('#liveToast .toast-body');
+      if (toastBody) toastBody.textContent = '✔ Preset saved successfully';
+      this.addPresets();
+      this.presetAction = null;
+      this.presetNameEdit = "";
+    },
+    confirmOverwritePreset() {
+      if (!this.overwritePresetName) return;
+      // For overwrite we simply save with the same name
+      this.presetNameEdit = this.overwritePresetName;
+      const toastBody = document.querySelector('#liveToast .toast-body');
+      if (toastBody) toastBody.textContent = '✔ Preset overwritten successfully';
+      this.addPresets();
+      this.presetAction = null;
+    },
+    confirmDeletePreset() {
+      if (!this.deletePresetName) return;
+      if (!window.confirm(`Delete preset \"${this.deletePresetName}\"?`)) return;
+      const payload = { name: this.deletePresetName };
+      this.axios.post("/umamusume/delete-preset", JSON.stringify(payload)).then(() => {
+        this.getPresets();
+        this.presetAction = null;
+        this.deletePresetName = "";
+        const toastBody = document.querySelector('#liveToast .toast-body');
+        if (toastBody) toastBody.textContent = '✔ Preset deleted successfully';
+        this.successToast.toast('show')
+      });
     },
     onExtraWeightInput(arr, idx) {
       // 限制输入范围 [-1, 1]
