@@ -2,11 +2,25 @@
   <div id="create-task-list-modal" class="modal fade" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content" :class="{ 'dimmed': showAoharuConfigModal || showSupportCardSelectModal }">
-        <h5 class="modal-header">
-          Create New Task
-        </h5>
-        <div class="modal-body">
-          <form>
+        <div class="modal-header d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">Create New Task</h5>
+          <div class="header-actions">
+            <button type="button" class="btn btn-sm btn-outline-secondary" @click="cancelTask">Cancel</button>
+            <button type="button" class="btn btn-sm btn-primary" @click="addTask">Confirm</button>
+          </div>
+        </div>
+        <div class="modal-body modal-body--split" ref="scrollPane">
+          <div class="side-nav">
+            <div class="side-nav-title">Sections</div>
+            <ul class="side-nav-list">
+              <li v-for="s in sectionList" :key="s.id">
+                <a href="#" :class="{ active: activeSection === s.id }" @click.prevent="scrollToSection(s.id)">{{ s.label }}</a>
+              </li>
+            </ul>
+          </div>
+          <form class="content-pane">
+            <div class="category-card" id="category-general">
+              <div class="category-title">General</div>
             <div class="form-group">
               <label for="selectTaskType">⭐ Task Selection</label>
               <select v-model="selectedUmamusumeTaskType" class="form-control" id="selectTaskType">
@@ -65,6 +79,7 @@
                 </div>
               </div>
             </div>
+            </div>
             <!-- Limited Time Module: Fujikiseki Show Mode -->
             <!-- <div class="row">
               <div class="col-3">
@@ -85,6 +100,8 @@
                 </div>
               </div>
             </div> -->
+            <div class="category-card" id="category-preset">
+              <div class="category-title">Preset &amp; Support Card</div>
             <div class="row">
               <div class="col-8">
                 <div class="form-group">
@@ -94,24 +111,27 @@
                       <option v-for="set in cultivatePresets" :value="set">{{ set.name }}</option>
                     </select>
                     <div class="input-group-append">
-                      <button type="button" class="btn auto-btn" @click="applyPresetRace">Apply</button>
+                      <button type="button" class="btn btn-sm auto-btn" @click="applyPresetRace">Apply</button>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-4">
-                <div class="form-group">
+                <div class="form-group preset-actions">
                   <label>Save Preset</label>
-                  <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Preset actions">
-                    <button type="button" class="btn auto-btn" :class="{ active: presetAction==='add' }" @click="togglePresetAction('add')">Add new preset</button>
-                    <button type="button" class="btn auto-btn" :class="{ active: presetAction==='overwrite' }" @click="togglePresetAction('overwrite')">Overwrite preset</button>
-                    <button type="button" class="btn auto-btn" :class="{ active: presetAction==='delete' }" @click="togglePresetAction('delete')">Delete saved preset</button>
+                  <div class="dropdown preset-save-group">
+                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle align-self-stretch" @click="togglePresetMenu">Save Preset</button>
+                    <div class="dropdown-menu show" v-if="showPresetMenu">
+                      <a href="#" class="dropdown-item" @click.prevent="selectPresetAction('add')">Add new preset</a>
+                      <a href="#" class="dropdown-item" @click.prevent="selectPresetAction('overwrite')">Overwrite preset</a>
+                      <a href="#" class="dropdown-item text-danger" @click.prevent="selectPresetAction('delete')">Delete saved preset</a>
+                    </div>
                   </div>
                   <div v-if="presetAction==='add'" class="mt-1">
                     <div class="input-group input-group-sm">
                       <input v-model="presetNameEdit" type="text" class="form-control" placeholder="Preset Name">
                       <div class="input-group-append">
-                        <button class="btn auto-btn" type="button" @click="confirmAddPreset">Save</button>
+                        <button class="btn btn-sm auto-btn" type="button" @click="confirmAddPreset">Save</button>
                       </div>
                     </div>
                   </div>
@@ -121,7 +141,7 @@
                         <option v-for="set in cultivatePresets.filter(p=>p.name!=='Default')" :key="set.name" :value="set.name">{{ set.name }}</option>
                       </select>
                       <div class="input-group-append">
-                        <button class="btn auto-btn" type="button" @click="confirmOverwritePreset">Overwrite</button>
+                        <button class="btn btn-sm auto-btn" type="button" @click="confirmOverwritePreset">Overwrite</button>
                       </div>
                     </div>
                   </div>
@@ -146,7 +166,7 @@
                   <div class="input-group input-group-sm">
                     <input type="text" class="form-control" :value="renderSupportCardText(selectedSupportCard)" readonly id="selectedSupportCard">
                     <div class="input-group-append">
-                      <button type="button" class="btn auto-btn" @click="openSupportCardSelectModal">Change</button>
+                      <button type="button" class="btn btn-sm auto-btn" @click="openSupportCardSelectModal">Change</button>
                     </div>
                   </div>
                 </div>
@@ -158,17 +178,21 @@
                     placeholder="">
                 </div>
               </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label for="inputClockUseLimit">Clock Usage Limit</label>
-                  <input v-model="clockUseLimit" type="number" class="form-control" id="inputClockUseLimit"
-                    placeholder="">
+            </div>
+            </div>
+            <div class="category-card" id="category-career">
+              <div class="category-title">Career Settings</div>
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="inputClockUseLimit">Clock Usage Limit</label>
+                    <input v-model="clockUseLimit" type="number" class="form-control" id="inputClockUseLimit" placeholder="">
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="form-group">
-              <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)</div>
-            </div>
+              <div class="form-group">
+                <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final stats)</div>
+              </div>
             <div class="row">
               <div class="col">
                 <div class="form-group">
@@ -329,6 +353,9 @@
               </div>
             </div>
 
+            </div>
+            <div class="category-card" id="category-race">
+              <div class="category-title">Race Settings</div>
             <div class="form-group">
               <div>⭐ Racing Style Selection</div>
             </div>
@@ -395,13 +422,13 @@
                 </div>
               </div>
               <div v-if="showRaceList" class="race-options-content">
-                <!-- Race Filter Controls -->
-                <div class="row mb-3">
-                  <div class="col-md-4">
+                <!-- Race Filter Controls (tidy grid) -->
+                <div class="race-filters mb-3">
+                  <div class="filter">
                     <label>🔍 Search Races:</label>
                     <input type="text" v-model="raceSearch" class="form-control" placeholder="Search by race name...">
                   </div>
-                  <div class="col-md-4">
+                  <div class="filter">
                     <label>👤 Character Filter: <i class="fas fa-info-circle text-muted" title="Filter races based on character's terrain/distance aptitude and training schedule"></i></label>
                     <select v-model="selectedCharacter" class="form-control" @change="onCharacterChange">
                       <option value="">All Characters</option>
@@ -415,24 +442,17 @@
                       Select a character to filter races by compatibility
                     </small>
                   </div>
-                  <div class="col-md-4">
+                  <div class="quick">
                     <label>🏁 Quick Selection:</label>
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All
-                        GI</button>
-                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGII">Select All
-                        GII</button>
-                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGIII">Select All
-                        GIII</button>
-                      <button type="button" class="btn btn-sm btn-outline-warning" @click="clearAllRaces">Clear
-                        All</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGI">Select All GI</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGII">Select All GII</button>
+                      <button type="button" class="btn btn-sm btn-outline-success" @click="selectAllGIII">Select All GIII</button>
+                      <button type="button" class="btn btn-sm btn-outline-warning" @click="clearAllRaces">Clear All</button>
                     </div>
                   </div>
-                </div>
 
-                <!-- Filter Buttons -->
-                <div class="row mb-3">
-                  <div class="col-md-3">
+                  <div class="filter">
                     <label>🏆 Grade:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
                       <button type="button" class="btn"
@@ -465,7 +485,7 @@
                       </button>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="filter">
                     <label>🌱 Terrain:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
                       <button type="button" class="btn"
@@ -482,7 +502,7 @@
                       </button>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="distance">
                     <label>📏 Distance:</label>
                     <div class="btn-group btn-group-sm d-flex" role="group">
                       <button type="button" class="btn"
@@ -644,6 +664,9 @@
                 </div>
               </div>
             </div>
+            </div>
+            <div class="category-card" id="category-skill">
+              <div class="category-title">Skill Settings</div>
             <div class="form-group mb-0">
               <div class="row">
                 <div class="col">
@@ -717,7 +740,7 @@
               </div>
             </div>
 
-            <!-- Blacklist Section -->
+            <!-- Blacklist Section (inside Skill Settings card) -->
             <div class="form-group">
               <label class="form-label section-heading">
                 <i class="fas fa-ban"></i>
@@ -735,7 +758,7 @@
               </div>
             </div>
 
-            <!-- Skill List Section -->
+            <!-- Skill List Section (inside Skill Settings card) -->
             <div class="form-group">
               <div class="skill-list-header" @click="toggleSkillList">
                 <div class="skill-list-title">
@@ -747,12 +770,7 @@
                   <i class="fas" :class="showSkillList ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 </div>
               </div>
-              <div class="manual-end-toggle">
-                <label>
-                  <input type="checkbox" v-model="manualPurchase">
-                  Purchase skill manually at the end of career
-                </label>
-              </div>
+              
 
               <div v-if="showSkillList" class="skill-list-content">
                 <!-- Skill Filter System -->
@@ -839,37 +857,39 @@
               </div>
             </div>
 
-            <!-- Skill Learning Settings -->
-            <div class="form-group">
-              <div class="row">
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="learnSkillOnlyUserProvidedSelector">Only learn skills listed above during
-                      training</label>
-                    <select v-model="learnSkillOnlyUserProvided" class="form-control"
-                      id="learnSkillOnlyUserProvidedSelector">
-                      <option :value=true>Yes</option>
-                      <option :value=false>No</option>
-                    </select>
+            <!-- Skill Learning Settings (inside Skill Settings card) -->
+            <div class="form-group toggle-row">
+              <div class="row align-items-center">
+                <div class="col-md-3">
+                  <label class="d-block mb-1">Only learn listed skills</label>
+                  <div class="token-toggle" role="group" aria-label="Only learn listed skills">
+                    <button type="button" class="token" :class="{ active: learnSkillOnlyUserProvided }" @click="learnSkillOnlyUserProvided = true">Yes</button>
+                    <button type="button" class="token" :class="{ active: !learnSkillOnlyUserProvided }" @click="learnSkillOnlyUserProvided = false">No</button>
                   </div>
                 </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="learnSkillBeforeRaceSelector">Learn skills before races</label>
-                    <select disabled v-model="learnSkillBeforeRace" class="form-control" id="learnSkillBeforeRace">
-                      <option :value=true>Yes</option>
-                      <option :value=false>No</option>
-                    </select>
+                <div class="col-md-3">
+                  <label class="d-block mb-1">Learn before races</label>
+                  <div class="token-toggle" :class="{ disabled: true }" role="group" aria-label="Learn before races">
+                    <button type="button" class="token" :disabled="true">Yes</button>
+                    <button type="button" class="token active" :disabled="true">No</button>
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-md-3">
                   <div class="form-group">
-                    <label for="inputSkillLearnThresholdLimit">Learn skills when skill points exceed this value</label>
+                    <label for="inputSkillLearnThresholdLimit">Learn when skill points ≥</label>
                     <input v-model="learnSkillThreshold" type="number" class="form-control"
                       id="inputSkillLearnThresholdLimit" placeholder="">
                   </div>
                 </div>
+                <div class="col-md-3">
+                  <label class="d-block mb-1">Manual purchase at end</label>
+                  <div class="token-toggle" role="group" aria-label="Manual purchase at end">
+                    <button type="button" class="token" :class="{ active: manualPurchase }" @click="manualPurchase = true">On</button>
+                    <button type="button" class="token" :class="{ active: !manualPurchase }" @click="manualPurchase = false">Off</button>
+                  </div>
+                </div>
               </div>
+            </div>
             </div>
           </form>
           <!-- <div class="part">
@@ -884,10 +904,7 @@
             </div>
           </div> -->
         </div>
-        <div class="modal-footer">
-          <span class="btn cancel-btn" v-on:click="cancelTask">Cancel</span>
-          <span class="btn auto-btn" v-on:click="addTask">Confirm</span>
-        </div>
+        <div class="modal-footer d-none"></div>
       </div>
       <!-- Aoharu Cup Configuration Modal -->
       <AoharuConfigModal v-model:show="showAoharuConfigModal" :preliminaryRoundSelections="preliminaryRoundSelections"
@@ -979,6 +996,14 @@ export default {
   },
   data: function () {
     return {
+      sectionList: [
+        { id: 'category-general', label: 'General' },
+        { id: 'category-preset', label: 'Preset & Support' },
+        { id: 'category-career', label: 'Career' },
+        { id: 'category-race', label: 'Race' },
+        { id: 'category-skill', label: 'Skills' }
+      ],
+      activeSection: 'category-general',
       manualPurchase: false,
       showAdvanceOption: false,
       showRaceList: false,
@@ -1209,6 +1234,7 @@ export default {
       availableTiers: ['', 'SS', 'S', 'A', 'B', 'C', 'D'],
       availableRarities: ['', 'Unique', 'Rare', 'Normal'],
       showSkillList: false
+      ,showPresetMenu: false
     }
   },
   computed: {
@@ -1434,8 +1460,18 @@ export default {
     this.initSelect()
     this.getPresets()
     this.successToast = $('#liveToast').toast({})
+    this.$nextTick(() => {
+      this.initScrollSpy()
+    })
   },
   methods: {
+    togglePresetMenu() {
+      this.showPresetMenu = !this.showPresetMenu;
+    },
+    selectPresetAction(which) {
+      this.togglePresetAction(which);
+      this.showPresetMenu = false;
+    },
     loadCharacterData: function () {
       this.characterList = characterData.map(char => ({
         name: char.character_name,
@@ -2126,7 +2162,46 @@ export default {
     },
     toggleSkillList() {
       this.showSkillList = !this.showSkillList;
+    },
+    scrollToSection(id) {
+      const root = this.$refs.scrollPane;
+      const el = root ? root.querySelector(`#${id}`) : document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        this.activeSection = id;
+      }
+    },
+    initScrollSpy() {
+      const root = this.$refs.scrollPane;
+      if (!root) return;
+      this.onScrollSpy = () => {
+        const scrollTop = root.scrollTop;
+        let current = this.sectionList[0]?.id;
+        for (const section of this.sectionList) {
+          const el = root.querySelector(`#${section.id}`);
+          if (!el) continue;
+          const top = el.offsetTop;
+          if (top <= scrollTop + 100) {
+            current = section.id;
+          } else {
+            break;
+          }
+        }
+        this.activeSection = current;
+      };
+      root.addEventListener('scroll', this.onScrollSpy, { passive: true });
+      window.addEventListener('resize', this.onScrollSpy, { passive: true });
+      // run once
+      this.onScrollSpy();
+    },
+    destroyScrollSpy() {
+      const root = this.$refs.contentPane;
+      if (root && this.onScrollSpy) root.removeEventListener('scroll', this.onScrollSpy);
+      if (this.onScrollSpy) window.removeEventListener('resize', this.onScrollSpy);
     }
+  },
+  unmounted() {
+    this.destroyScrollSpy();
   },
   watch: {
 
@@ -2169,8 +2244,69 @@ export default {
 
 /* 确保modal body可以正确滚动 */
 .modal-body {
-  max-height: 70vh;
+  max-height: 80vh;
   overflow-y: auto;
+}
+
+.modal-body--split {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 16px;
+}
+
+/* Enlarge modal size slightly */
+#create-task-list-modal .modal-dialog {
+  max-width: 1320px;
+  width: 96vw;
+}
+
+@media (min-width: 1440px) {
+  #create-task-list-modal .modal-dialog {
+    max-width: 1380px;
+  }
+}
+
+.side-nav {
+  position: sticky;
+  top: 16px;
+  height: fit-content;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.side-nav-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.side-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-nav-list li a {
+  display: block;
+  padding: 8px 10px;
+  color: #374151;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.side-nav-list li a:hover {
+  background: #f3f4f6;
+}
+
+.side-nav-list li a.active {
+  background: #eef2ff;
+  color: #4338ca;
+  font-weight: 600;
+}
+
+.content-pane {
+  min-width: 0;
 }
 
 /* 遮罩层样式 - 让TaskEditModal背景变暗并阻止交互 */
@@ -2194,6 +2330,11 @@ export default {
 
 #create-task-list-modal.modal.show .modal-content.dimmed {
   opacity: 0.6;
+}
+
+/* Smooth scroll behavior for in-pane anchors */
+.content-pane {
+  scroll-behavior: smooth;
 }
 
 .aoharu-btn-bg {
@@ -2238,6 +2379,22 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 12px;
   padding: 8px;
+}
+
+/* Category cards (section grouping) */
+.category-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.category-title {
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-size: 16px;
 }
 
 .race-toggle {
@@ -2672,6 +2829,50 @@ export default {
   border: 1px solid #e9ecef;
 }
 
+/* Toggle row switch alignment */
+.toggle-row .form-check.form-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-row .form-check-input {
+  width: 2.25rem;
+  height: 1.125rem;
+}
+
+.toggle-row .form-check-label {
+  margin-left: 4px;
+}
+
+/* Token toggles */
+.token-toggle {
+  display: inline-flex;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.token-toggle .token {
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.token-toggle .token.active {
+  background: #1e40af;
+  color: #ffffff;
+}
+
+.token-toggle.disabled .token {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .skill-notes-alert {
   display: flex;
   align-items: center;
@@ -2815,6 +3016,82 @@ export default {
   margin-bottom: 10px;
 }
 
+/* Header action buttons */
+.header-actions button.btn.btn-sm.btn-outline-secondary {
+  margin-right: 8px;
+}
+
+/* Reference palette tweaks */
+.btn.auto-btn,
+.btn.btn-primary {
+  background-color: #1e40af !important;
+  border-color: #1e40af !important;
+}
+
+.btn.btn-primary:hover,
+.btn.auto-btn:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+.btn-outline-primary {
+  color: #1e40af !important;
+  border-color: #1e40af !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #eef2ff !important;
+}
+
+.btn-outline-danger {
+  color: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #fee2e2 !important;
+}
+
+.btn-outline-success {
+  color: #166534 !important;
+  border-color: #166534 !important;
+}
+
+.btn-outline-success:hover {
+  background-color: #dcfce7 !important;
+}
+
+.btn.btn-sm {
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+}
+
+.btn-group .btn {
+  border-radius: 8px !important;
+}
+
+.dropdown-menu .dropdown-item {
+  font-size: 13px;
+}
+
+.side-nav-list li a.active {
+  background: #eef2ff;
+  color: #1e40af;
+}
+
+/* Align inline buttons with inputs */
+.input-group .btn.btn-sm {
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.preset-actions .preset-save-group {
+  display: inline-flex;
+  align-items: stretch;
+}
+
 .skill-list-header:hover {
   background: linear-gradient(135deg, #0056b3, #004085);
   box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
@@ -2926,13 +3203,13 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
   color: white;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+  margin-bottom: 12px;
 }
 
 .race-options-header:hover {
@@ -2969,8 +3246,34 @@ export default {
 }
 
 .race-options-content {
-  margin-top: 15px;
+  margin-top: 12px;
   animation: fadeIn 0.3s ease;
+}
+
+/* Race filter layout tidy */
+.race-filters {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+}
+
+.race-filters .filter {
+  grid-column: span 4;
+}
+
+.race-filters .quick {
+  grid-column: span 4;
+}
+
+.race-filters .distance {
+  grid-column: span 4;
+}
+
+.preset-actions .dropdown-menu {
+  display: block;
+  position: absolute;
+  transform: translateY(8px);
+  min-width: 220px;
 }
 
 /* Custom Character Change Modal Styles */
