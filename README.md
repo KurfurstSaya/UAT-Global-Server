@@ -30,7 +30,7 @@ This project is a **Global Server adaptation** of the original China Server vers
 - **Original Author**: [@shiokaze](https://github.com/shiokaze/UmamusumeAutoTrainer)
 - **Original Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) (China Server)
 
--This is now a detatced fork of [UmamusumeAutoTrainer](https://github.com/BrayAlter/UAT-Global-Server)
+-This is now a detached fork of [UmamusumeAutoTrainer](https://github.com/BrayAlter/UAT-Global-Server)
 
 
 ---
