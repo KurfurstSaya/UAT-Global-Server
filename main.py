@@ -217,6 +217,7 @@ def select_device():
         print("2. ADB is enabled in emulator settings")
         print("3. USB debugging is enabled")
         return None
+
     
     print(f"\n📱 Found {len(devices)} device(s):")
     
@@ -232,17 +233,26 @@ def select_device():
     umamusume_devices = [d for d, has_uma in device_info if has_uma]
     other_devices = [d for d, has_uma in device_info if not has_uma]
     
+
+
+    if len(devices) == 1:
+        return devices[0] 
+
     if umamusume_devices:
         print(f"\n🎯 Recommended devices (Umamusume detected):")
         for i, device_id in enumerate(umamusume_devices, 1):
             print(f"  {i}. {device_id}")
     
+
+
+
+
     while True:
         try:
             choice = input(f"\nSelect device (1-{len(devices)}) or 'q' to quit: ").strip()
             if choice.lower() == 'q':
                 return None
-            
+
             choice_num = int(choice)
             if 1 <= choice_num <= len(devices):
                 selected_device = devices[choice_num - 1]
@@ -361,5 +371,6 @@ if __name__ == '__main__':
     scheduler_thread = threading.Thread(target=scheduler.init, args=())
     scheduler_thread.start()
     print("🚀 UAT running on http://127.0.0.1:8071")
+    threading.Thread(target=lambda: (time.sleep(1), __import__('webbrowser').open("http://127.0.0.1:8071")), daemon=True).start()
     run("bot.server.handler:server", host="127.0.0.1", port=8071, log_level="error")
 

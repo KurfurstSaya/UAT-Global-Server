@@ -678,6 +678,24 @@ def script_cultivate_catch_doll_result(ctx: UmamusumeContext):
 
 def script_cultivate_finish(ctx: UmamusumeContext):
     if not ctx.task.detail.manual_purchase_at_end:
+        if not ctx.cultivate_detail.cultivate_finish:
+            ctx.cultivate_detail.cultivate_finish = True
+            ctx.cultivate_detail.final_skill_sweep_active = True
+            ctx.cultivate_detail.learn_skill_done = False
+            ctx.cultivate_detail.learn_skill_selected = False
+            ctx.ctrl.click_by_point(CULTIVATE_FINISH_LEARN_SKILL)
+            return
+        if getattr(ctx.cultivate_detail, "final_skill_sweep_active", False):
+            if ctx.cultivate_detail.learn_skill_selected:
+                ctx.cultivate_detail.learn_skill_done = False
+                ctx.cultivate_detail.learn_skill_selected = False
+                ctx.ctrl.click_by_point(CULTIVATE_FINISH_LEARN_SKILL)
+                return
+            else:
+                ctx.cultivate_detail.final_skill_sweep_active = False
+                ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM)
+                return
+    if not ctx.task.detail.manual_purchase_at_end:
         if not ctx.cultivate_detail.learn_skill_done or not ctx.cultivate_detail.cultivate_finish:
             ctx.cultivate_detail.cultivate_finish = True
             ctx.ctrl.click_by_point(CULTIVATE_FINISH_LEARN_SKILL)
@@ -1024,6 +1042,8 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         log.info(f"✅ Skill learning completed - processed {len(target_skill_list)} skills out of {len(skill_list)} available")
         ctx.cultivate_detail.learn_skill_done = True
         ctx.cultivate_detail.turn_info.turn_learn_skill_done = True
+        if len(target_skill_list) > 0:
+            ctx.cultivate_detail.learn_skill_selected = True
     else:
         # For user-provided only mode, if no skills were processed, it means all desired skills are already learned
         if ctx.cultivate_detail.learn_skill_only_user_provided:

@@ -30,6 +30,7 @@ class CultivateContextDetail:
     parse_factor_done: bool
     extra_weight: list
     manual_purchase_completed: bool
+    final_skill_sweep_active: bool
 
     def __init__(self):
         self.expect_attribute = None
@@ -49,6 +50,7 @@ class CultivateContextDetail:
         self.parse_factor_done = False
         self.extra_weight = []
         self.manual_purchase_completed = False
+        self.final_skill_sweep_active = False
 
     def reset_skill_learn(self):
         self.learn_skill_done = False
