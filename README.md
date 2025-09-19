@@ -70,6 +70,9 @@ cd UAT-Global-Server
 - **ADB**: Must be enabled in emulator settings
 
 ### **Launch**
+Ensure python 3.10 is installed
+
+Recommended Python version: 3.10.9 
 ```bash
 pip install -r requirements.txt
 
