@@ -230,7 +230,6 @@ def script_info(ctx: UmamusumeContext):
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_CONFIRM_AGAIN)
         if title_text == TITLE[10]: #Skills Learned
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
-            ctx.cultivate_detail.learn_skill_selected = False
         if title_text == TITLE[11]: #Complete Career
             ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM_AGAIN)
         if title_text == TITLE[12]: #Umamusume Details
@@ -466,7 +465,6 @@ def script_info(ctx: UmamusumeContext):
                 log.info("⚠️ Using fallback coordinates for skill confirmation - template not found")
         if title_text == TITLE[28]:  # Successfully Acquired Skill  
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
-            ctx.cultivate_detail.learn_skill_selected = False
         if title_text == TITLE[29]:  # Target Achievement Count Insufficient
             log.info("🎯 Handling 'Target Achievement Count Insufficient' screen")
             ctx.ctrl.click_by_point(WIN_TIMES_NOT_ENOUGH_RETURN)

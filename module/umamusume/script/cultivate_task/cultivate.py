@@ -836,8 +836,6 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         log.info("✅ Skills already learned and confirmed - exiting skill learning")
         log.debug(f"🔍 learn_skill_done flag was set to True - checking where this happened")
         ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_FINISH)
-        # Reset flags to prevent re-entering
-        ctx.cultivate_detail.learn_skill_selected = False
         return
     learn_skill_list: list[list[str]]
     learn_skill_blacklist: list[str] = ctx.cultivate_detail.learn_skill_blacklist
