@@ -404,21 +404,38 @@ def script_cultivate_final_check(ctx: UmamusumeContext):
 
 def script_cultivate_event(ctx: UmamusumeContext):
     img = ctx.ctrl.get_screen()
-    event_name, selector_list = parse_cultivate_event(ctx, img)
-    log.debug("Current event: %s", event_name)
-    if len(selector_list) > 0:  # If we have any dialogue options at all
-        time.sleep(0.5)
-        # Avoid incomplete options, re-parse once here
-        img = ctx.ctrl.get_screen()
-        event_name, selector_list = parse_cultivate_event(ctx, img)
-        choice_index = get_event_choice(ctx, event_name)
-        # Exception tolerance
-        if choice_index - 1 >= len(selector_list):  # Fixed: >= instead of >
-            choice_index = 1
-        ctx.ctrl.click(selector_list[choice_index - 1][0], selector_list[choice_index - 1][1],
-                       "Event option-" + str(choice_index))
-    else:
-        log.debug("No options found")
+    event_name_img = img[237:283, 111:480]
+    event_name = ocr_line(event_name_img)
+    choice_index = get_event_choice(ctx, event_name)
+    if not isinstance(choice_index, int) or choice_index < 1:
+        choice_index = 1
+    if choice_index > 3:
+        choice_index = 1
+    try:
+        tpl = Template(f"dialogue{choice_index}", UMAMUSUME_REF_TEMPLATE_PATH)
+    except:
+        tpl = None
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    clicked = False
+    if tpl is not None:
+        try:
+            res = image_match(img_gray, tpl)
+            if res.find_match:
+                ctx.ctrl.click(res.center_point[0], res.center_point[1], f"Event option-{choice_index}")
+                clicked = True
+        except:
+            pass
+    if not clicked:
+        try:
+            tpl1 = Template("dialogue1", UMAMUSUME_REF_TEMPLATE_PATH)
+            res1 = image_match(img_gray, tpl1)
+            if res1.find_match:
+                ctx.ctrl.click(res1.center_point[0], res1.center_point[1], "Event option-1")
+                clicked = True
+        except:
+            pass
+    if not clicked:
+        ctx.ctrl.click(360, 800, "Event option-1")
 
 def script_aoharuhai_race(ctx: UmamusumeContext):
     img = ctx.ctrl.get_screen(to_gray=True)
