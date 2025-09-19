@@ -1,3 +1,6 @@
+I push everytime i make ANY changes so I would suggest not pulling unless the repo hasn't been updated in 6+ hours
+its very unstable when im working on it
+
 Hello bray I'll be detaching this fork for now since im 99% sure ur not coming back
 
 # ⚠️🚨 !!ATTENTION!! 🚨⚠️  
