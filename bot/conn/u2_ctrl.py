@@ -71,6 +71,8 @@ class U2AndroidController(AndroidController):
     repetitive_click_name = None
     repetitive_click_count = 0
     repetitive_other_clicks = 0
+    last_click_time = 0.0
+    min_click_interval = 0.3
 
     def __init__(self):
         pass
@@ -161,10 +163,19 @@ class U2AndroidController(AndroidController):
         if y <= 0:
             y = 1
         
+        # MIGHT prevent game ui from being bugged out (just a theory)
+        now = time.time()
+        elapsed = now - self.last_click_time if hasattr(self, "last_click_time") else now
+        min_interval = getattr(self, "min_click_interval", 0.3)
+        wait_needed = max(0.0, min_interval - elapsed)
+        log.debug(f"click queue: elapsed={elapsed:.3f}s, min_interval={min_interval:.3f}s, wait={wait_needed:.3f}s, name={name}")
+        if wait_needed > 0:
+            time.sleep(wait_needed)
 
         duration = random.randint(0, 166) + hold_duration #maybe im just paranoid but <100ms seemed like a number they would check
 
         _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(x) + " " + str(y) + " " + str(duration), True)
+        self.last_click_time = time.time()
         time.sleep(self.config.delay)
 
     def swipe(self, x1=1025, y1=550, x2=1025, y2=550, duration=0.2, name=""):
