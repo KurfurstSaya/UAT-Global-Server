@@ -85,6 +85,7 @@ TITLE = [
     "Connection Error", #39 
     "Data Update", #40
     "Data Download", #41
+    "Date Changed", #42
 ]
 
 
@@ -167,6 +168,8 @@ def script_info(ctx: UmamusumeContext):
             ctx.ctrl.click(383, 840, "update")
         if title_text == TITLE[41]:
             ctx.ctrl.click(383, 840, "update2")
+        if title_text == TITLE[42]:
+            ctx.ctrl.click(383, 840, "new day")
         if title_text == TITLE[0]: #race details
             ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_3)
             time.sleep(1)
@@ -240,6 +243,9 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[10]: #Skills Learned
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
         if title_text == TITLE[11]: #Complete Career
+            if getattr(ctx.cultivate_detail, "final_skill_sweep_active", False):
+                log.info("I swear to god")
+                return
             ctx.ctrl.click_by_point(CULTIVATE_FINISH_CONFIRM_AGAIN)
         if title_text == TITLE[12]: #Umamusume Details
             ctx.ctrl.click_by_point(CULTIVATE_RESULT_CONFIRM)

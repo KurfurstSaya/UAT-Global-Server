@@ -1077,6 +1077,7 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     # Create a copy of the target list to avoid modifying the original
     skills_to_process = target_skill_list.copy()
     
+    purchases_made = False
     while True:
         # Safety check: If manual purchase was confirmed, immediately return
         if (ctx.task.detail.manual_purchase_at_end and 
@@ -1092,6 +1093,9 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         log.debug(f"🔍 Attempting to find and click skills. Target list: {skills_to_process}")
         skills_found = find_skill(ctx, img, skills_to_process, learn_any_skill=False)
         log.debug(f"🔍 find_skill result: {skills_found}")
+        if skills_found:
+            ctx.cultivate_detail.learn_skill_selected = True
+            purchases_made = True
         
         if len(skills_to_process) == 0:
             log.info("🎯 All target skills have been processed")
@@ -1122,8 +1126,6 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
         log.info(f"✅ Skill learning completed - processed {len(target_skill_list)} skills out of {len(skill_list)} available")
         ctx.cultivate_detail.learn_skill_done = True
         ctx.cultivate_detail.turn_info.turn_learn_skill_done = True
-        if len(target_skill_list) > 0:
-            ctx.cultivate_detail.learn_skill_selected = True
     else:
         # For user-provided only mode, if no skills were processed, it means all desired skills are already learned
         if ctx.cultivate_detail.learn_skill_only_user_provided:
