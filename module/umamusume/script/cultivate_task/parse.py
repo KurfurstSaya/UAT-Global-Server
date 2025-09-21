@@ -445,7 +445,9 @@ def parse_cultivate_event(ctx: UmamusumeContext, img) -> tuple[str, list[int]]:
             dialogue_templates = [
                 Template("dialogue1", UMAMUSUME_REF_TEMPLATE_PATH),
                 Template("dialogue2", UMAMUSUME_REF_TEMPLATE_PATH),
-                Template("dialogue3", UMAMUSUME_REF_TEMPLATE_PATH)
+                Template("dialogue3", UMAMUSUME_REF_TEMPLATE_PATH),
+                Template("dialogue4", UMAMUSUME_REF_TEMPLATE_PATH),
+                Template("dialogue5", UMAMUSUME_REF_TEMPLATE_PATH)
             ]
         except:
             log.warning("Could not load dialogue templates")
