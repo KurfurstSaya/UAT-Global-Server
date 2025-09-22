@@ -530,6 +530,8 @@ def script_cultivate_final_check(ctx: UmamusumeContext):
 
 
 def script_cultivate_event(ctx: UmamusumeContext):
+    if hasattr(ctx.cultivate_detail, 'event_cooldown_until') and time.time() < ctx.cultivate_detail.event_cooldown_until:
+        return
     img = ctx.ctrl.get_screen()
     event_name_img = img[237:283, 111:480]
     event_name = ocr_line(event_name_img)
@@ -550,6 +552,8 @@ def script_cultivate_event(ctx: UmamusumeContext):
             if res.find_match:
                 ctx.ctrl.click(res.center_point[0], res.center_point[1], f"Event option-{choice_index}")
                 clicked = True
+                ctx.cultivate_detail.event_cooldown_until = time.time() + 5
+                return
         except:
             pass
     if not clicked:
@@ -559,10 +563,14 @@ def script_cultivate_event(ctx: UmamusumeContext):
             if res1.find_match:
                 ctx.ctrl.click(res1.center_point[0], res1.center_point[1], "Event option-1")
                 clicked = True
+                ctx.cultivate_detail.event_cooldown_until = time.time() + 5
+                return
         except:
             pass
     if not clicked:
         ctx.ctrl.click(360, 800, "Event option-1")
+        ctx.cultivate_detail.event_cooldown_until = time.time() + 5
+        return
 
 def script_aoharuhai_race(ctx: UmamusumeContext):
     img = ctx.ctrl.get_screen(to_gray=True)
