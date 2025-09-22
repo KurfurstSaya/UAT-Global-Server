@@ -6,6 +6,7 @@ import numpy as np
 
 from bot.base.task import TaskStatus, EndTaskReason
 from module.umamusume.asset.point import *
+from module.umamusume.define import TrainingType
 from module.umamusume.types import TurnInfo, TurnOperationType, TurnOperation
 from module.umamusume.script.cultivate_task.const import SKILL_LEARN_PRIORITY_LIST
 from module.umamusume.script.cultivate_task.event.manifest import get_event_choice
