@@ -242,7 +242,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             parse_training_result(ctx, img, train_type)
             parse_training_support_card(ctx, img, train_type)
 
-        def _clear_training(ctx: UmamusumeContext, train_type: TrainingType):
+        def _clear_training(ctx: UmamusumeContext, train_type: 'TrainingType'):
             til = ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1]
             til.speed_incr = 0
             til.stamina_incr = 0
@@ -372,7 +372,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 
-        from module.umamusume.define import SupportCardType, SupportCardFavorLevel, TrainingType
+        from module.umamusume.define import SupportCardType, SupportCardFavorLevel
         date = ctx.cultivate_detail.turn_info.date
         if date <= 24:
             w_lv1, w_lv2, w_rainbow = 0.11, 0.10, 0.01
