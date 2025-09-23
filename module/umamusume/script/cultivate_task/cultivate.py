@@ -420,9 +420,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         if all(s < 0.01 for s in computed_scores):
             log.info("no good training option. umamusume is a wit game")
             chosen_idx = 4
-        elif all(rc == 0 for rc in relevant_counts):
-            log.info("no good training option. umamusume is a wit game")
-            chosen_idx = 4
         elif date >= 61 and sum(rbc_counts) == 0:
             chosen_idx = 4
         else:
