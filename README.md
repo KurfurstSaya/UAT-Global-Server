@@ -1,6 +1,7 @@
 I push everytime i make ANY changes so I would suggest not pulling unless the repo hasn't been updated in 6+ hours. Its very unstable when im working on it
 
 I cant be bothered managing a prod branch and im using this as version control. I will push even when the bot is completely broken. When that happens ur gonna have to look for and install a past commit. 
+(typically it should be safe to pull the latest version)
 
 (cutting corners since im kinda on a time crunch rn wont do this in the future)
 
