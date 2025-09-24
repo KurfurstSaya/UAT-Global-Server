@@ -260,7 +260,7 @@ def calculate_optimal_choice_from_db(ctx: UmamusumeContext, event_data: dict) ->
         weights['Mood'] = 0
         log.info("Mood already maxxed")
 
-    if energy > 90:
+    if energy > 84:
         weights['HP'] = 0
         log.info("Energy already near full")
     elif 40 <= energy <= 60:
