@@ -437,20 +437,20 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             else:
                 ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]
                 chosen_idx = 4 if 4 in ties else (min(ties) if len(ties) > 0 else int(np.argmax(computed_scores)))
-        if ctx.cultivate_detail.turn_info.turn_operation is None:
-            ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
-        ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
-        ctx.cultivate_detail.turn_info.turn_operation.training_type = TrainingType(chosen_idx + 1)
+        local_training_type = TrainingType(chosen_idx + 1)
 
 
-    if (
-        ctx.cultivate_detail.turn_info.turn_operation is None
-        or ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type != TurnOperationType.TURN_OPERATION_TYPE_TRAINING
-        or ctx.cultivate_detail.turn_info.turn_operation.training_type == TrainingType.TRAINING_TYPE_UNKNOWN
-    ):
-
-        from module.umamusume.script.cultivate_task.ai import get_operation
-        ctx.cultivate_detail.turn_info.turn_operation = get_operation(ctx)
+    from module.umamusume.script.cultivate_task.ai import get_operation
+    op_ai = get_operation(ctx)
+    if op_ai is None:
+        op = TurnOperation()
+        op.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
+        op.training_type = local_training_type
+        ctx.cultivate_detail.turn_info.turn_operation = op
+    else:
+        if op_ai.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING and (op_ai.training_type == TrainingType.TRAINING_TYPE_UNKNOWN):
+            op_ai.training_type = local_training_type
+        ctx.cultivate_detail.turn_info.turn_operation = op_ai
 
     op = ctx.cultivate_detail.turn_info.turn_operation
     if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING and op.training_type != TrainingType.TRAINING_TYPE_UNKNOWN:

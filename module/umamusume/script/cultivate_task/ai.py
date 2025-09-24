@@ -21,14 +21,24 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_RACE
     state = fetch_state()
     energy = state.get("energy", 0)
-    mood_val = state.get("mood") or 4
+    mood_raw = state.get("mood")
+    mood_val = mood_raw if mood_raw is not None else 4
+
+    date_for_threshold = ctx.cultivate_detail.turn_info.date
+    if date_for_threshold <= 36:
+        mood_threshold = ctx.cultivate_detail.motivation_threshold_year1
+    elif date_for_threshold <= 60:
+        mood_threshold = ctx.cultivate_detail.motivation_threshold_year2
+    else:
+        mood_threshold = ctx.cultivate_detail.motivation_threshold_year3
+    if (mood_raw is not None) and energy < 80 and mood_val < mood_threshold:
+        log.info("mood fast path")
+        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
+        return turn_operation
+
     if ctx.cultivate_detail.turn_info.medic_room_available and energy <= 80:
         log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing medic")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
-        return turn_operation
-    if energy < 50 and (mood_val is not None) and mood_val < 3:
-        log.info("Fast path recreation")
-        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
         return turn_operation
     if energy <= 48:
         log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing rest")
@@ -146,9 +156,11 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             if ctx.cultivate_detail.turn_info.medic_room_available and energy <= 85:
                 medic = True
             trip = False
-            if not ctx.cultivate_detail.turn_info.medic_room_available and (ctx.cultivate_detail.turn_info.date <= 36 and mood_val <= 3 and energy < 90 and not support_card_max >= 2
-                                                                        or 40 < ctx.cultivate_detail.turn_info.date <= 60 and mood_val <= 4 and energy < 90
-                                                                        or 64 < ctx.cultivate_detail.turn_info.date <= 99 and mood_val <= 4 and energy < 90):
+            if not ctx.cultivate_detail.turn_info.medic_room_available and (
+                (ctx.cultivate_detail.turn_info.date <= 36 and mood_val < ctx.cultivate_detail.motivation_threshold_year1 and energy < 90 and not support_card_max >= 2)
+                or (40 < ctx.cultivate_detail.turn_info.date <= 60 and mood_val < ctx.cultivate_detail.motivation_threshold_year2 and energy < 90)
+                or (64 < ctx.cultivate_detail.turn_info.date <= 99 and mood_val < ctx.cultivate_detail.motivation_threshold_year3 and energy < 90)
+            ):
                 try:
                     best_idx = max(range(5), key=lambda i: training_score[i]) if len(training_score) == 5 else 0
                     relevant = getattr(ctx.cultivate_detail.turn_info.training_info_list[best_idx], 'relevant_count', 0)
