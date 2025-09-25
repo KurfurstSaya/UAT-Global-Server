@@ -143,7 +143,7 @@ python main.py
  - HOWEVER IT IS ENCOURAGE THAT YOU RE-EVALUATE YOUR DECK INSTEAD. THIS WAY THE BOT CAN CLICK THE BEST OPTION 100% OF THE TIME INSTEAD OF ARTIFICIALLY LIMITING
 
 - ### **STRUGGLING WITH A CERTAIN STAT**
-- If you are struggling with a certain stat (Guts) you can raise the summer weight of that stat (while reducing others) to encourage the bot totake advandage of the lv5 summer facilities
+- If you are struggling with a certain stat (Guts) you can raise the summer weight of that stat (while reducing others) to encourage the bot totake advantage of the LV5 summer facilities
   ![alt text](docs/summerWeight.png)
 
 - ### **Hint/Skills hunting**
