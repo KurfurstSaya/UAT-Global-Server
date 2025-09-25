@@ -126,6 +126,27 @@ python main.py
   * Could also check the general area for red pixels but it led to a bunch of false positives from my testing
 
 ## **Training settings guide**
+- ### **Upon creating a new deck the first thing you should do is experiment with the values under advanced options**
+- ### These values are made for 3/3 split decks THEY ARE NOT 1 SIZE FITS ALL
+  ![alt text](docs/default.png)
+
+- ### **Stat caps**
+- ### Under normal circumstances you want to just put a large number into all of them like so this way it will always pick the best training option
+  ![alt text](docs/statCaps.png)
+- ### HOWEVER if you keep maxxing out a stat too early for example 1000+ speed before the 2nd summer you would want to do this
+  ![alt text](docs/capSpeed.png)
+- ### Stat caps work like this
+ - Soft cap  
+  When at least 80% of the desired stat that training gets a 20% score nerf during training selection
+ - Hard cap  
+  After exceeding the stat cap the training will now recieve a 40% score nerf during training selection
+ - HOWEVER IT IS ENCOURAGE THAT YOU RE-EVALUATE YOUR DECK INSTEAD. THIS WAY THE BOT CAN CLICK THE BEST OPTION 100% OF THE TIME INSTEAD OF ARTIFICIALLY LIMITING
+
+- ### **Struggling with a certain stat**
+- ### If you are struggling with a certain stat (Guts) you can raise the summer weight of that stat (while reducing others) to encourage the bot totake advandage of the lv5 summer facilities
+  ![alt text](docs/summerWeight.png)
+
+
 
 ## 🤝 **Contributing**
 

@@ -338,7 +338,7 @@
               </div>
               <div v-if="showAdvanceOption" class="advanced-options-content">
                 <div class="form-group">
-                  <div>⭐ Extra Weight</div>
+                  <div>⭐ Extra Weights (Speed, Stamina, Power, Guts, Wits)</div>
                 </div>
                 <p>Applies a flat multiplier to the training score (-100% To +100%)</p>
                 <p>-1 would make it skip the training</p>
