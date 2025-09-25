@@ -1,5 +1,10 @@
 I push everytime i make ANY changes so I would suggest not pulling unless the repo hasn't been updated in 6+ hours. Its very unstable when im working on it
 
+I cant be bothered managing a prod branch and im using this as version control. I will push even when the bot is completely broken. When that happens ur gonna have to look for and install a past commit. 
+(typically it should be safe to pull the latest version)
+
+(cutting corners since im kinda on a time crunch rn wont do this in the future)
+
 Hello bray I'll be detaching this fork for now since im 99% sure ur not coming back
 
 # ⚠️🚨 !!Attention!! 🚨⚠️  
@@ -18,7 +23,7 @@ If not I guess ill be stuck playing URA lmao
 
 (When i'm gone yall can run scrape.py and move the updated file to UAT-Global-Server\resource\umamusume\data to get updates for new cards/characters)
 
-## 📄 **License & Credits**
+## 📄 **Credits**
 
 This project is a **Global Server adaptation** of the original China Server version by [@shiokaze](https://github.com/shiokaze/UmamusumeAutoTrainer).
 
@@ -162,9 +167,7 @@ Access the web interface at `http://127.0.0.1:8071` to configure and start tasks
 ## ⚠️ **Known issues/Wont fix**
 - Bot seems to get stuck sometimes
   - There are failsafes in place. It should break out of it within 5 mintues. if not then yeah I'll fix it.
-- The event detection reads the text wrong sometimes
-  - Go fund paddleocr
-- Detection of supports sometimes fails (you will know this if it keeps clicking wit training/a bad training and in the logs the score is either stuck/only detected unknown cards)
+- Detection of supports sometimes fails (you will know this if it keeps clicking wit training/a bad training and in the logs the score is either stuck/only detecting unknown cards)
   - Just restart both bluestacks and the bot.
   - If it works from the start then it should not break halfway (it either breaks 100% of the time since launch or its fine and will never break) so its not really a issue. I also have no idea whats causing this.
 - Sometimes it fails to detect the hint (!)
