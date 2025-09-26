@@ -5,15 +5,27 @@ from bot.recog.image_matcher import image_match, compare_color_equal
 from bot.recog.ocr import ocr_line
 from module.umamusume.asset import MOTIVATION_LIST
 
+shared_controller: Optional[U2AndroidController] = None
+
+
+def get_shared_controller() -> U2AndroidController:
+    global shared_controller
+    if shared_controller is None:
+        shared_controller = U2AndroidController()
+        shared_controller.init_env()
+    return shared_controller
+
 def ocr_text(gray):
     return ocr_line(gray, lang="en").strip()
 
 def ensure_top_img(img: Optional[any]) -> any:
     if img is None:
-        ctrl = U2AndroidController()
-        ctrl.init_env()
-        img = ctrl.get_screen(to_gray=False)
-    if img is not None and img.shape[0] >= 186:
+        try:
+            ctrl = get_shared_controller()
+            img = ctrl.get_screen(to_gray=False)
+        except Exception:
+            img = None
+    if img is not None and getattr(img, 'shape', None) is not None and img.shape[0] >= 186:
         return img[:186, :]
     return img
 
