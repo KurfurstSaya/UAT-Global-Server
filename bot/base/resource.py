@@ -14,7 +14,8 @@ class Template:
                  image_match_config: ImageMatchConfig = ImageMatchConfig()):
         self.resource_path = resource_path
         self.template_name = template_name
-        self.template_image = cv2.imread("resource" + self.resource_path + "/" + template_name.lower() + ".png", 0)
+        path = "resource" + self.resource_path + "/" + template_name.lower() + ".png"
+        self.template_image = cv2.imread(path, 0)
         self.image_match_config = image_match_config
 
 

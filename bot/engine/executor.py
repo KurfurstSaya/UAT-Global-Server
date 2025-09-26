@@ -13,7 +13,7 @@ from bot.base.resource import UI, NOT_FOUND_UI
 from bot.base.task import TaskStatus, Task, EndTaskReason
 from bot.conn.os import push_system_notification
 from bot.conn.u2_ctrl import U2AndroidController
-from bot.recog.image_matcher import template_match
+from bot.recog.image_matcher import template_match, image_match
 from concurrent.futures import ThreadPoolExecutor
 from bot.base.manifest import APP_MANIFEST_LIST
 from config import CONFIG
@@ -74,7 +74,7 @@ class Executor:
                          template.image_match_config.match_area.y1:template.image_match_config.match_area.y2,
                          template.image_match_config.match_area.x1:template.image_match_config.match_area.x2]
             if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
-                if not template_match(sub_target, template.template_image).find_match:
+                if not image_match(sub_target, template).find_match:
                     result = False
                     break
             else:
@@ -84,7 +84,7 @@ class Executor:
                          template.image_match_config.match_area.y1:template.image_match_config.match_area.y2,
                          template.image_match_config.match_area.x1:template.image_match_config.match_area.x2]
             if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
-                if template_match(sub_target, template.template_image).find_match:
+                if image_match(sub_target, template).find_match:
                     result = False
                     break
             else:
@@ -114,6 +114,8 @@ class Executor:
             log.debug("Starting: "+manifest.app_package_name)
             ctx.ctrl.start_app(manifest.app_package_name, manifest.app_activity_name)
 
+            
+            
             def screen_watchdog():
                 last_img = None
                 unchanged = 0
@@ -224,9 +226,21 @@ class Executor:
                         after_hook(ctx)
                     if ctx.is_task_finish():
                         task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
+                    try:
+                        ctx.current_screen = None
+                    except Exception:
+                        pass
+                    try:
+                        gc.collect()
+                    except Exception:
+                        pass
                 else:
                     break
-                time.sleep(0.5)
+                try:
+                    sleep_ms = int(os.getenv("UAT_EXECUTOR_LOOP_SLEEP_MS", "500"))
+                    time.sleep(max(0.0, sleep_ms / 1000.0))
+                except Exception:
+                    time.sleep(0.5)
         except Exception:
             task.end_task(TaskStatus.TASK_STATUS_FAILED, EndTaskReason.SYSTEM_ERROR)
             traceback.print_exc()

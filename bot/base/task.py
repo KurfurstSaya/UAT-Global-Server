@@ -65,6 +65,12 @@ class Task(metaclass=ABCMeta):
         log.info("Task ended: " + self.task_status.name + "->" + status.name)
         self.task_status = status
         self.end_task_reason = reason
+        try:
+            from bot.base.log import task_log_handler
+            with task_log_handler.lock:
+                task_log_handler.buffer.pop(self.task_id, None)
+        except Exception:
+            pass
 
     @abstractmethod
     def start_task(self) -> None:

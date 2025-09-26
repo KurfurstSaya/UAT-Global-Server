@@ -71,8 +71,6 @@ class Minicap:
         read_frame_bytes = 0
         frame_body_length = 0
         data = []
-        # thread = threading.Thread(target=self.debugFrame)
-        # thread.start()
         while not getattr(self.__socket, '_closed'):
             try:
                 chunk = self.__socket.recv(self.buffer_size)
@@ -94,9 +92,7 @@ class Minicap:
                 else:
                     if buf_len - cursor >= frame_body_length:
                         data.extend(chunk[cursor:cursor + frame_body_length])
-                        # save img
                         self.cur_image = data
-                        # self.cur_image = cv2.imdecode(numpy.array(data, dtype=numpy.uint8), cv2.COLOR_RGBA2BGR)
                         cursor += frame_body_length
                         frame_body_length = read_frame_bytes = 0
                         data = []
@@ -105,4 +101,4 @@ class Minicap:
                         frame_body_length -= buf_len - cursor
                         read_frame_bytes += buf_len - cursor
                         cursor = buf_len
-        print("socket closed")
+

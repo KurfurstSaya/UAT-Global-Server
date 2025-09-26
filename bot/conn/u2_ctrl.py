@@ -103,8 +103,8 @@ class U2AndroidController(AndroidController):
         elif point.target_type == ClickPointType.CLICK_POINT_TYPE_TEMPLATE:
             cur_screen = self.get_screen(to_gray=True)
             if point.template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
-                match_result = template_match(cur_screen, point.template.template_image)
-                if match_result.find_match:
+                match_result = image_match(cur_screen, point.template)
+                if getattr(match_result, "find_match", False):
                     self.click(match_result.center_point[0], match_result.center_point[1], random_offset=random_offset, hold_duration=hold_duration)
         self.recent_point = point
         self.recent_operation_time = time.time()
