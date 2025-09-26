@@ -14,8 +14,4 @@ def run_cmd(cmd_string) -> Popen[bytes] | Popen[Any]:
 
 
 def push_system_notification(title, message, timeout):
-    notification.notify(
-        title=title,
-        message=message,
-        timeout=timeout
-    )
+    return
