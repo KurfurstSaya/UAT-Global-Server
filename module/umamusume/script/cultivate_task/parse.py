@@ -906,13 +906,13 @@ def preprocess_wiki_image_for_ingame_matching(template_img):
             template_img = cv2.resize(template_img, (new_width, new_height))
         
         # 2. Apply slight blur to match in-game rendering
-        template_img = cv2.GaussianBlur(template_img, (1, 1), 0)
+        template_img = cv2.GaussianBlur(template_img, (3, 3), 0)
         
         # 3. Adjust contrast to match in-game text rendering
         template_img = cv2.convertScaleAbs(template_img, alpha=1.1, beta=5)
         
         # 4. Apply slight noise reduction
-        template_img = cv2.medianBlur(template_img, 1)
+        template_img = cv2.medianBlur(template_img, 3)
         
         return template_img
     except Exception as e:

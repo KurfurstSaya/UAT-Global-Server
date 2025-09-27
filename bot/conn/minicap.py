@@ -55,7 +55,13 @@ class Minicap:
     def get_screen(self):
         if self.cur_image is None:
             return None
-        return cv2.imdecode(numpy.array(self.cur_image, dtype=numpy.uint8), cv2.COLOR_RGBA2BGR)
+       
+        try:
+            arr = numpy.frombuffer(bytes(self.cur_image), dtype=numpy.uint8)
+        except Exception:
+            arr = numpy.array(self.cur_image, dtype=numpy.uint8)
+        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+        return img
 
     def connect(self):
         try:

@@ -31,23 +31,68 @@ def ocr(img, lang="en"):
         return OCR_CH.ocr(img, cls=False)
 
 
+
+def _normalize_ocr_result(result):
+    if not result:
+        return []
+    try:
+        if isinstance(result, (list, tuple)):
+            first = result[0] if len(result) > 0 else []
+            if first is None:
+                return []
+            if isinstance(first, dict):
+                return first.get("res") or first.get("data") or []
+            if isinstance(first, (list, tuple)):
+                return first
+            return []
+        if isinstance(result, dict):
+            return result.get("res") or result.get("data") or []
+    except Exception:
+        return []
+    return []
+
 # ocr_line 文字识别图片，返回所有出现的文字
 
 def ocr_line(img, lang="en"):
-    ocr_result = ocr(img, lang)
+    raw = ocr(img, lang)
+    ocr_result = _normalize_ocr_result(raw)
     text = ""
-    ocr_result = ocr_result[0] if ocr_result else []
-    for text_info in ocr_result:
-        if len(text_info) > 0:
-            text += text_info[1][0]
+    for text_info in (ocr_result or []):
+        try:
+            if not text_info:
+                continue
+            if isinstance(text_info, dict):
+                candidate = text_info.get("text") or ""
+            else:
+                # expected format: [box, (text, score)]
+                candidate = text_info[1][0] if len(text_info) > 1 else ""
+            if candidate:
+                text += str(candidate)
+        except Exception:
+            continue
     return text
 
-# ocr_digits 限制只识别数字，可以提升数字识别的准确度
 
 def ocr_digits(img):
-    res = OCR_EN.ocr(img, cls=False)
-    res = res[0] if res else []
-    digits = [(info[1][0], info[1][1]) for info in res]
+    raw = OCR_EN.ocr(img, cls=False)
+    res = _normalize_ocr_result(raw)
+    digits = []
+    for info in (res or []):
+        try:
+            if not info:
+                continue
+            if isinstance(info, dict):
+                txt = info.get("text") or ""
+                score = info.get("score") or 0
+            else:
+                txt = info[1][0] if len(info) > 1 else ""
+                if len(info) > 1 and isinstance(info[1], (list, tuple)) and len(info[1]) > 1:
+                    score = info[1][1]
+                else:
+                    score = 0
+            digits.append((txt, score))
+        except Exception:
+            continue
     if not digits:
         return ""
     best, _ = max(digits, key=lambda x: x[1])

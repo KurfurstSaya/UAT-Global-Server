@@ -31,62 +31,62 @@ class AoharuHaiScenario(BaseScenario):
     def parse_training_result(self, img: any) -> list[int]:
         # Use digital OCR to achieve higher accuracy
         sub_img_speed_incr = img[800:830, 30:140]
-        sub_img_speed_incr = cv2.copyMakeBorder(sub_img_speed_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_speed_incr = cv2.copyMakeBorder(sub_img_speed_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         speed_incr_text = ocr_digits(sub_img_speed_incr)
         speed_incr_text = re.sub("\\D", "", speed_incr_text)
 
         sub_img_speed_incr_extra = img[760:800, 30:140]
-        sub_img_speed_incr_extra = cv2.copyMakeBorder(sub_img_speed_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_speed_incr_extra = cv2.copyMakeBorder(sub_img_speed_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         speed_incr_extra_text = ocr_digits(sub_img_speed_incr_extra)
         speed_incr_extra_text = re.sub("\\D", "", speed_incr_extra_text)
 
         sub_img_stamina_incr = img[800:830, 140:250]
-        sub_img_stamina_incr = cv2.copyMakeBorder(sub_img_stamina_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_stamina_incr = cv2.copyMakeBorder(sub_img_stamina_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         stamina_incr_text = ocr_digits(sub_img_stamina_incr)
         stamina_incr_text = re.sub("\\D", "", stamina_incr_text)
 
         sub_img_stamina_incr_extra = img[760:800, 140:250]
-        sub_img_stamina_incr_extra = cv2.copyMakeBorder(sub_img_stamina_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_stamina_incr_extra = cv2.copyMakeBorder(sub_img_stamina_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         stamina_incr_extra_text = ocr_digits(sub_img_stamina_incr_extra)
         stamina_incr_extra_text = re.sub("\\D", "", stamina_incr_extra_text)
 
         sub_img_power_incr = img[800:830, 250:360]
-        sub_img_power_incr = cv2.copyMakeBorder(sub_img_power_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_power_incr = cv2.copyMakeBorder(sub_img_power_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         power_incr_text = ocr_digits(sub_img_power_incr)
         power_incr_text = re.sub("\\D", "", power_incr_text)
 
         sub_img_power_incr_extra = img[760:800, 250:360]
-        sub_img_power_incr_extra = cv2.copyMakeBorder(sub_img_power_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_power_incr_extra = cv2.copyMakeBorder(sub_img_power_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         power_incr_extra_text = ocr_digits(sub_img_power_incr_extra)
         power_incr_extra_text = re.sub("\\D", "", power_incr_extra_text)
 
         sub_img_will_incr = img[800:830, 360:470]
-        sub_img_will_incr = cv2.copyMakeBorder(sub_img_will_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_will_incr = cv2.copyMakeBorder(sub_img_will_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         will_incr_text = ocr_digits(sub_img_will_incr)
         will_incr_text = re.sub("\\D", "", will_incr_text)
 
         sub_img_will_incr_extra = img[760:800, 360:470]
-        sub_img_will_incr_extra = cv2.copyMakeBorder(sub_img_will_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_will_incr_extra = cv2.copyMakeBorder(sub_img_will_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         will_incr_extra_text = ocr_digits(sub_img_will_incr_extra)
         will_incr_extra_text = re.sub("\\D", "", will_incr_extra_text)
 
         sub_img_intelligence_incr = img[800:830, 470:580]
-        sub_img_intelligence_incr = cv2.copyMakeBorder(sub_img_intelligence_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_intelligence_incr = cv2.copyMakeBorder(sub_img_intelligence_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         intelligence_incr_text = ocr_digits(sub_img_intelligence_incr)
         intelligence_incr_text = re.sub("\\D", "", intelligence_incr_text)
 
         sub_img_intelligence_incr_extra = img[760:800, 470:580]
-        sub_img_intelligence_incr_extra = cv2.copyMakeBorder(sub_img_intelligence_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_intelligence_incr_extra = cv2.copyMakeBorder(sub_img_intelligence_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         intelligence_incr_extra_text = ocr_digits(sub_img_intelligence_incr_extra)
         intelligence_incr_extra_text = re.sub("\\D", "", intelligence_incr_extra_text)
 
         sub_img_skill_point_incr = img[800:830, 588:695]
-        sub_img_skill_point_incr = cv2.copyMakeBorder(sub_img_skill_point_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_skill_point_incr = cv2.copyMakeBorder(sub_img_skill_point_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         skill_point_incr_text = ocr_digits(sub_img_skill_point_incr)
         skill_point_incr_text = re.sub("\\D", "", skill_point_incr_text)
 
         sub_img_skill_point_incr_extra = img[760:800, 588:695]
-        sub_img_skill_point_incr_extra = cv2.copyMakeBorder(sub_img_skill_point_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
+        sub_img_skill_point_incr_extra = cv2.copyMakeBorder(sub_img_skill_point_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         skill_point_incr_extra_text = ocr_digits(sub_img_skill_point_incr_extra)
         skill_point_incr_extra_text = re.sub("\\D", "", skill_point_incr_extra_text)
 
