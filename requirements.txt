@@ -60,10 +60,10 @@ multidict==6.0.4
 multiprocess==0.70.13
 networkx==2.6.3
 nodeenv==1.6.0
-numpy==1.23.5
+numpy==1.26.4
 openai==0.27.2
-opencv-contrib-python==4.10.0.84
-opencv-python==4.10.0.84
+opencv-contrib-python==4.11.0.86
+opencv-python==4.11.0.86
 opt-einsum==3.3.0
 packaging==20.3
 paddle-bfloat==0.1.7
