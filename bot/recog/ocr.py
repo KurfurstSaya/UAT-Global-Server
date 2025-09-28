@@ -1,9 +1,12 @@
 import cv2
-import paddleocr
+import importlib, sys
+paddleocr = None
 from difflib import SequenceMatcher
 import bot.base.log as logger
 import os
 from config import CONFIG
+os.environ['FLAGS_allocator_strategy'] = 'naive_best_fit'
+os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.4'
 
 log = logger.get_logger(__name__)
 
@@ -16,23 +19,104 @@ def cpu_threads():
         return os.cpu_count()
 
 
-OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
-OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
-OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+OCR_JP = None
+OCR_CH = None
+OCR_EN = None
 
 
-# ocr 文字识别图片
-def ocr(img, lang="en"):
+def ensure_paddleocr():
+    global paddleocr
+    try:
+        if paddleocr is None or 'paddleocr' not in sys.modules:
+            paddleocr = importlib.import_module('paddleocr')
+    except Exception as e:
+        log.error(f"Failed to import paddleocr: {e}")
+        raise
+
+def init_ocr_if_needed():
+    global OCR_JP, OCR_CH, OCR_EN
+    ensure_paddleocr()
+    try:
+        if OCR_EN is None:
+            OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+        if OCR_JP is None:
+            OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+        if OCR_CH is None:
+            OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+    except Exception as e:
+        log.error(f"Failed to initialize PaddleOCR: {e}")
+        raise
+
+
+def get_ocr(lang: str):
+    init_ocr_if_needed()
     if lang == "en":
-        return OCR_EN.ocr(img, cls=False)
+        return OCR_EN
     if lang == "japan":
-        return OCR_JP.ocr(img, cls=False)
+        return OCR_JP
     if lang == "ch":
-        return OCR_CH.ocr(img, cls=False)
+        return OCR_CH
+    return OCR_EN
+
+
+def reset_ocr():
+    global OCR_EN, OCR_JP, OCR_CH, paddleocr
+    try:
+        for obj in (OCR_EN, OCR_JP, OCR_CH):
+            try:
+                if obj is None:
+                    continue
+                for attr in ("text_detector", "text_recognizer", "text_classifier"):
+                    if hasattr(obj, attr):
+                        try:
+                            setattr(obj, attr, None)
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+    finally:
+        OCR_EN = None
+        OCR_JP = None
+        OCR_CH = None
+        try:
+            import importlib as _il
+            _il.invalidate_caches()
+        except Exception:
+            pass
+        try:
+            mods = list(sys.modules.keys())
+            for name in mods:
+                if name.startswith("paddleocr") or name.startswith("ppocr"):
+                    try:
+                        del sys.modules[name]
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+        try:
+            import paddle as _paddle
+            try:
+                if hasattr(_paddle, "device") and hasattr(_paddle.device, "cuda") and hasattr(_paddle.device.cuda, "empty_cache"):
+                    _paddle.device.cuda.empty_cache()
+            except Exception:
+                pass
+        except Exception:
+            pass
+        paddleocr = None
+        try:
+            import gc as _gc
+            _gc.collect()
+        except Exception:
+            pass
+
+
+def ocr(img, lang="en"):
+    o = get_ocr(lang)
+    return o.ocr(img, cls=False)
 
 
 
-def _normalize_ocr_result(result):
+def normalize_ocr_result(result):
     if not result:
         return []
     try:
@@ -55,7 +139,7 @@ def _normalize_ocr_result(result):
 
 def ocr_line(img, lang="en"):
     raw = ocr(img, lang)
-    ocr_result = _normalize_ocr_result(raw)
+    ocr_result = normalize_ocr_result(raw)
     text = ""
     for text_info in (ocr_result or []):
         try:
@@ -74,8 +158,8 @@ def ocr_line(img, lang="en"):
 
 
 def ocr_digits(img):
-    raw = OCR_EN.ocr(img, cls=False)
-    res = _normalize_ocr_result(raw)
+    raw = get_ocr("en").ocr(img, cls=False)
+    res = normalize_ocr_result(raw)
     digits = []
     for info in (res or []):
         try:

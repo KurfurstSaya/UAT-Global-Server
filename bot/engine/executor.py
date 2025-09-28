@@ -14,6 +14,7 @@ from bot.base.task import TaskStatus, Task, EndTaskReason
 from bot.conn.os import push_system_notification
 from bot.conn.u2_ctrl import U2AndroidController
 from bot.recog.image_matcher import template_match, image_match
+from bot.recog.ocr import reset_ocr
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from bot.base.manifest import APP_MANIFEST_LIST
 from config import CONFIG
@@ -63,6 +64,10 @@ class Executor:
             pass
         finally:
             self.executor = None
+        try:
+            reset_ocr()
+        except Exception:
+            pass
 
     def detect_ui(self, ui_list: list[UI], target) -> UI:
         target = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
@@ -287,4 +292,8 @@ class Executor:
             pass
         finally:
             self.executor = None
+        try:
+            reset_ocr()
+        except Exception:
+            pass
 
