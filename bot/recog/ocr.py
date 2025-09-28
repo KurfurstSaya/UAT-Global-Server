@@ -6,7 +6,7 @@ import bot.base.log as logger
 import os
 from config import CONFIG
 os.environ['FLAGS_allocator_strategy'] = 'naive_best_fit'
-os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.4'
+os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.27'
 
 log = logger.get_logger(__name__)
 
