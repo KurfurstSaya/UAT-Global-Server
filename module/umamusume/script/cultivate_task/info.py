@@ -140,7 +140,6 @@ def script_info(ctx: UmamusumeContext):
         if title_text == "Confirm":
             log.info("🔋 FORCED: Handling 'Confirm' (TP recovery) screen")
             if not ctx.cultivate_detail.allow_recover_tp:
-                from bot.engine.ctrl import reset_task
                 reset_task(ctx.task.task_id)
                 return
             else:
