@@ -1,3 +1,5 @@
+welp getting conscripted tmr. updates will slow down greatly now.
+
 ### Run pip install -r requirements.txt again its updated  
 please read the readme before opening a issue  
 ok yeah paddleOCR was the cause of the memory issues. UNFORTUNATELY. eveything else is kinda dogshit compared to it. so ehhhhhh. If you've got any recomendations LMK, easy and rapid ocr are out they arent good enough.
@@ -51,7 +53,9 @@ If you're like me and is using this because you wont have access to your pc for 
   - https://en.wikipedia.org/wiki/Sentinel_species
   
 Running this 24/7 looks sus as hell so I would suggest turning it off for a few hours every day.  
-(I’m just gonna risk it and run it 24/7 I’ll let you guys know if I get banned)
+(I’m just gonna risk it and run it 24/7 I’ll let you guys know if I get banned)  
+
+you can also edit the start and end time in main.py (24 hours format) to dictate when the bot can run)
 
 ## 📦 **Installation & Setup**
 
@@ -63,7 +67,7 @@ cd UAT-Global-Server
 
 ### **Emulator Setup**
 
-* **Only tested on bluestacks pie64**
+* **Only tested on bluestacks pie64 and mumu**  (Bluestacks tend to crash after running for long sessions)
 * **Resolution**: 720 × 1280 (Portrait mode)
 * **DPI**: 180
 * **Graphics**: Standard (not Simple)
