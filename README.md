@@ -53,7 +53,7 @@ If you're like me and is using this because you wont have access to your pc for 
   - https://en.wikipedia.org/wiki/Sentinel_species
   
 Running this 24/7 looks sus as hell so I would suggest turning it off for a few hours every day.  
-(I’m just gonna risk it and run it 24/7 I’ll let you guys know if I get banned)  
+(Edit start and end time in main.py)
 
 you can also edit the start and end time in main.py (24 hours format) to dictate when the bot can run)
 
