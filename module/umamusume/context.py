@@ -94,6 +94,7 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
         detail.allow_recover_tp = task.detail.allow_recover_tp
         detail.extra_weight = task.detail.extra_weight
         
+        detail.rest_treshold = getattr(task.detail, 'rest_treshold', getattr(task.detail, 'fast_path_energy_limit', 48))
         # Load motivation thresholds from preset (with defaults) - ensure they are integers
         detail.motivation_threshold_year1 = int(getattr(task.detail, 'motivation_threshold_year1', 3))
         detail.motivation_threshold_year2 = int(getattr(task.detail, 'motivation_threshold_year2', 4))

@@ -124,7 +124,8 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
         from bot.conn.fetch import read_energy
         energy = read_energy()
-        if has_extra_race or energy < 48:
+        limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
+        if has_extra_race or energy <= limit:
             ctx.cultivate_detail.turn_info.parse_train_info_finish = True
             return
         else:
@@ -244,6 +245,17 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         else:
             ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
             return
+
+    from bot.conn.fetch import read_energy
+    energy = read_energy()
+    limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
+    if energy <= limit:
+        log.info(f"rest treshold: energy={energy}, treshold={limit} - prioritizing rest")
+        op = TurnOperation()
+        op.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
+        ctx.cultivate_detail.turn_info.turn_operation = op
+        ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+        return
 
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
         def _parse_training_in_thread(ctx, img, train_type):

@@ -203,6 +203,12 @@
                       placeholder="">
                   </div>
                 </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="inputRestTreshold">Rest Treshold</label>
+                    <input v-model="restTreshold" type="number" min="20" max="80" class="form-control" id="inputRestTreshold" placeholder="">
+                  </div>
+                </div>
               </div>
               <div class="form-group">
                 <div>⭐ Target Attributes (If unsure about specific values, manually train once and input the final
@@ -1219,6 +1225,7 @@ export default {
       selectedRaceTactic2: 4,
       selectedRaceTactic3: 4,
       clockUseLimit: 99,
+      restTreshold: 48,
       learnSkillThreshold: 9999,
       cureAsapConditions: 'Migraine,Night Owl,Skin Outbreak,Slacker,Slow Metabolism,(Practice poor isn\'t worth a turn to cure)',
       recoverTP: 0,
@@ -1843,6 +1850,7 @@ export default {
           "manual_purchase_at_end": this.manualPurchase,
           "learn_skill_threshold": this.learnSkillThreshold,
           "allow_recover_tp": this.recoverTP,
+          "rest_treshold": this.restTreshold,
           "learn_skill_only_user_provided": this.learnSkillOnlyUserProvided,
           "extra_weight": [this.extraWeight1, this.extraWeight2, this.extraWeight3, this.extraWeightSummer],
           "score_value": [
@@ -1896,6 +1904,7 @@ export default {
       this.selectedSupportCard = this.presetsUse.follow_support_card,
         this.supportCardLevel = this.presetsUse.follow_support_card_level,
         this.clockUseLimit = this.presetsUse.clock_use_limit,
+        this.restTreshold = (this.presetsUse.rest_treshold || this.presetsUse.fast_path_energy_limit || 48),
         this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
         this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
         this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
@@ -2073,6 +2082,7 @@ export default {
         follow_support_card: this.selectedSupportCard,
         follow_support_card_level: this.supportCardLevel,
         clock_use_limit: this.clockUseLimit,
+        rest_treshold: this.restTreshold,
         learn_skill_threshold: this.learnSkillThreshold,
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,

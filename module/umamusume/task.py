@@ -75,6 +75,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.extra_weight = attachment_data['extra_weight']
     td.manual_purchase_at_end = attachment_data['manual_purchase_at_end']
     td.cure_asap_conditions = attachment_data.get("cure_asap_conditions", "")
+    td.rest_treshold = attachment_data.get('rest_treshold', attachment_data.get('fast_path_energy_limit', 48))
     # Load motivation thresholds (with defaults)
     td.motivation_threshold_year1 = attachment_data.get('motivation_threshold_year1', 3)
     td.motivation_threshold_year2 = attachment_data.get('motivation_threshold_year2', 4)

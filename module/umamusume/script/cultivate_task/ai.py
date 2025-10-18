@@ -42,8 +42,9 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
         return turn_operation
 
-    if energy <= 48:
-        log.info(f"🏥 Fast path: Low stamina ({energy}) - prioritizing rest")
+    limit = getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48))
+    if energy <= limit:
+        log.info(f"rest treshold: energy={energy}, treshold={limit} - prioritizing rest")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
         return turn_operation
 
@@ -176,7 +177,7 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
                 else:
                     trip = True
             rest = False
-            if energy <= 48:
+            if energy <= limit:
                 rest = True
             elif (ctx.cultivate_detail.turn_info.date == 36 or ctx.cultivate_detail.turn_info.date == 60) and energy < 65:
                 rest = True
@@ -224,7 +225,7 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             trip = True
 
     rest = False
-    if energy <= 48:
+    if energy <= limit:
         rest = True
     elif (ctx.cultivate_detail.turn_info.date == 36 or ctx.cultivate_detail.turn_info.date == 60) and energy < 65:
         rest = True

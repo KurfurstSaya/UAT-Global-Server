@@ -128,6 +128,7 @@ def serialize_umamusume_task(t):
             'motivation_threshold_year3': int(getattr(d, 'motivation_threshold_year3', 4)),
             'prioritize_recreation': bool(getattr(d, 'prioritize_recreation', False)),
             'score_value': getattr(d, 'score_value', None),
+            'rest_treshold': int(getattr(d, 'rest_treshold', getattr(d, 'fast_path_energy_limit', 48))),
             'ura_config': None,
             'aoharu_config': None,
             'fujikiseki_show_mode': bool(getattr(d, 'fujikiseki_show_mode', False)),
