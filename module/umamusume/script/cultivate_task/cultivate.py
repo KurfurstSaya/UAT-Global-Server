@@ -121,6 +121,10 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
             ctx.ctrl.click_by_point(CULTIVATE_TRIP)
         return
 
+    if turn_operation is not None and turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_REST:
+        ctx.ctrl.click_by_point(CULTIVATE_REST)
+        return
+
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
         from bot.conn.fetch import read_energy
         energy = read_energy()
