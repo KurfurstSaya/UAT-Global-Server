@@ -129,6 +129,8 @@ Or just run start.bat
 - **ADB connection fails**: Close accelerators, kill adb.exe, restart emulator
 
 ## ⚠️ Known issues / Won’t fix
+100% of my testing is now done on MuMuplayer, Loop until canceled execution mode with auto recover TP set to true.  
+I will only focus on fixing issues for those (which is what I use personally.) Everything else will be low priority sorry.
 
 - Bot seems to get stuck sometimes
   - There are failsafes in place. It should break out of it within 5 minutes. If not then yeah I'll fix it.
