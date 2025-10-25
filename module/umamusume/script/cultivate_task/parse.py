@@ -848,19 +848,18 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                 skill_info_img = img[pos[0][1] - 65:pos[1][1] + 75, pos[0][0] - 470: pos[1][0] + 150]
                 if not image_match(skill_info_img, REF_SKILL_LEARNED).find_match:
                     skill_name_img = skill_info_img[10: 47, 100: 445]
-                    text = ocr_en(skill_name_img)
-                    log.debug(f"🔍 find_skill - OCR detected skill: '{text}'")
-                    canonical = get_canonical_skill_name(text)
-                    match_name = canonical if canonical != "" else text
-                    result = find_similar_skill_name(match_name, skill, 0.7)
-                    if result == "" and canonical != "":
-                        for target in skill:
-                            if normalize_text_for_match(canonical) == normalize_text_for_match(target):
-                                result = target
-                                break
-                    log.debug(f"🔍 find_skill - Similar skill match: '{text}' -> '{result}'")
+                    detected_text = ocr_en(skill_name_img)
+                    matched_skill = get_canonical_skill_name(detected_text)
+                    name_for_match = matched_skill if matched_skill != "" else detected_text
+                    log.info(f"detected text='{detected_text}' matched skill='{matched_skill}'")
+                    target_match = None
+                    for target in skill:
+                        if (normalize_text_for_match(name_for_match) == normalize_text_for_match(target)
+                            or normalize_text_for_match(detected_text) == normalize_text_for_match(target)):
+                            target_match = target
+                            break
                     
-                    if result != "" or learn_any_skill:
+                    if target_match is not None or learn_any_skill:
                         tmp_img = ctx.ctrl.get_screen()
                         pt_text = re.sub("\\D", "", ocr_en(tmp_img[400: 440, 490: 665]))
                         skill_pt_cost_text = re.sub("\\D", "", ocr_en(skill_info_img[69: 99, 525: 588]))
@@ -870,9 +869,9 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                             alt_cost, alt_idx = try_alt_cost_regions(skill_info_img)
                             if alt_cost:
                                 skill_pt_cost_text = alt_cost
-                                log.debug(f"find_skill - Found skill cost using alternative region {alt_idx}: '{alt_cost}' for '{text}'")
+                                log.debug(f"find_skill - Found skill cost using alternative region {alt_idx}: '{alt_cost}' for '{detected_text}'")
                             if not skill_pt_cost_text or skill_pt_cost_text == '':
-                                log.debug(f"find_skill - Could not parse skill cost for '{text}', defaulting to 1")
+                                log.debug(f"find_skill - Could not parse skill cost for '{detected_text}', defaulting to 1")
                                 skill_pt_cost_text = '1'
                         
                         # Debug: Log point and cost extraction
@@ -884,18 +883,18 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                             log.debug(f"🔍 find_skill - Points: {pt}, Cost: {skill_pt_cost}, Can buy: {pt >= skill_pt_cost}")
                             
                             if pt >= skill_pt_cost:
-                                log.info(f"✅ Buying skill '{text}' - Points: {pt}, Cost: {skill_pt_cost}")
+                                log.info(f"✅ Buying skill '{detected_text}' - Points: {pt}, Cost: {skill_pt_cost}")
                                 ctx.ctrl.click(match_result.center_point[0] + 128, match_result.center_point[1],
-                                               "Bonus Skills：" + text)
-                                if result in skill:
-                                    skill.remove(result)
-                                    log.info(f"✅ Removed '{result}' from skill list. Remaining: {skill}")
-                                else:
-                                    log.warning(f"⚠️ Skill '{result}' not found in skill list: {skill}")
+                                               "Bonus Skills：" + detected_text)
+                                if target_match is not None and target_match in skill:
+                                    skill.remove(target_match)
+                                    log.info(f"✅ Removed '{target_match}' from skill list. Remaining: {skill}")
+                                elif target_match is not None:
+                                    log.warning(f"⚠️ Skill '{target_match}' not found in skill list: {skill}")
                                 ctx.cultivate_detail.learn_skill_selected = True
                                 find = True
                             else:
-                                log.debug(f"❌ Not enough points for '{text}' - Need {skill_pt_cost}, have {pt}")
+                                log.debug(f"❌ Not enough points for '{detected_text}' - Need {skill_pt_cost}, have {pt}")
                         else:
                             log.debug(f"❌ Failed to extract points/cost - Points: '{pt_text}', Cost: '{skill_pt_cost_text}'")
 
@@ -924,21 +923,18 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
 
                 skill_name_img = skill_info_img[10: 47, 100: 445]
                 skill_cost_img = skill_info_img[69: 99, 525: 588]
-                text = ocr_en(skill_name_img)
+                detected_text = ocr_en(skill_name_img)
                 cost_text = ocr_en(skill_cost_img)
                 cost = re.sub("\\D", "", cost_text)
-                
-                # Debug: Log OCR text for skill names
-                log.debug(f"🔍 OCR skill name: '{text}'")
                 
                 # Handle empty cost (Global Server UI compatibility)
                 if not cost or cost == '':
                     alt_cost, alt_idx = try_alt_cost_regions(skill_info_img)
                     if alt_cost:
                         cost = alt_cost
-                        log.debug(f"Found skill cost using alternative region {alt_idx}: '{alt_cost}' for '{text}'")
+                        log.debug(f"Found skill cost using alternative region {alt_idx}: '{alt_cost}' for '{detected_text}'")
                     if not cost or cost == '':
-                        log.debug(f"Could not parse skill cost for '{text}', cost_text: '{cost_text}', defaulting to 1")
+                        log.debug(f"Could not parse skill cost for '{detected_text}', cost_text: '{cost_text}', defaulting to 1")
                         cost = '1'
 
                 # Check if it's a gold skill
@@ -948,52 +944,21 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 skill_in_priority_list = False
                 skill_name_raw = "" # Save original skill name to prevent OCR deviation
                 priority = 99
-                canonical = get_canonical_skill_name(text)
-                for i in range(len(skill)):
-                    if canonical != "":
-                        in_blacklist = (canonical in skill_blacklist) or (find_similar_skill_name(canonical, skill_blacklist, 0.7) != "")
-                        in_priority = False
-                        found_similar_prioritylist = ""
-                        if i < len(skill):
-                            if canonical in skill[i]:
-                                in_priority = True
-                                found_similar_prioritylist = canonical
-                            else:
-                                found_similar_prioritylist = find_similar_skill_name(canonical, skill[i], 0.7)
-                                in_priority = found_similar_prioritylist != ""
-                        if in_priority:
-                            log.debug(f"Skill match: '{text}' -> '{found_similar_prioritylist}' (priority {i})")
-                        elif in_blacklist:
-                            log.debug(f"Skill blacklisted: '{text}' -> '{canonical}'")
-                        else:
-                            log.debug(f"No match for skill: '{text}' (priority {i})")
-                        if in_blacklist:
-                            priority = -1
-                            skill_name_raw = canonical
-                            skill_in_priority_list = True
-                            break
-                        elif in_priority:
+                matched_skill = get_canonical_skill_name(detected_text)
+                name_for_match = matched_skill if matched_skill != "" else detected_text
+                log.info(f"detected text='{detected_text}' matched skill='{matched_skill}'")
+                normalized_name = normalize_text_for_match(name_for_match)
+                in_blacklist = any(normalized_name == normalize_text_for_match(b) for b in skill_blacklist)
+                
+                if in_blacklist:
+                    priority = -1
+                    skill_name_raw = name_for_match
+                    skill_in_priority_list = True
+                else:
+                    for i in range(len(skill)):
+                        if any(normalized_name == normalize_text_for_match(s) for s in skill[i]):
                             priority = i
-                            skill_name_raw = found_similar_prioritylist if found_similar_prioritylist != "" else canonical
-                            skill_in_priority_list = True
-                            break
-                    else:
-                        found_similar_blacklist = find_similar_skill_name(text, skill_blacklist, 0.7)
-                        found_similar_prioritylist = find_similar_skill_name(text, skill[i], 0.7)
-                        if found_similar_prioritylist != "":
-                            log.debug(f"Skill match: '{text}' -> '{found_similar_prioritylist}' (priority {i})")
-                        elif found_similar_blacklist != "":
-                            log.debug(f"Skill blacklisted: '{text}' -> '{found_similar_blacklist}'")
-                        else:
-                            log.debug(f"No match for skill: '{text}' (priority {i})")
-                        if found_similar_blacklist != "":
-                            priority = -1
-                            skill_name_raw = found_similar_blacklist
-                            skill_in_priority_list = True
-                            break
-                        elif found_similar_prioritylist != "":
-                            priority = i
-                            skill_name_raw = found_similar_prioritylist
+                            skill_name_raw = name_for_match
                             skill_in_priority_list = True
                             break
                 if not skill_in_priority_list:
@@ -1002,7 +967,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 available = not image_match(skill_info_img, REF_SKILL_LEARNED).find_match
 
                 if priority != -1: # Exclude skills that appear in blacklist
-                    res.append({"skill_name": text,
+                    res.append({"skill_name": detected_text,
                                 "skill_name_raw": skill_name_raw,
                                 "skill_cost": int(cost),
                                 "priority": priority,
@@ -1027,9 +992,9 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 mask = cv2.inRange(skill_info_cp, numpy.array([40, 180, 240]), numpy.array([100, 210, 255]))
                 is_gold = True if mask[120, 600] == 255 else False
                 skill_name_img = skill_info_img[10: 47, 100: 445]
-                text = ocr_line(skill_name_img)
-                res.append({"skill_name": text,
-                            "skill_name_raw": text,
+                detected_text = ocr_line(skill_name_img)
+                res.append({"skill_name": detected_text,
+                            "skill_name_raw": detected_text,
                             "skill_cost": 0,
                             "priority": -1,
                             "gold": is_gold,

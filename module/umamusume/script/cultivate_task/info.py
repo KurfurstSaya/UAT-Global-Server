@@ -536,7 +536,8 @@ def script_info(ctx: UmamusumeContext):
                 # Fallback to hardcoded coordinates
                 ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_CONFIRM_AGAIN)
                 log.info("⚠️ Using fallback coordinates for skill confirmation - template not found")
-        if title_text == TITLE[28]:  # Successfully Acquired Skill  
+        if title_text == TITLE[28]:  # Successfully Acquired Skill
+            ctx.cultivate_detail.learn_skill_selected = True  
             ctx.ctrl.click_by_point(CULTIVATE_LEARN_SKILL_DONE_CONFIRM)
         if title_text == TITLE[29]:  # Target Achievement Count Insufficient
             log.info("🎯 Handling 'Target Achievement Count Insufficient' screen")
