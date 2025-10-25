@@ -188,6 +188,9 @@ I will only focus on fixing issues for those (which is what I use personally.) E
 - OR set Learn when skill points ≥ to a very high number and set manual purchase to true
   ![alt text](docs/manualBuy.png)
 
+### For most issues with outdated/wrong data
+-https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518
+
 ## 🤝 Contributing
 
 If you ask and pinky promise you won't just nuke everything I can just give you collaborator permissions.
