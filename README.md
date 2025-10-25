@@ -140,6 +140,8 @@ I will only focus on fixing issues for those (which is what I use personally.) E
 - Sometimes it fails to detect the hint (!)  
   - It’s animated, so either I kill performance and template match like 20 screenshots or we just take the L when it fails to detect like 5% of the time
   - Could also check the general area for red pixels but it led to a bunch of false positives from my testing
+- For most issues with outdated/wrong data  
+-https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518
 
 ## Training settings guide
 - **Upon creating a new deck the first thing you should do is experiment with the values under advanced options**
@@ -187,9 +189,6 @@ I will only focus on fixing issues for those (which is what I use personally.) E
   ![alt text](docs/skills.png)
 - OR set Learn when skill points ≥ to a very high number and set manual purchase to true
   ![alt text](docs/manualBuy.png)
-
-### For most issues with outdated/wrong data
--https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518
 
 ## 🤝 Contributing
 
