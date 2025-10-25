@@ -198,6 +198,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **25/10/2025**   
+Maybe fixed buying skills  
+Prep for aoharu hai
 - **20/10/2025**   
 Stuck clicking something failsafe part 2
 - **19/10/2025**   
