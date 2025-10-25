@@ -30,7 +30,7 @@
               <div class="form-group">
                 <label for="selectExecuteMode">Execution Mode</label>
                 <select v-model.number="selectedExecuteMode" class="form-control" id="selectExecuteMode">
-                  <option :value="1">One-time</option>
+                  <option :value="1">Single Execution (Depricated)</option>
                   <option :value="3">Loop until canceled</option>
                   <option :value="4">Team Trials</option>
                 </select>
@@ -1154,7 +1154,7 @@ export default {
         extraWeight: [],
       },
       // ===  已选择  ===
-      selectedExecuteMode: 1,
+      selectedExecuteMode: 3,
       expectTimes: 0,
       cron: "* * * * *",
 
