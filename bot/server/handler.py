@@ -1,5 +1,6 @@
 import os
 import time
+import json
 from typing import Dict, Any
 
 from fastapi import FastAPI, Path
@@ -104,6 +105,7 @@ def start_bot():
 @server.post("/action/bot/stop")
 def stop_bot():
     bot_ctrl.stop()
+
 
 
 @server.get("/")

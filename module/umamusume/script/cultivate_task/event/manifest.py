@@ -21,6 +21,7 @@ from bot.recog.ocr import find_similar_text
 from module.umamusume.context import UmamusumeContext
 from module.umamusume.script.cultivate_task.event.scenario_event import *
 import bot.base.log as logger
+from bot.server.events_state import update_events_load_info
 
 log = logger.get_logger(__name__)
 
@@ -50,15 +51,27 @@ def load_events_database():
         return _events_database
     
     try:
-        # Try to load from the JSON file in resource/umamusume/data folder
-        json_path = "resource/umamusume/data/event_data.json"
-        if os.path.exists(json_path):
-            log.info("📊 Loading events database from event_data.json...")
-            with open(json_path, 'r', encoding='utf-8') as f:
-                events_dict = json.load(f)
-            
+        # Try to load from the JSON file in resource/umamusume/data folder, robustly
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+        candidates = [
+            os.path.join(base_dir, 'resource', 'umamusume', 'data', 'event_data.json'),
+            os.path.join(os.getcwd(), 'resource', 'umamusume', 'data', 'event_data.json'),
+        ]
+        events_dict = None
+        for json_path in candidates:
+            if os.path.exists(json_path):
+                log.info("📊 Loading events database from event_data.json...")
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    events_dict = json.load(f)
+                break
+        if events_dict is not None:
             _events_database = events_dict
-            log.info(f"✅ Loaded {len(events_dict)} events from local database")
+            count = len(events_dict)
+            log.info(f"✅ Loaded {count} events from local database")
+            try:
+                update_events_load_info(count)
+            except Exception:
+                pass
             return events_dict
         else:
             log.warning("⚠️ Events JSON file not found, will use web scraping fallback")
@@ -423,7 +436,32 @@ def auto_research_event_choice(event_name: str) -> int:
 
 
 def get_event_choice(ctx: UmamusumeContext, event_name: str) -> int:
-    # First, try predefined event mappings
+    try:
+        overrides = {}
+        if hasattr(ctx, 'cultivate_detail') and hasattr(ctx.cultivate_detail, 'event_overrides'):
+            if isinstance(ctx.cultivate_detail.event_overrides, dict):
+                overrides = ctx.cultivate_detail.event_overrides or {}
+        if not overrides and hasattr(ctx, 'task') and hasattr(ctx.task, 'detail') and hasattr(ctx.task.detail, 'event_overrides'):
+            if isinstance(ctx.task.detail.event_overrides, dict):
+                overrides = ctx.task.detail.event_overrides or {}
+        if overrides:
+            if event_name in overrides and isinstance(overrides[event_name], int):
+                choice = int(overrides[event_name])
+                if choice > 0:
+                    log.info(f"User overwrite: Choice {choice}")
+                    return choice
+            try:
+                keys = list(overrides.keys())
+                matched = find_similar_text(event_name, keys, 0.85)
+                if matched and matched in overrides and isinstance(overrides[matched], int):
+                    choice = int(overrides[matched])
+                    if choice > 0:
+                        log.info(f"User overwrite: Choice {choice}")
+                        return choice
+            except Exception:
+                pass
+    except Exception:
+        pass
     event_name_normalized = find_similar_text(event_name, event_name_list, 0.8)
     if event_name_normalized != "":
         if event_name_normalized in event_map:

@@ -124,50 +124,66 @@ def acquire_instance_lock():
 def serialize_umamusume_task(t):
     try:
         d = t.detail
+
+        def to_jsonable(x):
+            import enum
+            if x is None:
+                return None
+            if isinstance(x, (str, int, float, bool)):
+                return x
+            if isinstance(x, enum.Enum):
+                try:
+                    return x.value
+                except Exception:
+                    try:
+                        return x.name
+                    except Exception:
+                        return str(x)
+            if isinstance(x, (list, tuple, set)):
+                return [to_jsonable(i) for i in x]
+            if isinstance(x, dict):
+                return {k: to_jsonable(v) for k, v in x.items()}
+            try:
+                dct = getattr(x, '__dict__', None)
+                if isinstance(dct, dict):
+                    return {k: to_jsonable(v) for k, v in dct.items() if not k.startswith('_')}
+            except Exception:
+                pass
+            return str(x)
+
+        attachment = {}
+        for k, v in getattr(d, '__dict__', {}).items():
+            if k in ('scenario_config',):
+                continue
+            if k == 'scenario':
+                try:
+                    val = getattr(v, 'value', v)
+                    attachment['scenario'] = int(val)
+                except Exception:
+                    try:
+                        attachment['scenario'] = int(v)
+                    except Exception:
+                        attachment['scenario'] = to_jsonable(v)
+                continue
+            attachment[k] = to_jsonable(v)
+
         sc = getattr(d, 'scenario_config', None)
-        ura = getattr(sc, 'ura_config', None) if sc else None
-        aoharu = getattr(sc, 'aoharu_config', None) if sc else None
-        attachment = {
-            'scenario': int(getattr(d, 'scenario', 0).value) if hasattr(getattr(d, 'scenario', 0), 'value') else int(getattr(d, 'scenario', 0)),
-            'expect_attribute': getattr(d, 'expect_attribute', None),
-            'follow_support_card_level': int(getattr(d, 'follow_support_card_level', 0)),
-            'follow_support_card_name': getattr(d, 'follow_support_card_name', ''),
-            'extra_race_list': getattr(d, 'extra_race_list', []) or [],
-            'learn_skill_list': getattr(d, 'learn_skill_list', []) or [],
-            'learn_skill_blacklist': getattr(d, 'learn_skill_blacklist', []) or [],
-            'tactic_list': getattr(d, 'tactic_list', []) or [],
-            'clock_use_limit': int(getattr(d, 'clock_use_limit', 0)),
-            'learn_skill_threshold': int(getattr(d, 'learn_skill_threshold', 0)),
-            'learn_skill_only_user_provided': bool(getattr(d, 'learn_skill_only_user_provided', False)),
-            'allow_recover_tp': int(getattr(d, 'allow_recover_tp', 0)),
-            'extra_weight': getattr(d, 'extra_weight', []) or [],
-            'manual_purchase_at_end': bool(getattr(d, 'manual_purchase_at_end', False)),
-            'cure_asap_conditions': getattr(d, 'cure_asap_conditions', ''),
-            'motivation_threshold_year1': int(getattr(d, 'motivation_threshold_year1', 3)),
-            'motivation_threshold_year2': int(getattr(d, 'motivation_threshold_year2', 4)),
-            'motivation_threshold_year3': int(getattr(d, 'motivation_threshold_year3', 4)),
-            'prioritize_recreation': bool(getattr(d, 'prioritize_recreation', False)),
-            'score_value': getattr(d, 'score_value', None),
-            'rest_treshold': int(getattr(d, 'rest_treshold', getattr(d, 'fast_path_energy_limit', 48))),
-            'ura_config': None,
-            'aoharu_config': None,
-            'fujikiseki_show_mode': bool(getattr(d, 'fujikiseki_show_mode', False)),
-            'fujikiseki_show_difficulty': int(getattr(d, 'fujikiseki_show_difficulty', 1)),
-        }
-        if ura is not None:
-            attachment['ura_config'] = {
-                'skillEventWeight': getattr(ura, 'skill_event_weight', [0, 0, 0]),
-                'resetSkillEventWeightList': getattr(ura, 'reset_skill_event_weight_list', []) or []
-            }
-        if aoharu is not None:
-            attachment['aoharu_config'] = {
-                'preliminaryRoundSelections': getattr(aoharu, 'preliminary_round_selections', []) or [],
-                'aoharuTeamNameSelection': int(getattr(aoharu, 'aoharu_team_name_selection', 0))
-            }
+        try:
+            ura = getattr(sc, 'ura_config', None) if sc else None
+            attachment['ura_config'] = to_jsonable(ura) if ura is not None else None
+        except Exception:
+            attachment['ura_config'] = None
+
+        try:
+            aoharu = getattr(sc, 'aoharu_config', None) if sc else None
+            attachment['aoharu_config'] = to_jsonable(aoharu) if aoharu is not None else None
+        except Exception:
+            attachment['aoharu_config'] = None
+
         return attachment
     except Exception:
         return None
-
+            
 
 def save_scheduler_state():
     try:

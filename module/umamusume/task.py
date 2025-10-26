@@ -98,6 +98,12 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
         aoharu_config = None if (attachment_data['aoharu_config'] is None) else AoharuConfig(attachment_data['aoharu_config']))
     # 限时: 富士奇石的表演秀
     td.fujikiseki_show_mode = attachment_data['fujikiseki_show_mode']
+    try:
+        eo = attachment_data.get('event_overrides', attachment_data.get('event_choices', {}))
+        td.event_overrides = eo if isinstance(eo, dict) else {}
+    except Exception:
+        td.event_overrides = {}
+
     td.fujikiseki_show_difficulty = attachment_data['fujikiseki_show_difficulty']
     ut.detail = td
     return ut

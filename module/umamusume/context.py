@@ -53,6 +53,7 @@ class CultivateContextDetail:
         self.manual_purchase_completed = False
         self.final_skill_sweep_active = False
         self.user_provided_priority = False
+        self.event_overrides = {}
 
     def reset_skill_learn(self):
         self.learn_skill_done = False
@@ -118,6 +119,12 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
             [0.03, 0.05, 0.15, 0.09]
         ])
         detail.compensate_failure = getattr(task.detail, 'compensate_failure', True)
+        # Event overrides
+        try:
+            eo = getattr(task.detail, 'event_overrides', {})
+            detail.event_overrides = eo if isinstance(eo, dict) else {}
+        except Exception:
+            detail.event_overrides = {}
         
         ctx.cultivate_detail = detail
     return ctx

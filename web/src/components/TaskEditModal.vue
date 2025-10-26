@@ -21,13 +21,7 @@
           <form class="content-pane">
             <div class="category-card" id="category-general">
               <div class="category-title">General</div>
-              <div class="form-group">
-                <label for="selectTaskType">Task Selection</label>
-                <select v-model="selectedUmamusumeTaskType" class="form-control" id="selectTaskType">
-                  <option v-for="task in umamusumeTaskTypeList" :value="task">{{ task.name }}</option>
-                </select>
-              </div>
-              <div class="form-group">
+                            <div class="form-group">
                 <label for="selectExecuteMode">Execution Mode</label>
                 <select v-model.number="selectedExecuteMode" class="form-control" id="selectExecuteMode">
                   <option :value="1">Single Execution (Depricated)</option>
@@ -1003,6 +997,49 @@
                 </div>
               </div>
             </div>
+          <div class="category-card" id="category-event">
+              <div class="category-title">Event Settings</div>
+
+              <div class="form-group">
+                <div class="mb-2" style="color: var(--accent); font-weight: 700;">
+                  Unselected = Autopick best option
+                </div>
+                <input v-model.trim="eventQuery" type="text" class="form-control form-control-sm" placeholder="Search by event name" />
+              </div>
+
+              <div class="form-group">
+                <div class="skill-list-header" @click="toggleEventList">
+                  <div class="skill-list-title">
+                    <i class="fas fa-list"></i>
+                    Event List
+                  </div>
+                  <div class="skill-list-toggle">
+                    <span class="toggle-text">{{ showEventList ? 'Hide' : 'Show' }}</span>
+                    <i class="fas" :class="showEventList ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                  </div>
+                </div>
+
+                <div v-if="showEventList" class="skill-list-content">
+                  <ul class="list-group">
+                    <li v-for="name in eventListFiltered()" :key="name" class="list-group-item d-flex justify-content-between align-items-center">
+                      <span class="text-truncate" style="max-width: 70%;" :title="name">{{ name }}</span>
+                      <div class="btn-group btn-group-sm">
+                        <button
+                          v-for="n in getEventOptionCount(name)"
+                          :key="n"
+                          type="button"
+                          class="btn event-choice-btn"
+                          :class="isEventChoiceSelected(name, n) ? 'selected' : 'unselected'"
+                          @click="onEventChoiceClick(name, n)">
+                          {{ n }}
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                                  </div>
+              </div>
+            </div>
+
           </form>
           <!-- <div class="part">
             <br>
@@ -1091,6 +1128,32 @@
   </div>
 </template>
 
+<style scoped>
+/***** Event Settings styling *****/
+#category-event .event-choice-btn.selected {
+  background-color: #F75A86;
+  color: #000;
+  border-color: #F75A86;
+}
+#category-event .event-choice-btn.unselected {
+  background-color: transparent;
+  color: var(--text);
+}
+#category-event .skill-list-header {
+  border: 1px solid var(--accent) !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+  background: rgba(255,45,163,0.08) !important;
+}
+#category-event .skill-list-content {
+  border: 1px solid var(--accent) !important;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
+  background: rgba(255,45,163,0.04) !important;
+}
+
+
+
+</style>
+
 <script>
 import SkillIcon from './SkillIcon.vue';
 import AoharuConfigModal from './AoharuConfigModal.vue';
@@ -1099,6 +1162,7 @@ import SupportCardSelectModal from './SupportCardSelectModal.vue';
 import characterData from '../assets/uma_character_data.json';
 import raceData from '../assets/uma_race_data.json';
 import skillsData from '../assets/umamusume_final_skills_fixed.json';
+import eventNames, { eventOptionCounts } from 'virtual:events';
 
 export default {
   name: "TaskEditModal",
@@ -1108,6 +1172,11 @@ export default {
     UraConfigModal,
     SupportCardSelectModal
   },
+  created() {
+    if (typeof this.loadEventList === 'function') {
+      this.loadEventList();
+    }
+  },
   data: function () {
     return {
       sectionList: [
@@ -1115,7 +1184,8 @@ export default {
         { id: 'category-preset', label: 'Preset & Support' },
         { id: 'category-career', label: 'Career' },
         { id: 'category-race', label: 'Race' },
-        { id: 'category-skill', label: 'Skills' }
+        { id: 'category-skill', label: 'Skills' },
+        { id: 'category-event', label: 'Events' }
       ],
       activeSection: 'category-general',
       manualPurchase: false,
@@ -1295,6 +1365,12 @@ export default {
       availableRarities: ['', 'Unique', 'Rare', 'Normal'],
       showSkillList: false
       , showPresetMenu: false,
+
+      // Event list UI
+      showEventList: false,
+      eventQuery: '',
+      eventList: [],
+      eventChoicesSelected: {},
 
       // Score Value per period [lv1, lv2, rainbow, hint] + separate Special fields
       scoreValueJunior: [0.11, 0.10, 0.01, 0.09],
@@ -1530,6 +1606,7 @@ export default {
   },
   mounted() {
     this.loadCharacterData()
+    this.loadEventList()
     this.loadRaceData()
     this.loadSkillData()
     this.initSelect()
@@ -1566,6 +1643,51 @@ export default {
     }
   },
     methods: {
+      // Event Settings
+      toggleEventList() {
+        this.showEventList = !this.showEventList;
+        if (this.showEventList && this.eventList.length === 0) {
+          this.loadEventList();
+        }
+      },
+      // Event option helpers
+      getEventOptionCount(name) {
+        return eventOptionCounts && typeof eventOptionCounts === 'object' ? (eventOptionCounts[name] || 0) : 0;
+      },
+      isEventChoiceSelected(name, n) {
+        return this.eventChoicesSelected && this.eventChoicesSelected[name] === n;
+      },
+      onEventChoiceClick(name, n) {
+        const cur = this.eventChoicesSelected[name];
+        if (cur === n) {
+          // deselect
+          try { delete this.eventChoicesSelected[name]; } catch (e) { this.eventChoicesSelected[name] = undefined; }
+        } else {
+          // select only this one
+          this.eventChoicesSelected[name] = n;
+        }
+      },
+      buildEventChoices() {
+        const out = {};
+        if (this.eventChoicesSelected && typeof this.eventChoicesSelected === 'object') {
+          for (const [k, v] of Object.entries(this.eventChoicesSelected)) {
+            if (Number.isInteger(v) && v > 0) out[k] = v;
+          }
+        }
+        return out;
+      },
+      loadEventList() {
+        try {
+          this.eventList = Array.isArray(eventNames) ? eventNames : [];
+        } catch (e) {
+          this.eventList = [];
+        }
+      },
+      eventListFiltered() {
+        const q = (this.eventQuery || '').toLowerCase();
+        if (!q) return this.eventList;
+        return this.eventList.filter(name => name && name.toLowerCase().includes(q));
+      },
     onScenarioChange() {
       if (this.selectedScenario === 2) {
         const setDefault = (arr) => {
@@ -1953,6 +2075,8 @@ export default {
         }
       }
       console.log('POST /task', payload)
+      payload.attachment_data = payload.attachment_data || {};
+      payload.attachment_data.event_choices = this.buildEventChoices();
       this.axios.post("/task", payload).then(
         () => {
           $('#create-task-list-modal').modal('hide');
@@ -1985,6 +2109,11 @@ export default {
       this.motivationThresholdYear2 = parseInt(this.presetsUse.motivation_threshold_year2) || 4
       this.motivationThresholdYear3 = parseInt(this.presetsUse.motivation_threshold_year3) || 4
       this.prioritizeRecreation = this.presetsUse.prioritize_recreation || false
+      if ('event_overrides' in this.presetsUse && this.presetsUse.event_overrides) {
+        this.eventChoicesSelected = { ...this.presetsUse.event_overrides }
+      } else {
+        this.eventChoicesSelected = {}
+      }
 
       if ('scoreValue' in this.presetsUse && this.presetsUse.scoreValue && this.presetsUse.scoreValue.length >= 4) {
         this.scoreValueJunior = [...this.presetsUse.scoreValue[0]]
@@ -2147,6 +2276,7 @@ export default {
 
       let preset = {
         name: this.presetNameEdit,
+        event_overrides: this.buildEventChoices(),
         compensate_failure: this.compensateFailure,
         scenario: this.selectedScenario,
         race_list: this.extraRace,
