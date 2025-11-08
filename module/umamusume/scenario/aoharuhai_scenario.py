@@ -7,6 +7,7 @@ from module.umamusume.asset import *
 from module.umamusume.define import ScenarioType, SupportCardFavorLevel, SupportCardType
 from module.umamusume.types import SupportCardInfo
 from bot.recog.image_matcher import image_match, compare_color_equal
+from module.umamusume.asset.template import *
 from bot.recog.ocr import ocr_line, find_similar_text, ocr_digits
 
 import bot.base.log as logger
@@ -28,6 +29,40 @@ class AoharuHaiScenario(BaseScenario):
     def get_turn_to_race_img(self, img) -> any:
         return img[70:120, 30:90]
     
+    def stretchy_match(self, bgr_icon, tpl):
+        try:
+            gray = cv2.cvtColor(bgr_icon, cv2.COLOR_BGR2GRAY)
+        except Exception:
+            gray = bgr_icon
+        try:
+            acc = getattr(tpl, 'image_match_config', None)
+            acc_val = getattr(acc, 'match_accuracy', 0.86)
+        except Exception:
+            acc_val = 0.86
+        threshold = max(0.68, float(acc_val) - 0.07)
+        template_array = getattr(tpl, 'template_img', None)
+        if template_array is None:
+            template_array = getattr(tpl, 'template_image', None)
+        if template_array is None:
+            from bot.recog.image_matcher import image_match
+            return image_match(gray, tpl).find_match
+        h, w = gray.shape[:2]
+        th, tw = template_array.shape[:2]
+        for sy in [1.0, 0.97, 0.95, 0.92, 0.89]:
+            new_h = max(1, int(th * sy))
+            new_w = tw
+            if h < new_h or w < new_w:
+                continue
+            try:
+                tpl_scaled = cv2.resize(template_array, (new_w, new_h), interpolation=cv2.INTER_AREA if sy < 1.0 else cv2.INTER_CUBIC)
+                res = cv2.matchTemplate(gray, tpl_scaled, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, _ = cv2.minMaxLoc(res)
+                if max_val >= threshold:
+                    return True
+            except Exception:
+                continue
+        return False
+
     def parse_training_result(self, img: any) -> list[int]:
         # Use digital OCR to achieve higher accuracy
         sub_img_speed_incr = img[800:830, 30:140]
@@ -109,7 +144,14 @@ class AoharuHaiScenario(BaseScenario):
             support_card_icon = img[base_y:base_y + inc, base_x: base_x + 145]
 
             # Has Youth Cup training, and Youth Cup friendship not full
-            can_incr_special_training = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
+            v1 = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
+            v2 = self.stretchy_match(support_card_icon, REF_AOHARU_SPECIAL_TRAIN)
+            v3 = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
+            v4 = self.stretchy_match(support_card_icon, REF_AOHARU_SPECIAL_TRAIN)
+            v5 = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
+            votes = [v1, v2, v3, v4, v5]
+            true_count = sum(1 for v in votes if v)
+            can_incr_special_training = true_count >= 3
 
             # Check favor level
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
@@ -224,10 +266,9 @@ def detect_aoharu_train_arrow(support_card_icon):
     has_arrow = False
     
     # First exclude exclamation marks: if red pixel ratio is too high, judge as exclamation mark
-    if red_ratio > 0.2:
+    if red_ratio > 0.22:
         has_arrow = False
-    # If orange pixel ratio exceeds threshold
-    elif (orange_ratio > 0.05):
+    elif (orange_ratio > 0.045):
         has_arrow = True
  
     return has_arrow
@@ -265,7 +306,7 @@ def aoharu_train_not_full(support_card_icon) -> bool:
     
     grey_ratio = grey_pixels / total_pixels
     
-    if grey_ratio > 0.05:
+    if grey_ratio > 0.045:
         status = True
     else:
         status = False

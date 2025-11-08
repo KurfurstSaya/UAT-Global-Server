@@ -411,8 +411,12 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             for sc in (getattr(til, "support_card_info_list", []) or []):
                 favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
                 ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
-                if getattr(sc, 'can_incr_special_training', False):
-                    special_counts[idx] += 1
+                try:
+                    stc = int(getattr(sc, 'special_training_count', 1 if getattr(sc, 'can_incr_special_training', False) else 0))
+                except Exception:
+                    stc = 1 if getattr(sc, 'can_incr_special_training', False) else 0
+                if stc > 0:
+                    special_counts[idx] += stc
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
                     npc += 1
                     score += 0.05
@@ -647,12 +651,6 @@ def script_cultivate_event(ctx: UmamusumeContext):
     img = ctx.ctrl.get_screen()
     event_name_img = img[237:283, 111:480]
     event_name = ocr_line(event_name_img, lang="en")
-    time.sleep(0.7)
-    img_verify = ctx.ctrl.get_screen()
-    event_name_verify = ocr_line(img_verify[237:283, 111:480], lang="en")
-    if event_name_verify != event_name:
-        return
-    img = img_verify
     choice_index = get_event_choice(ctx, event_name)
     if not isinstance(choice_index, int) or choice_index < 1:
         choice_index = 2
