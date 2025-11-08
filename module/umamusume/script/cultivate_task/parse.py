@@ -641,26 +641,43 @@ def parse_cultivate_event(ctx: UmamusumeContext, img) -> tuple[str, list[int]]:
         except:
             log.warning("Could not load dialogue templates")
         
-        # Try matching each dialogue template
+        x1, y1, x2, y2 = 24, 316, 696, 936
+        h, w = img_gray.shape[:2]
+        x1 = max(0, min(w, x1)); x2 = max(x1, min(w, x2)); y1 = max(0, min(h, y1)); y2 = max(y1, min(h, y2))
+        search_img = img_gray[y1:y2, x1:x2].copy()
+        
+        def append_unique_point(points, pt, y_thresh=28, x_thresh=100):
+            for qx, qy in points:
+                if abs(qy - pt[1]) <= y_thresh and abs(qx - pt[0]) <= x_thresh:
+                    return
+            points.append(pt)
+        
         for template in dialogue_templates:
             try:
-                img_temp = img_gray.copy()
                 while True:
-                    match_result = image_match(img_temp, template)
+                    match_result = image_match(search_img, template)
                     if match_result.find_match:
-                        event_selector_list.append(match_result.center_point)
-                        img_temp[match_result.matched_area[0][1]:match_result.matched_area[1][1],
-                                 match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
+                        abs_pt = (match_result.center_point[0] + x1, match_result.center_point[1] + y1)
+                        append_unique_point(event_selector_list, abs_pt)
+                        y0, y1m = match_result.matched_area[0][1], match_result.matched_area[1][1]
+                        x0, x1m = match_result.matched_area[0][0], match_result.matched_area[1][0]
+                        search_img[y0:y1m, x0:x1m] = 0
                     else:
                         break
-            except:
+            except Exception:
                 continue
         
+        if len(event_selector_list) > 1:
+            deduped = []
+            for pt in sorted(event_selector_list, key=lambda p: p[1]):
+                if not deduped or (abs(deduped[-1][1] - pt[1]) > 20 or abs(deduped[-1][0] - pt[0]) > 80):
+                    deduped.append(pt)
+            event_selector_list = deduped[:5]
+        
         if len(event_selector_list) > 0:
-            log.info(f"Found {len(event_selector_list)} dialogue options using individual templates")
+            log.info(f"Found {len(event_selector_list)} dialogue options")
         else:
             log.warning("Individual dialogue templates also failed, using fallback position")
-            # Last resort fallback
             event_selector_list = [(360, 800)]
     
     event_selector_list.sort(key=lambda x: x[1])

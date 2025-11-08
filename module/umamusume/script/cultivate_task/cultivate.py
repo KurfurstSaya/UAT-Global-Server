@@ -398,7 +398,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         log.info(f"lv1: {w_lv1}")
         log.info(f"lv2: {w_lv2}")
         log.info(f"Rainbows: {w_rainbow}")
-        log.info(f"Special: {w_special}")
+        try:
+            if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
+                log.info(f"Special: {w_special}")
+        except Exception:
+            pass
 
         for idx in range(5):
             til = ctx.cultivate_detail.turn_info.training_info_list[idx]
@@ -454,7 +458,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"  Rainbows: {rbc}")
             if npc:
                 log.info(f"  NPCs: {npc}")
-            log.info(f"  Special: {special_counts[idx]}")
+            try:
+                if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
+                    log.info(f"  spirit explosion: {special_counts[idx]}")
+            except Exception:
+                pass
             hint_bonus = 0.0
             try:
                 hint_bonus = w_hint if bool(getattr(til, 'has_hint', False)) else 0.0
@@ -656,6 +664,38 @@ def script_cultivate_event(ctx: UmamusumeContext):
         choice_index = 2
     if choice_index > 5:
         choice_index = 2
+
+    try:
+        _, selectors = parse_cultivate_event(ctx, img)
+    except Exception:
+        selectors = []
+
+    if not isinstance(selectors, list):
+        selectors = []
+    if len(selectors) == 0 or len(selectors) > 5:
+        try:
+            time.sleep(0.25)
+            img_retry = ctx.ctrl.get_screen()
+            _, selectors2 = parse_cultivate_event(ctx, img_retry)
+            if isinstance(selectors2, list) and len(selectors2) > 0:
+                selectors = selectors2
+                log.info(len(selectors))
+        except Exception:
+            pass
+    if isinstance(selectors, list) and len(selectors) > 0:
+        idx = int(choice_index)
+        if idx < 1:
+            idx = 1
+        if idx > len(selectors):
+            idx = len(selectors)
+        target_pt = selectors[idx - 1]
+        try:
+            log.info(len(selectors))
+        except Exception:
+            pass
+        ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), f"Event option-{choice_index}")
+        ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
+        return
     try:
         tpl = Template(f"dialogue{choice_index}", UMAMUSUME_REF_TEMPLATE_PATH)
     except:

@@ -143,15 +143,12 @@ class AoharuHaiScenario(BaseScenario):
         for i in range(5):
             support_card_icon = img[base_y:base_y + inc, base_x: base_x + 145]
 
-            # Has Youth Cup training, and Youth Cup friendship not full
-            v1 = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
-            v2 = self.stretchy_match(support_card_icon, REF_AOHARU_SPECIAL_TRAIN)
-            v3 = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
-            v4 = self.stretchy_match(support_card_icon, REF_AOHARU_SPECIAL_TRAIN)
-            v5 = detect_aoharu_train_arrow(support_card_icon) and aoharu_train_not_full(support_card_icon)
-            votes = [v1, v2, v3, v4, v5]
+            v1 = detect_aoharu_train_arrow(support_card_icon) and explosion_ready(support_card_icon)
+            v2 = image_match(cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2GRAY), REF_SPIRIT_EXPLOSION).find_match
+            v3 = detect_aoharu_train_arrow(support_card_icon) and explosion_ready(support_card_icon)
+            votes = [v1, v2, v3]
             true_count = sum(1 for v in votes if v)
-            can_incr_special_training = true_count >= 3
+            can_incr_special_training = true_count >= 2
 
             # Check favor level
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
@@ -273,11 +270,7 @@ def detect_aoharu_train_arrow(support_card_icon):
  
     return has_arrow
 
-
-# Detect if the Youth Cup training value in the lower left corner is not full
-# If it is full or the UI does not exist (e.g., soul explosion has been triggered, return false)
-# Otherwise, return true
-def aoharu_train_not_full(support_card_icon) -> bool:
+def explosion_ready(support_card_icon) -> bool:
     support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
     avatar_region_x_start = 5
     avatar_region_x_end = 45
@@ -306,7 +299,7 @@ def aoharu_train_not_full(support_card_icon) -> bool:
     
     grey_ratio = grey_pixels / total_pixels
     
-    if grey_ratio > 0.045:
+    if grey_ratio > 0.037:
         status = True
     else:
         status = False

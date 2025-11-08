@@ -379,6 +379,14 @@
                       @input="onExtraWeightInput(extraWeightSummer, i)" id="speed-value-input">
                   </div>
                 </div>
+                <div v-if="selectedScenario === 2" style="margin-bottom: 10px; color: var(--accent);">Spirit Explosion</div>
+                <div v-if="selectedScenario === 2" class="row">
+                  <div v-for="(v, i) in extraSpiritExplosion" :key="i" class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>{{ ['Speed','Stamina','Power','Guts','Wit'][i] }}</small></div>
+                    <input type="number" v-model="extraSpiritExplosion[i]" class="form-control"
+                      @input="onExtraWeightInput(extraSpiritExplosion, i)" id="speed-value-input">
+                  </div>
+                </div>
 
                 <hr style="border-color: var(--accent); opacity: 0.5; margin: 12px 0;">
                 <div class="form-group" style="margin-top: 16px;">
@@ -1321,6 +1329,7 @@ export default {
       extraWeight2: [0, 0, 0, 0, 0],
       extraWeight3: [0, 0, 0, 0, 0],
       extraWeightSummer: [0, 0, 0, 0, 0],
+      extraSpiritExplosion: [0, 0, 0, 0, 0],
 
       // Motivation thresholds for trip decisions
       motivationThresholdYear1: 3,
@@ -2043,6 +2052,7 @@ export default {
           "compensate_failure": this.compensateFailure,
           "learn_skill_only_user_provided": this.learnSkillOnlyUserProvided,
           "extra_weight": [this.extraWeight1, this.extraWeight2, this.extraWeight3, this.extraWeightSummer],
+          "spirit_explosion": this.extraSpiritExplosion.map(v => Math.max(-1, Math.min(1, v))),
           "score_value": [
             (this.selectedScenario === 2 ? [this.scoreValueJunior[0], this.scoreValueJunior[1], this.scoreValueJunior[2], this.scoreValueJunior[3], this.specialJunior] : [this.scoreValueJunior[0], this.scoreValueJunior[1], this.scoreValueJunior[2], this.scoreValueJunior[3]]),
             (this.selectedScenario === 2 ? [this.scoreValueClassic[0], this.scoreValueClassic[1], this.scoreValueClassic[2], this.scoreValueClassic[3], this.specialClassic] : [this.scoreValueClassic[0], this.scoreValueClassic[1], this.scoreValueClassic[2], this.scoreValueClassic[3]]),
@@ -2132,12 +2142,14 @@ export default {
         this.extraWeight2 = this.presetsUse.extraWeight[1].map(v => Math.max(-1, Math.min(1, v)));
         this.extraWeight3 = this.presetsUse.extraWeight[2].map(v => Math.max(-1, Math.min(1, v)));
         this.extraWeightSummer = (this.presetsUse.extraWeight.length >= 4 ? this.presetsUse.extraWeight[3] : [0, 0, 0, 0, 0]).map(v => Math.max(-1, Math.min(1, v)));
+        this.extraSpiritExplosion = (this.presetsUse.spirit_explosion || this.presetsUse.spiritExplosion || [0, 0, 0, 0, 0]).map(v => Math.max(-1, Math.min(1, v)));
       }
       else {
         this.extraWeight1 = [0, 0, 0, 0, 0]
         this.extraWeight2 = [0, 0, 0, 0, 0]
         this.extraWeight3 = [0, 0, 0, 0, 0]
         this.extraWeightSummer = [0, 0, 0, 0, 0]
+        this.extraSpiritExplosion = [0, 0, 0, 0, 0]
       }
 
       // Load new skill system data if available
