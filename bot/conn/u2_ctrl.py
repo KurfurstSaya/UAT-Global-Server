@@ -118,7 +118,7 @@ class U2AndroidController(AndroidController):
                 self.repetitive_click_name = click_key
                 self.repetitive_click_count = 1
                 self.repetitive_other_clicks = 0
-        if self.repetitive_click_name == click_key and self.repetitive_click_count >= 6:
+        if self.repetitive_click_name == click_key and self.repetitive_click_count >= 11:
             try:
                 self.recover_home_and_reopen()
             finally:

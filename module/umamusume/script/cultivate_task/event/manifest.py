@@ -196,9 +196,8 @@ def get_local_event_choice(ctx: UmamusumeContext, event_name: str) -> Union[int,
         log.info(f"detected='{event_name}' matched='{best_key}'")
         return calculate_optimal_choice_from_db(ctx, events_db[best_key])
     
-    # If not found, it's likely an auto-skipped event
-    log.info(f"🔄 Event '{event_name}' not in database - likely auto-skipped, using random choice")
-    return 1  # Default choice for auto-skipped events
+    log.info(f"🔄 Event '{event_name}' not in database")
+    return None
 
 def warmup_event_index():
     events_db = load_events_database()
@@ -356,8 +355,7 @@ def auto_research_event_choice(event_name: str) -> int:
     
     # CRITICAL: Handle empty or invalid event names immediately
     if not event_name or len(event_name.strip()) < 3:
-        log.warning(f"⚠️ Invalid event name '{event_name}' - using immediate fallback")
-        return 1  # Quick fallback for empty/invalid names
+        return 2  # Quick fallback for empty/invalid names
     
     # Layer 1: Check cache first
     if event_name in auto_choice_cache:
@@ -376,8 +374,6 @@ def auto_research_event_choice(event_name: str) -> int:
         # Cache for future use
         auto_choice_cache[event_name] = optimal_choice
         return optimal_choice
-    
-    log.info(f"🧠 FALLBACK: Event '{event_name}' not in database - using AI analysis")
     
     # Advanced AI-like keyword analysis
     event_lower = event_name.lower()
@@ -415,7 +411,6 @@ def auto_research_event_choice(event_name: str) -> int:
     elif len(event_name) < 10 or any(word in event_lower for word in ['for', 'ing']):
         analysis_score[1] = 20  # Conservative choice for unknown events
         analysis_score[2] = 30  # Slightly favor balanced approach
-        log.info(f"📝 Partial/truncated event name detected - using conservative approach")
         
     # Mystery/Unknown events
     else:
@@ -425,11 +420,9 @@ def auto_research_event_choice(event_name: str) -> int:
     
     # Choose highest scoring option
     if analysis_score:
-        default_choice = max(analysis_score.items(), key=lambda x: x[1])[0]
-        max_score = analysis_score[default_choice]
-        log.info(f"🧠 AI Analysis result: Choice {default_choice} (Confidence: {max_score}%)")
+        default_choice = 2  # Ultimate fallback
     else:
-        default_choice = 1  # Ultimate fallback
+        default_choice = 2  # Ultimate fallback
         
     auto_choice_cache[event_name] = default_choice
     return default_choice
@@ -484,37 +477,16 @@ def get_event_choice(ctx: UmamusumeContext, event_name: str) -> int:
     log.info(f"🔍 Checking local database for event '{event_name}'...")
     local_choice = get_local_event_choice(ctx, event_name)
     if local_choice is not None:
-        log.info(f"⚡ FAST: Found event '{event_name}' in local database - Choice {local_choice}")
         return local_choice
     
-    # Check if event is still readable after 2-3 seconds (auto-skipped events)
-    log.info(f"⏳ Checking if event '{event_name}' is auto-skipped...")
-    time.sleep(5)  # Wait 2.5 seconds
-    
-    # Try to re-read the event name to see if it's still there
-    try:
-        from module.umamusume.script.cultivate_task.parse import parse_cultivate_event
-        current_event = parse_cultivate_event(ctx)
-        if current_event and current_event != event_name:
-            log.info(f"🔄 Event changed from '{event_name}' to '{current_event}' - auto-skipped!")
-            return 1  # Default choice for auto-skipped events
-        elif not current_event:
-            log.info(f"🔄 Event '{event_name}' disappeared - auto-skipped!")
-            return 1  # Default choice for auto-skipped events
-        else:
-            log.info(f"✅ Event '{event_name}' still readable - proceeding with research")
-    except Exception as e:
-        log.warning(f"⚠️ Error checking event persistence: {str(e)}")
-        # Continue with research if we can't check
-    
+        
     # If not found in local database, use automatic research (SLOW - web scraping)
-    log.info(f"🤖 Event '{event_name}' not in local database - activating AUTO-RESEARCH mode!")
-    result = auto_research_event_choice(event_name)
+    result = 2
     
     # CRITICAL: Always ensure we return a valid integer choice
     if isinstance(result, int) and result > 0:
         return result
     else:
         log.error(f"❌ CRITICAL: auto_research_event_choice returned invalid result: {result}")
-        log.error(f"❌ Falling back to choice 1 for event '{event_name}'")
-        return 1
+        log.error(f"❌ Falling back to choice 2 for event '{event_name}'")
+        return 2

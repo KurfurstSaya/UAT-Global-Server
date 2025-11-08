@@ -296,29 +296,29 @@
       "1": {
         "Friendship": 5.0,
         "Guts": 0.0,
-        "HP": 2.5,
+        "HP": 3.8,
         "Max Energy": 0.0,
         "Mood": 0.0,
         "Power": 5.0,
-        "Skill": 0.5,
+        "Skill": 0.2,
         "Skill Hint": 0.0,
-        "Skill Pts": 5.0,
+        "Skill Pts": 2.5,
         "Speed": 0.0,
         "Stamina": 0.0,
         "Wisdom": 0.0
       },
       "2": {
         "Friendship": 5.0,
-        "Guts": 7.5,
-        "HP": -5.0,
+        "Guts": 11.2,
+        "HP": -7.5,
         "Max Energy": 0.0,
         "Mood": 0.0,
         "Power": 0.0,
-        "Skill": 0.5,
+        "Skill": 0.2,
         "Skill Hint": 0.0,
-        "Skill Pts": 5.0,
+        "Skill Pts": 2.5,
         "Speed": 0.0,
-        "Stamina": 2.5,
+        "Stamina": 1.2,
         "Wisdom": 0.0
       }
     }
@@ -4319,6 +4319,129 @@
       }
     }
   },
+  "The Kashimoto Art of Tidying Up": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 15.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 15.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Unexpected Side": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2",
+      "3": "Choice 3"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 1.0,
+        "Guts": 0.0,
+        "HP": 15.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 4.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 15.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "3": {
+        "Friendship": -10.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 3.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Picture Their Joy": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 5.0,
+        "HP": 20.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 30.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
   "Full-Power Passion!": {
     "choices": {
       "1": "Choice 1",
@@ -4806,6 +4929,78 @@
         "Speed": 10.0,
         "Stamina": 0.0,
         "Wisdom": 10.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Doomscrolling the Time Away": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 5.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Sponsored Posts Can Be Low-Key Sus": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 10.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
       },
       "2": {
         "Friendship": 5.0,
@@ -5482,6 +5677,78 @@
         "Skill Pts": 0.0,
         "Speed": 10.0,
         "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Nail Artist on the Turf": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": -1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 25.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Not Just for Show": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 10.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 2.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": -5.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 20.0,
         "Wisdom": 0.0
       }
     }
@@ -6344,6 +6611,78 @@
       }
     }
   },
+  "Rainy Day, Floating Flowers": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 40.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Magical Flowers, Forever Fair": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 5.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 15.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 5.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
   "Blooming Hope!": {
     "choices": {
       "1": "Choice 1",
@@ -6791,6 +7130,42 @@
       }
     }
   },
+  "Irrepressible Feelings": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 10.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": -5.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 5.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 5.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
   "Sudden Murder Mystery! Part 1": {
     "choices": {
       "1": "Choice 1",
@@ -7038,6 +7413,150 @@
         "Skill Hint": 0.0,
         "Skill Pts": 0.0,
         "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "A Rhapsody of Rumors": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 10.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": -10.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 15.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 20.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "How to Make Friends: Research": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 10.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": -5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 2.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Ad Squad, Go!": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 15.0,
+        "HP": -5.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": -5.0,
+        "Guts": 0.0,
+        "HP": 20.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "A Winning Vocalist": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 10.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 10.0,
         "Stamina": 0.0,
         "Wisdom": 0.0
       }
@@ -14252,7 +14771,7 @@
       }
     }
   },
-  "My Family Make a Difficult Decision": {
+  "My Family Makes a Difficult Decision": {
     "choices": {
       "1": "Choice 1",
       "2": "Choice 2"
@@ -20864,6 +21383,489 @@
       }
     }
   },
+  "Worthy of Wearing Pride": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 20.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 40.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Shadows in the Darkness": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 10.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 10.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 20.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Honor at Stake": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 20.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 20.0
+      }
+    }
+  },
+  "Guardians of Nature": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "How to Educate Effectively": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 10.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 10.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Inspiration to Fly": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 5.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 5.0,
+        "Stamina": 5.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Flash's Plan Put to the Test": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Fried, Crispy, and Fresh!": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 10.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 5.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 30.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 5.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 10.0,
+        "Speed": -5.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Chasing Trends": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 10.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Immersing in Japanese Tradition": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 10.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 10.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Acclimating": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2",
+      "3": "Choice 3"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 10.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "3": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Conveying Sincerity": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 10.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 10.0
+      }
+    }
+  },
+  "Reminiscing at the Freizeitpark": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
   "Which Curren Do You Like?": {
     "choices": {
       "1": "Choice 1",
@@ -24629,6 +25631,114 @@
       }
     }
   },
+  "I'll Protect You!": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 20.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Now or Never! Sacred Sites": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 20.0
+      }
+    }
+  },
+  "When Fukukitaru Comes, Fortune Follows": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 20.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 7.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 7.0,
+        "Stamina": 7.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
   "Fierce Fight! A Spicy Match": {
     "choices": {
       "1": "Choice 1",
@@ -26123,6 +27233,87 @@
         "Skill": 0.0,
         "Skill Hint": 0.0,
         "Skill Pts": 35.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Tutorial": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2",
+      "3": "Choice 3",
+      "4": "Choice 4",
+      "5": "Choice 5"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 100000.0,
+        "Guts": 111110.0,
+        "HP": 111110.0,
+        "Max Energy": 111110.0,
+        "Mood": 1110.0,
+        "Power": 1110.0,
+        "Skill": 110.0,
+        "Skill Hint": 110.0,
+        "Skill Pts": 110.0,
+        "Speed": 110.0,
+        "Stamina": 110.0,
+        "Wisdom": 110.0
+      },
+      "3": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "4": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "5": {
+        "Friendship": 0.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 10.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
         "Speed": 0.0,
         "Stamina": 0.0,
         "Wisdom": 0.0

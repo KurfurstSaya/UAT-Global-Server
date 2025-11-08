@@ -87,7 +87,14 @@ class Executor:
     def detect_ui(self, ui_list: list[UI], target) -> UI:
         target = cv2.cvtColor(target, cv2.COLOR_BGR2GRAY)
         self.ensure_pool()
-        futures = {self.executor.submit(self.detect_ui_sub, ui, target): ui for ui in ui_list}
+        if self.executor is None or getattr(self.executor, "_shutdown", False):
+            return NOT_FOUND_UI
+        try:
+            futures = {self.executor.submit(self.detect_ui_sub, ui, target): ui for ui in ui_list}
+        except RuntimeError as e:
+            if "interpreter shutdown" in str(e).lower():
+                return NOT_FOUND_UI
+            raise
         found = None
         for _ in as_completed(futures):
             if len(self.detect_ui_results) > 0:

@@ -147,6 +147,40 @@ def after_hook(ctx: UmamusumeContext):
     except Exception:
         pass
     img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+    try:
+        from module.umamusume.define import ScenarioType
+        scv = getattr(ctx.task.detail.scenario, 'value', ctx.task.detail.scenario)
+        if scv == ScenarioType.SCENARIO_TYPE_AOHARUHAI.value:
+            if image_match(img[984:1025, 297:365], REF_AOHARU_RACE).find_match:
+                ctx.ctrl.click(344, 1091, 'Aoharu race')
+                return
+            if image_match(img[1089:1113, 318:376], REF_SELECT_OPP2).find_match:
+                ctx.ctrl.click(355, 1082, 'select opp2')
+                time.sleep(1)
+                ctx.ctrl.click(522, 930, 'select opp2 cont')
+                return
+            if image_match(img[1204:1219, 476:597], REF_ALL_RES).find_match:
+                ctx.ctrl.click(536, 1211, 'all res')
+                return
+            if image_match(img[43:72, 123:411], REF_RACE_END).find_match:
+                ctx.ctrl.click(351, 1112, 'race end')
+                return
+            if image_match(img[1204:1228, 319:399], REF_RACE_END2).find_match:
+                ctx.ctrl.click(350, 1199, 'race end2')
+                return
+            if image_match(img[1200:1222, 467:553], REF_RACE_END2).find_match:
+                ctx.ctrl.click(508, 1196, 'race end2 b')
+                return
+            if image_match(img[7:31, 24:180], REF_TEAM_SHOWDOWN).find_match:
+                ctx.ctrl.click(354, 961, 'team showdown')
+                time.sleep(1)
+                ctx.ctrl.click(522, 930, 'select opp2 cont')
+                return
+            if image_match(img[1097:1124, 327:393], REF_NEXT).find_match:
+                ctx.ctrl.click(360, 1112, 'next')
+                return
+    except Exception:
+        pass
     if apply_rules(ctx, img):
         return
     if image_match(img, BTN_SKIP).find_match:

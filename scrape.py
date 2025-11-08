@@ -625,6 +625,87 @@ def runEventsEn() -> None:
                 }
             }
         },
+         "Tutorial": {
+            "choices": {
+                "1": "Choice 1",
+                "2": "Choice 2",
+                "3": "Choice 3",
+                "4": "Choice 4",
+                "5": "Choice 5"
+            },
+            "stats": {
+                "1": {
+                    "Friendship": 0.0,
+                    "Guts": 0.0,
+                    "HP": 0.0,
+                    "Max Energy": 0.0,
+                    "Mood": 0.0,
+                    "Power": 0.0,
+                    "Skill": 0.0,
+                    "Skill Hint": 0.0,
+                    "Skill Pts": 0.0,
+                    "Speed": 0.0,
+                    "Stamina": 0.0,
+                    "Wisdom": 0.0
+                },
+                "2": {
+                    "Friendship": 100000.0,
+                    "Guts":111110.0,
+                    "HP": 111110.0,
+                    "Max Energy": 111110.0,
+                    "Mood": 1110.0,
+                    "Power": 1110.0,
+                    "Skill": 110.0,
+                    "Skill Hint": 110.0,
+                    "Skill Pts": 110.0,
+                    "Speed": 110.0,
+                    "Stamina": 110.0,
+                    "Wisdom": 110.0
+                },
+                "3": {
+                    "Friendship": 0.0,
+                    "Guts": 0.0,
+                    "HP": 0.0,
+                    "Max Energy": 0.0,
+                    "Mood": 0.0,
+                    "Power": 0.0,
+                    "Skill": 0.0,
+                    "Skill Hint": 0.0,
+                    "Skill Pts": 0.0,
+                    "Speed": 0.0,
+                    "Stamina": 0.0,
+                    "Wisdom": 0.0
+                },
+                "4": {
+                    "Friendship": 0.0,
+                    "Guts": 0.0,
+                    "HP": 0.0,
+                    "Max Energy": 0.0,
+                    "Mood": 0.0,
+                    "Power": 0.0,
+                    "Skill": 0.0,
+                    "Skill Hint": 0.0,
+                    "Skill Pts": 0.0,
+                    "Speed": 0.0,
+                    "Stamina": 0.0,
+                    "Wisdom": 0.0
+                },
+                "5": {
+                    "Friendship": 0.0,
+                    "Guts": 0.0,
+                    "HP": 0.0,
+                    "Max Energy": 0.0,
+                    "Mood": 0.0,
+                    "Power": 0.0,
+                    "Skill": 0.0,
+                    "Skill Hint": 0.0,
+                    "Skill Pts": 0.0,
+                    "Speed": 0.0,
+                    "Stamina": 0.0,
+                    "Wisdom": 0.0
+                }
+            }
+        },
         "Extra Training": {
             "choices": {
                 "1": "Choice 1",

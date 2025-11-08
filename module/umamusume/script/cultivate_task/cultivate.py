@@ -639,11 +639,17 @@ def script_cultivate_event(ctx: UmamusumeContext):
     img = ctx.ctrl.get_screen()
     event_name_img = img[237:283, 111:480]
     event_name = ocr_line(event_name_img, lang="en")
+    time.sleep(0.7)
+    img_verify = ctx.ctrl.get_screen()
+    event_name_verify = ocr_line(img_verify[237:283, 111:480], lang="en")
+    if event_name_verify != event_name:
+        return
+    img = img_verify
     choice_index = get_event_choice(ctx, event_name)
     if not isinstance(choice_index, int) or choice_index < 1:
-        choice_index = 1
+        choice_index = 2
     if choice_index > 5:
-        choice_index = 1
+        choice_index = 2
     try:
         tpl = Template(f"dialogue{choice_index}", UMAMUSUME_REF_TEMPLATE_PATH)
     except:
@@ -671,20 +677,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 roi_gray = img_gray[y1:y2, x1:x2]
         except:
             pass
-    if not clicked:
-        try:
-            tpl1 = Template("dialogue1", UMAMUSUME_REF_TEMPLATE_PATH)
-            res1 = image_match(roi_gray, tpl1)
-            if res1.find_match:
-                ctx.ctrl.click(res1.center_point[0] + x1, res1.center_point[1] + y1, "Event option-1")
-                clicked = True
-                ctx.cultivate_detail.event_cooldown_until = time.time() + 5
-                return
-        except:
-            pass
-    if not clicked:
-        ctx.ctrl.click(360, 800, "Event option-1")
-        ctx.cultivate_detail.event_cooldown_until = time.time() + 5
+        if not clicked:
         return
 
 def script_aoharuhai_race(ctx: UmamusumeContext):
