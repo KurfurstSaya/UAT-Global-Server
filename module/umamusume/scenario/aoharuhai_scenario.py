@@ -115,20 +115,40 @@ class AoharuHaiScenario(BaseScenario):
                 continue
 
             roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-            t1 = False; t2 = False; t3 = False
-            try:
-                t1 = bool(image_match(roi_gray, REF_AOHARU_SPECIAL_TRAIN).find_match)
-            except Exception:
-                t1 = False
-            try:
-                t2 = bool(image_match(roi_gray, REF_AOHARU_SPECIAL_TRAIN2).find_match)
-            except Exception:
-                t2 = False
-            try:
-                t3 = bool(image_match(roi_gray, REF_AOHARU_SPECIAL_TRAIN3).find_match)
-            except Exception:
-                t3 = False
-            can_incr_special_training = (t1 or t2 or t3) and aoharu_train_not_full(roi)
+            ay1 = 0
+            ay2 = 37
+            ax1 = 116
+            ax2 = 141
+            arrow_roi = roi_gray[ay1:ay2, ax1:ax2]
+
+            arrow_roi3 = roi_gray[max(ay1 - 10, 0):ay2, ax1:ax2]
+
+            can_incr_special_training = False
+            for ref, sub_roi in (
+                (REF_AOHARU_SPECIAL_TRAIN, arrow_roi),
+                (REF_AOHARU_SPECIAL_TRAIN2, arrow_roi),
+                (REF_AOHARU_SPECIAL_TRAIN3, arrow_roi3),
+            ):
+                try:
+                    if image_match(sub_roi, ref).find_match:
+                        can_incr_special_training = True
+                        break
+                except Exception:
+                    pass
+
+            spirit_explosion = False
+            if not can_incr_special_training:
+                for ref, sub_roi in (
+                    (REF_SPIRIT_EXPLOSION, arrow_roi),
+                    (REF_SPIRIT_EXPLOSION2, arrow_roi),
+                    (REF_SPIRIT_EXPLOSION3, arrow_roi3),
+                ):
+                    try:
+                        if image_match(sub_roi, ref).find_match:
+                            spirit_explosion = True
+                            break
+                    except Exception:
+                        pass
 
             # Favor detection (color)
             roi_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
@@ -185,7 +205,8 @@ class AoharuHaiScenario(BaseScenario):
                 name=name_map.get(support_card_type, "support_card"),
                 card_type=support_card_type,
                 favor=support_card_favor_process,
-                can_incr_special_training=can_incr_special_training
+                can_incr_special_training=can_incr_special_training,
+                spirit_explosion=spirit_explosion
             )
             info.center = (cx, cy)
             support_card_list_info_result.append(info)

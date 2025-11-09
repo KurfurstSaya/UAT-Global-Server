@@ -387,6 +387,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         computed_scores = [0.0, 0.0, 0.0, 0.0, 0.0]
         rbc_counts = [0, 0, 0, 0, 0]
         special_counts = [0, 0, 0, 0, 0]
+        spirit_counts = [0, 0, 0, 0, 0]
 
         log.info("Score:")
         log.info(f"lv1: {w_lv1}")
@@ -415,6 +416,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     stc = 1 if getattr(sc, 'can_incr_special_training', False) else 0
                 if stc > 0:
                     special_counts[idx] += stc
+                if bool(getattr(sc, 'spirit_explosion', False)):
+                    spirit_counts[idx] += 1
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
                     npc += 1
                     score += 0.05
@@ -455,6 +458,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             try:
                 if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
                     log.info(f"  special training: {special_counts[idx]}")
+                    if spirit_counts[idx] > 0:
+                        log.info(f"  Spirit explosions: {spirit_counts[idx]}")
             except Exception:
                 pass
             hint_bonus = 0.0
