@@ -1,5 +1,7 @@
 reminder that shit will probably break if i had made a commit in the past 10 hours  
 
+for safety of myself this repo will also be archived and ("temporarily discontinued") for the public if it exceeds 100 unique views a day  
+
 # UMAMUSUME AUTO TRAINER
 
 ![UAT](docs/main.png)
