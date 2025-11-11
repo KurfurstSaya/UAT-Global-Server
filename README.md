@@ -1,4 +1,4 @@
-I am very ill with influenza I'll be taking a break for today and minimal updates tmr 
+# UPDATE  BROKE THE BOT
 
 # UMAMUSUME AUTO TRAINER
 
