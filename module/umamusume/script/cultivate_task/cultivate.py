@@ -548,13 +548,23 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 if isinstance(expect_attr, list) and len(expect_attr) == 5:
                     uma = ctx.cultivate_detail.turn_info.uma_attribute
                     curr_vals = [uma.speed, uma.stamina, uma.power, uma.will, uma.intelligence]
-                    if curr_vals[idx] >= expect_attr[idx]:
+                    cap_val = float(expect_attr[idx])
+                    curr_val = float(curr_vals[idx])
+                    if cap_val > 0:
+                        ratio = curr_val / cap_val
                         label = names[idx]
-                        log.info(f"  {label} cap reached: -40% to score")
-                        score *= 0.6
-                    elif expect_attr[idx] > 0 and curr_vals[idx] >= 0.8 * expect_attr[idx]:
-                        log.info("  Almost at goal -20% to score")
-                        score *= 0.8
+                        if ratio > 0.95:
+                            log.info(f"{label} >95% of target: -100% to score")
+                            score *= 0.0
+                        elif ratio >= 0.90:
+                            log.info(f"{label} >=90% of target: -30% to score")
+                            score *= 0.7
+                        elif ratio >= 0.80:
+                            log.info(f"{label} >=80% of target: -20% to score")
+                            score *= 0.8
+                        elif ratio >= 0.70:
+                            log.info(f"{label} >=70% of target: -10% to score")
+                            score *= 0.9
             except Exception:
                 pass
             try:
