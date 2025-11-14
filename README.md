@@ -207,6 +207,10 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **10/12/2025**
+updated skill list  
+Fixed getting stuck in support card selection  
+
 - **10/12/2025**   
 "Use last selected parents" Option added in webui.  
 support for team trials quick mode
