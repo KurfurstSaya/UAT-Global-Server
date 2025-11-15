@@ -3,6 +3,7 @@ from module.umamusume.define import TurnOperationType
 from module.umamusume.asset.template import REF_SELECTOR, REF_AOHARUHAI_TEAM_NAME
 from bot.recog.image_matcher import image_match
 from bot.conn.fetch import read_energy
+import time
 
 import bot.base.log as logger
 log = logger.get_logger(__name__)
@@ -41,17 +42,36 @@ def aoharuhai_team_name_event(ctx: UmamusumeContext) -> int:
         else:
             break
 
-    if ctx.task.detail.scenario_config.aoharu_config.aoharu_team_name_selection == 4:
-        log.debug("Using option <Carrot> team")
+    sel = ctx.task.detail.scenario_config.aoharu_config.aoharu_team_name_selection
+    name_map = {
+        0: "Taiki Shuttle <HOP CHEERS>",
+        1: "Matikanefukukitaru <Sunny Runner>",
+        2: "Haru Urara <Carrot Pudding>",
+        3: "Rice Shower <Bloom>",
+        4: "Default <Carrot>",
+    }
+    log.info(f"Aoharu team configured: index={sel} name={name_map.get(sel, 'Unknown')}")
+    if sel == 4:
+        log.info(f"Selecting Aoharu team: {name_map.get(sel)} (choose last option, total options={len(event_selector_list)})")
         return len(event_selector_list)
 
-    event_selector_list.sort(key=lambda x: x.center_point[1])
-    for i in range(len(event_selector_list)):
-        event = event_selector_list[i]
-        event_img = img[event.matched_area[0][1]-20:event.matched_area[1][1]+20, 0:720]
-        if image_match(event_img, REF_AOHARUHAI_TEAM_NAME[ctx.task.detail.scenario_config.aoharu_config.aoharu_team_name_selection]).find_match:
-            log.debug("Matched configured Youth Cup team name")
-            return i + 1
+    h, w = img.shape[:2]
+    x1, y1, x2, y2 = 70, 315, 162, 811
+    x1 = max(0, min(w, x1)); x2 = max(x1, min(w, x2))
+    y1 = max(0, min(h, y1)); y2 = max(y1, min(h, y2))
+    roi = img[y1:y2, x1:x2]
 
-    log.debug("No match for configured Youth Cup team name, using default option <Carrot> team")
+    res = image_match(roi, REF_AOHARUHAI_TEAM_NAME[sel])
+    if res.find_match:
+        gx = x1 + res.center_point[0]
+        gy = y1 + res.center_point[1]
+        log.info(f"Selecting Aoharu team: {name_map.get(sel, 'Unknown')} at ({gx},{gy}) by ROI match")
+        try:
+            ctx.ctrl.click(int(gx), int(gy), "Select Aoharu team by name")
+            ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
+        except Exception:
+            pass
+        return 1
+
+    log.info(f"No match for configured Youth Cup team name within ROI; selecting Default <Carrot> (last option)")
     return len(event_selector_list)

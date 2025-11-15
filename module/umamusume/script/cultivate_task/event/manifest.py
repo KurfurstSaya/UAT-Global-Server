@@ -34,7 +34,8 @@ event_map: dict[str, Union[callable, int]] = {
     # Youth Cup events
     "新手教程": 2,
     "团队成员终于集结完毕!": aoharuhai_team_name_event,
-    
+    "A Team at Last": aoharuhai_team_name_event,
+        
     # Note: Global Server events will be handled by auto_research_event_choice()
 }
 
