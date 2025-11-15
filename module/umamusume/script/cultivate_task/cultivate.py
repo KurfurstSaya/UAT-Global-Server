@@ -753,12 +753,22 @@ def script_cultivate_final_check(ctx: UmamusumeContext):
 
 
 def script_cultivate_event(ctx: UmamusumeContext):
-    if hasattr(ctx.cultivate_detail, 'event_cooldown_until') and time.time() < ctx.cultivate_detail.event_cooldown_until:
-        return
     img = ctx.ctrl.get_screen()
     event_name_img = img[237:283, 111:480]
     event_name = ocr_line(event_name_img, lang="en")
-    choice_index = get_event_choice(ctx, event_name)
+    force_choice_index = None
+    try:
+        if isinstance(event_name, str) and 'team at last' in event_name.lower():
+            log.info("Routing to Aoharu handler")
+            from module.umamusume.script.cultivate_task.event.scenario_event import aoharuhai_team_name_event
+            res = aoharuhai_team_name_event(ctx)
+            if isinstance(res, int) and res > 0:
+                force_choice_index = int(res)
+            else:
+                return
+    except Exception:
+        pass
+    choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
     if not isinstance(choice_index, int) or choice_index < 1:
         choice_index = 2
     if choice_index > 5:
