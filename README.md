@@ -207,6 +207,10 @@ Something Something this is for educational purposes only. Please do not misuse 
 ![alt text](docs/topcunt.gif)
 
 ## Changelogs
+- **10/16/2025**  
+Attempted to fix some crashes   
+patched up team trials execution mode  
+
 - **10/15/2025**  
 updated some support card names  
 aoharu (unity cup) team name selection works now
