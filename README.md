@@ -66,6 +66,7 @@ Running this 24/7 looks sus as hell so I would suggest turning it off for a few 
 you can also edit the start and end time in `main.py` (24 hours format) to dictate when the bot can run)
 
 ## 📦 Installation & Setup
+Tutorial someone made: https://youtu.be/v1m9Plw7M3Y  
 
 #### Clone Repository
 ```bash
@@ -73,7 +74,7 @@ git clone https://github.com/oofmatoes/UAT-Global-Server
 cd UAT-Global-Server
 ```
   
-Tutorial someone made: https://youtu.be/v1m9Plw7M3Y
+
 
 ### Emulator Setup
 
