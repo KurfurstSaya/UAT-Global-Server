@@ -72,6 +72,8 @@ you can also edit the start and end time in `main.py` (24 hours format) to dicta
 git clone https://github.com/oofmatoes/UAT-Global-Server
 cd UAT-Global-Server
 ```
+  
+Tutorial someone made: https://youtu.be/v1m9Plw7M3Y
 
 ### Emulator Setup
 
