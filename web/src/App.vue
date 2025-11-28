@@ -26,16 +26,25 @@ export default {
     return{
       error:'',
       success:'',
-      info:'',
       showManualSkillNotification: false
     }
   },
   mounted (){
     this.setupWebSocket();
+    this.checkForRepoUpdate();
   },
   methods: {
     setupWebSocket() {
       this.checkForManualSkillNotification();
+    },
+    checkForRepoUpdate(){
+      axios.get('/api/update-status', null, false)
+        .then(res => {
+          if (res && res.data && res.data.has_update){
+            alert("There's a update available for this repo");
+          }
+        })
+        .catch(()=>{});
     },
     checkForManualSkillNotification() {
       setInterval(() => {

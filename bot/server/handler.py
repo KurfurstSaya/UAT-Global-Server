@@ -3,6 +3,7 @@ import time
 import json
 import re
 from typing import Dict, Any
+import subprocess
 
 from fastapi import FastAPI, Path
 from fastapi.middleware.cors import CORSMiddleware
@@ -144,6 +145,59 @@ def set_runtime_thresholds(req: RuntimeThresholds):
         return {"status": "ok"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+@server.get("/api/update-status")
+def get_update_status():
+    try:
+        repo_root = None
+        base = os.path.abspath(os.path.dirname(__file__))
+        for _ in range(8):
+            if os.path.isdir(os.path.join(base, '.git')):
+                repo_root = base
+                break
+            parent = os.path.dirname(base)
+            if parent == base:
+                break
+            base = parent
+        if repo_root is None:
+            tl = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, cwd=os.getcwd(), timeout=5)
+            if tl.returncode == 0 and os.path.isdir(tl.stdout.strip()):
+                repo_root = tl.stdout.strip()
+            else:
+                return {"has_update": False, "error": "git repo not found from server path"}
+        branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, cwd=repo_root, timeout=5)
+        if branch.returncode != 0:
+            return {"has_update": False, "error": branch.stderr.strip()}
+        branch_name = branch.stdout.strip()
+        upstream = subprocess.run(["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"], capture_output=True, text=True, cwd=repo_root, timeout=5)
+        if upstream.returncode == 0:
+            upstream_ref = upstream.stdout.strip()
+            remote_name = upstream_ref.split('/')[0]
+            subprocess.run(["git", "fetch", "--quiet", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=10)
+            revspec = f"HEAD...{upstream_ref}"
+        else:
+            remote_name = "origin"
+            subprocess.run(["git", "fetch", "--quiet", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=10)
+            revspec = f"HEAD...{remote_name}/{branch_name}"
+        cmp = subprocess.run(["git", "rev-list", "--left-right", "--count", revspec], capture_output=True, text=True, cwd=repo_root, timeout=5)
+        if cmp.returncode != 0:
+            return {"has_update": False, "error": cmp.stderr.strip(), "branch": branch_name}
+        parts = cmp.stdout.strip().split()
+        ahead = int(parts[0]) if len(parts) > 0 else 0
+        behind = int(parts[1]) if len(parts) > 1 else 0
+        head_sha = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=repo_root, timeout=5)
+        remote_sha = subprocess.run(["git", "rev-parse", revspec.split('...')[1]], capture_output=True, text=True, cwd=repo_root, timeout=5)
+        return {
+            "has_update": bool(behind > 0),
+            "branch": branch_name,
+            "upstream": revspec.split('...')[1],
+            "ahead": ahead,
+            "behind": behind,
+            "head": head_sha.stdout.strip() if head_sha.returncode == 0 else "",
+            "remote": remote_sha.stdout.strip() if remote_sha.returncode == 0 else ""
+        }
+    except Exception as e:
+        return {"has_update": False, "error": str(e)}
 
 @server.get("/log/{task_id}")
 def get_task_log(task_id):
