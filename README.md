@@ -211,9 +211,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **28/12/2025**
-Fixed getting stuck at aoharu tutorial event sometimes
-Updated event list  
-Added Select/Deselect all skills blacklist/priority based on whats being searched  
+Fixed getting stuck at aoharu tutorial event sometimes  
+Updated event list    
+Added Select/Deselect all skills blacklist/priority based on whats being searched    
 
 - **28/11/2025**  
 Maybe fixed bot getting stuck sometimes after ending a career.    
