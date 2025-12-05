@@ -559,7 +559,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 if current_energy > 90:
                     score *= 0.90
                     log.info("energy > 90, -10% to wit score")
-                elif 85 <= current_energy <= rest_threshold:
+                elif 85 > current_energy < rest_threshold:
                     if rbc > 0:
                         log.info("85 > energy < rest threshold with rainbows +16% to wit score")
                         score *= 1.16
