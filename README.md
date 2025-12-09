@@ -58,7 +58,7 @@ If you're like me and is using this because you wont have access to your pc for 
 ## 🚨 Safety
 Question: Is this safe?  
 
-Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE YOU HAVE BEEN WARNED**  
+Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE YOU HAVE BEEN WARNED.** That being said it is still very difficult to detect as they have nothing to look at apart from metadata of your clicks. So you're likely fine  
 Answer 2: As long as there are people cheating on the steam release we are chilling (if ykyk)  
 https://en.wikipedia.org/wiki/Sentinel_species    
 
