@@ -217,6 +217,7 @@ Fixed yesterday's infinite loop fuck up
 Custom scoring for Finale dates   
 Made pal outing override rest if all conditions are met and max energy threshold < 90.  
 Added option to override insufficient fans forced races  
+Blacklisted event name '' to prevent misclicks and slightly speed things up  
 
 - **8/12/2025**  
 Updated event list  
