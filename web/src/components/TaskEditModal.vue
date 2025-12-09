@@ -1155,6 +1155,17 @@
                     </div>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label class="d-block mb-1">Override insufficient fans forced races</label>
+                    <div class="token-toggle" role="group" aria-label="Override insufficient fans forced races">
+                      <button type="button" class="token" :class="{ active: overrideInsufficientFansForcedRaces }"
+                        @click="overrideInsufficientFansForcedRaces = true">On</button>
+                      <button type="button" class="token" :class="{ active: !overrideInsufficientFansForcedRaces }"
+                        @click="overrideInsufficientFansForcedRaces = false">Off</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           <div class="category-card" id="category-event">
@@ -1573,6 +1584,7 @@ export default {
       ],
       activeSection: 'category-general',
       manualPurchase: false,
+      overrideInsufficientFansForcedRaces: false,
       showAdvanceOption: false,
       showRaceList: false,
       dataReady: false,
@@ -2633,6 +2645,7 @@ export default {
           "tactic_list": [this.selectedRaceTactic1, this.selectedRaceTactic2, this.selectedRaceTactic3],
           "clock_use_limit": this.clockUseLimit,
           "manual_purchase_at_end": this.manualPurchase,
+          "override_insufficient_fans_forced_races": this.overrideInsufficientFansForcedRaces,
           "learn_skill_threshold": this.learnSkillThreshold,
           "allow_recover_tp": this.recoverTP,
           "rest_treshold": this.restTreshold,

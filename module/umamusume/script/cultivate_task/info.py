@@ -437,11 +437,18 @@ def script_info(ctx: UmamusumeContext):
                     ctx.cultivate_detail.turn_info.turn_operation = None
 
         if title_text == TITLE[21]:  # insufficient fans (was TITLE[19])
-            log.info("🏆 insufficient fans detected - navigating to races to fulfill fan goals")
+            log.info("🏆 insufficient fans detected")
             
+            if ctx.task.detail.override_insufficient_fans_forced_races:
+                log.info("Override insufficient fans forced races is enabled")
+                ctx.ctrl.click_by_point(CULTIVATE_FAN_NOT_ENOUGH_RETURN)
+                time.sleep(0.3)
+                return
+            
+            log.info("🏁 Navigating to races to fulfill fan goals")
             # Close popup to return to main menu where date is visible
             ctx.ctrl.click_by_point(CULTIVATE_FAN_NOT_ENOUGH_RETURN)
-            time.sleep(2)  # Wait longer for main menu to fully load
+            time.sleep(1)  # Wait longer for main menu to fully load
             
             # Refresh screen to get the actual main menu
             ctx.current_screen = ctx.ctrl.get_screen()
