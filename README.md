@@ -1,6 +1,7 @@
 
 # UMAMUSUME AUTO TRAINER
 ## sorry about causing a inf loop yesterday should be fixed now
+## PAL CARDS ARE DONE 
 
 ![UAT](docs/main.png)
 
@@ -58,7 +59,7 @@ If you're like me and is using this because you wont have access to your pc for 
 ## 🚨 Safety
 Question: Is this safe?  
 
-Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE YOU HAVE BEEN WARNED**  
+Answer: Safer than the steam release (All of your processes are transparent lmao), I have done what I can to humanize the inputs. **BUT** if they decide to put in the effort they **WILL** find you. It is near impossible to simulate perfect human behavior with code so use at your own risk. I take no responsibility.  **HIDING BEHIND A EMULATOR DOES NOT MAKE YOU UNDETECTABLE YOU HAVE BEEN WARNED.** That being said it is still very difficult to detect as they have nothing to look at apart from metadata of your clicks. So you're likely fine  
 Answer 2: As long as there are people cheating on the steam release we are chilling (if ykyk)  
 https://en.wikipedia.org/wiki/Sentinel_species    
 
@@ -213,7 +214,7 @@ Something Something this is for educational purposes only. Please do not misuse 
 - **8/13/2025**  
 Pal Cards are good to go  
 Fixed yesterday's infinite loop fuck up
-Custom scoring for Finale dates
+Custom scoring for Finale dates   
 Made pal outing override rest if all conditions are met and max energy threshold < 90.  
 
 - **8/12/2025**  
