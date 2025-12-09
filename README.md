@@ -1,5 +1,6 @@
 
 # UMAMUSUME AUTO TRAINER
+## sorry about causing a inf loop yesterday should be fixed now
 
 ![UAT](docs/main.png)
 
