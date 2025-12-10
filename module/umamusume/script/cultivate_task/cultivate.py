@@ -941,13 +941,14 @@ def script_cultivate_event(ctx: UmamusumeContext):
     try:
         from bot.recog.ocr import find_similar_text
         event_blacklist = [
-            "", 
+            "", " ",
             "Team Support",
         ]
-        if isinstance(event_name, str) and event_name.strip():
-            if find_similar_text(event_name, event_blacklist, 0.9):
-                log.info(f"{event_name} blacklisted. Skipping")
-                return
+        if not isinstance(event_name, str) or not event_name.strip():
+            return
+        if find_similar_text(event_name, event_blacklist, 0.9):
+            log.info(f"{event_name} blacklisted. Skipping")
+            return
     except Exception:
         pass
     force_choice_index = None
@@ -988,8 +989,8 @@ def script_cultivate_event(ctx: UmamusumeContext):
     except Exception:
         pass
     choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
-    if not isinstance(choice_index, int) or choice_index < 1:
-        choice_index = 2
+    if not isinstance(choice_index, int) or choice_index <= 0:
+        return
     if choice_index > 5:
         choice_index = 2
 

@@ -84,6 +84,8 @@ def load_events_database():
 
 def get_local_event_choice(ctx: UmamusumeContext, event_name: str) -> Union[int, None]:
     """Get optimal choice from local database - if not found, it's auto-skipped"""
+    if not event_name or not event_name.strip():
+        return None
     events_db = load_events_database()
     
     if not events_db:
@@ -430,6 +432,8 @@ def auto_research_event_choice(event_name: str) -> int:
 
 
 def get_event_choice(ctx: UmamusumeContext, event_name: str) -> int:
+    if not event_name or not event_name.strip():
+        return 0
     try:
         overrides = {}
         if hasattr(ctx, 'cultivate_detail') and hasattr(ctx.cultivate_detail, 'event_overrides'):
