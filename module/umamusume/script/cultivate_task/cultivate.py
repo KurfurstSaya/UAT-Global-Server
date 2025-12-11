@@ -224,6 +224,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         else:
             log.warning("forced going to training")
             ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
+            ctx.cultivate_detail.turn_info.turn_operation.training_type = TrainingType.TRAINING_TYPE_UNKNOWN
             ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
         return
 
@@ -880,7 +881,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         log.info("At least one condition failed - continuing with training")
     
     op = ctx.cultivate_detail.turn_info.turn_operation
-    if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING and op.training_type != TrainingType.TRAINING_TYPE_UNKNOWN:
+    if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
+        if op.training_type == TrainingType.TRAINING_TYPE_UNKNOWN:
+            op.training_type = local_training_type
+        
         ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
         time.sleep(0.35)
         ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
@@ -996,7 +1000,7 @@ def script_cultivate_final_check(ctx: UmamusumeContext):
 
 
 def script_cultivate_event(ctx: UmamusumeContext):
-    log.info("🎭 Event handler called - processing event")
+    log.info("Event handler called")
     
     img = ctx.ctrl.get_screen()
     if img is None or getattr(img, 'size', 0) == 0:
