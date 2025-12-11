@@ -996,6 +996,8 @@ def script_cultivate_final_check(ctx: UmamusumeContext):
 
 
 def script_cultivate_event(ctx: UmamusumeContext):
+    log.info("🎭 Event handler called - processing event")
+    
     img = ctx.ctrl.get_screen()
     if img is None or getattr(img, 'size', 0) == 0:
         for _ in range(3):
@@ -1004,13 +1006,20 @@ def script_cultivate_event(ctx: UmamusumeContext):
             if img is not None and getattr(img, 'size', 0) > 0:
                 break
     if img is None or getattr(img, 'size', 0) == 0:
+        log.warning("Failed to get screen")
         return
     h, w = img.shape[:2]
     y1, y2, x1, x2 = 237, 283, 111, 480
     y1 = max(0, min(h, y1)); y2 = max(y1, min(h, y2))
     x1 = max(0, min(w, x1)); x2 = max(x1, min(w, x2))
     event_name_img = img[y1:y2, x1:x2]
+    
     event_name = ocr_line(event_name_img, lang="en")
+    
+    if not event_name or not event_name.strip():
+        h, w = event_name_img.shape[:2]
+        event_name_img_upscaled = cv2.resize(event_name_img, (w * 2, h * 2), interpolation=cv2.INTER_CUBIC)
+        event_name = ocr_line(event_name_img_upscaled, lang="en")
     try:
         from bot.recog.ocr import find_similar_text
         event_blacklist = [
