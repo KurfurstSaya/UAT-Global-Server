@@ -375,8 +375,8 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
                 best_score = training_score[best_idx] if len(training_score) == 5 else 0.0
             except Exception:
                 best_score = 0.0
-            if best_score < 0.37:
-                log.info("Low training score before summer, conserving energy (score < 0.37)")
+            if best_score < 0.337:
+                log.info("Low training score before summer, conserving energy (score < 0.34)")
                 if energy < SUMMER_CONSERVE_ENERGY:
                     expect_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
                 else:
