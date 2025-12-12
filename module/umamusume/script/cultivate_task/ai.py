@@ -72,9 +72,25 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         return turn_operation
 
     if (mood_raw is not None) and energy < ENERGY_FAST_TRIP and mood_val < mood_threshold:
-        log.info("mood fast path")
-        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
-        return turn_operation
+        if getattr(ctx.cultivate_detail, 'prioritize_recreation', False) and ctx.cultivate_detail.pal_event_stage > 0:
+            try:
+                img = ctx.current_screen
+                if img is not None:
+                    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    from module.umamusume.asset.template import UI_RECREATION_FRIEND_NOTIFICATION
+                    result = image_match(img_gray, UI_RECREATION_FRIEND_NOTIFICATION)
+                    if result.find_match:
+                        log.info("mood fast path - PAL notification detected, returning TRIP")
+                        turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
+                        return turn_operation
+                    else:
+                        log.info("mood fast path - PAL notification NOT detected, skipping TRIP")
+            except Exception:
+                pass
+        else:
+            log.info("mood fast path - regular trip (PAL not configured)")
+            turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
+            return turn_operation
 
     limit = getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48))
     if energy <= limit:
@@ -305,7 +321,24 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             log.info("No recreation as good training detected")
             trip = False
         else:
-            trip = True
+            if getattr(ctx.cultivate_detail, 'prioritize_recreation', False) and ctx.cultivate_detail.pal_event_stage > 0:
+                try:
+                    if cached_screen is not None:
+                        from module.umamusume.asset.template import UI_RECREATION_FRIEND_NOTIFICATION
+                        result = image_match(cached_screen, UI_RECREATION_FRIEND_NOTIFICATION)
+                        if result.find_match:
+                            log.info("Recreation conditions met and PAL notification detected")
+                            trip = True
+                        else:
+                            log.info("Recreation conditions met but PAL notification NOT detected - skipping trip")
+                            trip = False
+                    else:
+                        trip = False
+                except Exception:
+                    trip = False
+            else:
+                log.info("Recreation conditions met - regular trip (PAL not configured)")
+                trip = True
 
     if trip and limit < 90 and energy > 26:
         log.info("Checking if outing is better than rest")

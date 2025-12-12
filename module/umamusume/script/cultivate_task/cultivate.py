@@ -214,18 +214,12 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         return
     
     if turn_operation is not None and turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRIP:
-        if (ctx.cultivate_detail.prioritize_recreation and 
-            ctx.cultivate_detail.pal_event_stage > 0):
-            log.info("Executing trip operation (pal stage active)")
-            if 36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64:
-                ctx.ctrl.click(68, 991, "Summer Camp")
-            else:
-                ctx.ctrl.click_by_point(CULTIVATE_TRIP)
+        # AI has already validated PAL availability, execute directly
+        log.info("Executing trip operation")
+        if 36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64:
+            ctx.ctrl.click(68, 991, "Summer Camp")
         else:
-            log.warning("forced going to training")
-            ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
-            ctx.cultivate_detail.turn_info.turn_operation.training_type = TrainingType.TRAINING_TYPE_UNKNOWN
-            ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
+            ctx.ctrl.click_by_point(CULTIVATE_TRIP)
         return
 
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
