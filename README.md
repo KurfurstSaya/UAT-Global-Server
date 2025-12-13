@@ -146,6 +146,9 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 
 ## Changelogs
+- **13/12/2025**  
+Minimum score before conserving energy before summer and minimum score before forcing wit training are now customizable.   
+
 - **12/12/2025**  
 Fixed recreation breaking training (forcing wit) when pal outing is configured with no pal notification. (OH I DIDNT FUCKING PUSH)  
 
