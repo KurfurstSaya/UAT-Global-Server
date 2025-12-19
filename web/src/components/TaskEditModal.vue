@@ -423,6 +423,7 @@
                   </div>
                 </div>
               </div>
+
               <div>
                 <div class="form-group">
                   <div class="advanced-options-header" @click="switchAdvanceOption">
@@ -1195,6 +1196,96 @@
           <div class="category-card" id="category-event">
               <div class="category-title">Event Settings</div>
 
+              <div class="form-group mt-4 event-weights-section">
+                <div class="event-weights-header">
+                  <div class="event-weights-title">
+                    <i class="fas fa-calculator"></i>
+                    Event Scoring Weights
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary reset-weights-btn" @click="resetEventWeights">
+                    <i class="fas fa-undo"></i> Reset to Defaults
+                  </button>
+                </div>
+                <div class="event-weights-description">
+                  <p class="description-text">
+                    <strong>How it works:</strong> The bot calculates a score for each event choice by multiplying every gain by their weights, then selects the highest scoring option.
+                  </p>
+                  <div class="calculation-formula">
+                    <strong>Example:</strong> <code>Score = (Friend × Weight) + (Speed × Weight) + (Stamina × Weight) + (Power × Weight) + (Guts × Weight) + (Wits × Weight) + (Hint × Weight) + (Skill Pts × Weight)</code>
+                  </div>
+                  <div class="special-cases">
+                    <strong>Special Behaviors:</strong>
+                    <ul>
+                      <li><strong>Mood (9999):</strong> Extremely high weight ensures mood recovery is prioritized when mood is low. Auto-disabled when mood is maxed (Level 5).</li>
+                      <li><strong>Max Energy (50):</strong> Weight of 50. Auto-disabled in Senior year.</li>
+                      <li><strong>Energy (16):</strong> Dynamically adjusted based on current energy: disabled when energy > 84 (near full), increased to 30 when energy is 40-60 (to avoid rest), 16 otherwise.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered event-weights-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 20%;">Stat</th>
+                        <th style="width: 26.67%;">Junior</th>
+                        <th style="width: 26.67%;">Classic</th>
+                        <th style="width: 26.67%;">Senior</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Friend</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Friendship" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Friendship" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Friendship" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Speed</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Speed" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Speed" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Speed" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Stamina</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Stamina" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Stamina" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Stamina" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Power</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Power" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Power" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Power" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Guts</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Guts" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Guts" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Guts" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Wits</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Wits" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Wits" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Wits" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Hint</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior.Hint" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic.Hint" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior.Hint" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Skill Pts</strong></td>
+                        <td><input type="number" v-model.number="eventWeightsJunior['Skill Points']" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsClassic['Skill Points']" class="form-control form-control-sm" min="0" max="100"></td>
+                        <td><input type="number" v-model.number="eventWeightsSenior['Skill Points']" class="form-control form-control-sm" min="0" max="100"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               <div class="form-group">
                 <div class="mb-2" style="color: var(--accent); font-weight: 700;">
                   Unselected = Autopick best option
@@ -1798,6 +1889,37 @@ export default {
 
             draggingSkillName: null,
       dragOrigin: null,
+      
+      eventWeightsJunior: {
+        Friendship: 35,
+        Speed: 10,
+        Stamina: 10,
+        Power: 10,
+        Guts: 20,
+        Wits: 1,
+        Hint: 100,
+        'Skill Points': 10
+      },
+      eventWeightsClassic: {
+        Friendship: 20,
+        Speed: 10,
+        Stamina: 10,
+        Power: 10,
+        Guts: 20,
+        Wits: 1,
+        Hint: 100,
+        'Skill Points': 10
+      },
+      eventWeightsSenior: {
+        Friendship: 0,
+        Speed: 10,
+        Stamina: 10,
+        Power: 10,
+        Guts: 20,
+        Wits: 1,
+        Hint: 100,
+        'Skill Points': 10
+      },
       dropHoverTarget: null,
       didValidDrop: false,
 
@@ -2105,6 +2227,38 @@ export default {
           }
         })
         .catch(() => {});
+    },
+    resetEventWeights() {
+      this.eventWeightsJunior = {
+        Friendship: 35,
+        Speed: 10,
+        Stamina: 10,
+        Power: 10,
+        Guts: 20,
+        Wits: 1,
+        Hint: 100,
+        'Skill Points': 10
+      };
+      this.eventWeightsClassic = {
+        Friendship: 20,
+        Speed: 10,
+        Stamina: 10,
+        Power: 10,
+        Guts: 20,
+        Wits: 1,
+        Hint: 100,
+        'Skill Points': 10
+      };
+      this.eventWeightsSenior = {
+        Friendship: 0,
+        Speed: 10,
+        Stamina: 10,
+        Power: 10,
+        Guts: 20,
+        Wits: 1,
+        Hint: 100,
+        'Skill Points': 10
+      };
     },
     togglePalConfigPanel() {
     this.showPalConfigPanel = !this.showPalConfigPanel;
@@ -2717,6 +2871,40 @@ export default {
       console.log('POST /task', payload)
       payload.attachment_data = payload.attachment_data || {};
       payload.attachment_data.event_choices = this.buildEventChoices();
+      
+      // Add event weights to payload
+      payload.attachment_data.event_weights = {
+        junior: {
+          Friendship: this.eventWeightsJunior.Friendship,
+          Speed: this.eventWeightsJunior.Speed,
+          Stamina: this.eventWeightsJunior.Stamina,
+          Power: this.eventWeightsJunior.Power,
+          Guts: this.eventWeightsJunior.Guts,
+          Wisdom: this.eventWeightsJunior.Wits,
+          'Skill Hint': this.eventWeightsJunior.Hint,
+          'Skill Pts': this.eventWeightsJunior['Skill Points']
+        },
+        classic: {
+          Friendship: this.eventWeightsClassic.Friendship,
+          Speed: this.eventWeightsClassic.Speed,
+          Stamina: this.eventWeightsClassic.Stamina,
+          Power: this.eventWeightsClassic.Power,
+          Guts: this.eventWeightsClassic.Guts,
+          Wisdom: this.eventWeightsClassic.Wits,
+          'Skill Hint': this.eventWeightsClassic.Hint,
+          'Skill Pts': this.eventWeightsClassic['Skill Points']
+        },
+        senior: {
+          Friendship: this.eventWeightsSenior.Friendship,
+          Speed: this.eventWeightsSenior.Speed,
+          Stamina: this.eventWeightsSenior.Stamina,
+          Power: this.eventWeightsSenior.Power,
+          Guts: this.eventWeightsSenior.Guts,
+          Wisdom: this.eventWeightsSenior.Wits,
+          'Skill Hint': this.eventWeightsSenior.Hint,
+          'Skill Pts': this.eventWeightsSenior['Skill Points']
+        }
+      };
 
       if (this.prioritizeRecreation && this.palSelected) {
         payload.attachment_data.prioritize_recreation = true;
@@ -2939,6 +3127,50 @@ export default {
         }
       }
 
+      // Load event weights if present in preset
+      if ('event_weights' in this.presetsUse && this.presetsUse.event_weights) {
+        const ew = this.presetsUse.event_weights;
+        if (ew.junior) {
+          this.eventWeightsJunior = {
+            Friendship: ew.junior.Friendship || 35,
+            Speed: ew.junior.Speed || 10,
+            Stamina: ew.junior.Stamina || 10,
+            Power: ew.junior.Power || 10,
+            Guts: ew.junior.Guts || 20,
+            Wits: ew.junior.Wits || ew.junior.Wisdom || 1,
+            Hint: ew.junior.Hint || ew.junior['Skill Hint'] || 100,
+            'Skill Points': ew.junior['Skill Points'] || ew.junior['Skill Pts'] || 10
+          };
+        }
+        if (ew.classic) {
+          this.eventWeightsClassic = {
+            Friendship: ew.classic.Friendship || 20,
+            Speed: ew.classic.Speed || 10,
+            Stamina: ew.classic.Stamina || 10,
+            Power: ew.classic.Power || 10,
+            Guts: ew.classic.Guts || 20,
+            Wits: ew.classic.Wits || ew.classic.Wisdom || 1,
+            Hint: ew.classic.Hint || ew.classic['Skill Hint'] || 100,
+            'Skill Points': ew.classic['Skill Points'] || ew.classic['Skill Pts'] || 10
+          };
+        }
+        if (ew.senior) {
+          this.eventWeightsSenior = {
+            Friendship: ew.senior.Friendship || 0,
+            Speed: ew.senior.Speed || 10,
+            Stamina: ew.senior.Stamina || 10,
+            Power: ew.senior.Power || 10,
+            Guts: ew.senior.Guts || 20,
+            Wits: ew.senior.Wits || ew.senior.Wisdom || 1,
+            Hint: ew.senior.Hint || ew.senior['Skill Hint'] || 100,
+            'Skill Points': ew.senior['Skill Points'] || ew.senior['Skill Pts'] || 10
+          };
+        }
+      } else {
+        // Reset to defaults if not in preset
+        this.resetEventWeights();
+      }
+
       // 读取青春杯配置（如果存在）
       if ('ura_config' in this.presetsUse) {
         this.skillEventWeight = [...this.presetsUse.ura_config.skillEventWeight];
@@ -2998,6 +3230,38 @@ export default {
         race_list: this.extraRace,
         skill_priority_list: skill_priority_list,
         skill_blacklist: skill_blacklist,
+        event_weights: {
+          junior: {
+            Friendship: this.eventWeightsJunior.Friendship,
+            Speed: this.eventWeightsJunior.Speed,
+            Stamina: this.eventWeightsJunior.Stamina,
+            Power: this.eventWeightsJunior.Power,
+            Guts: this.eventWeightsJunior.Guts,
+            Wisdom: this.eventWeightsJunior.Wits,
+            'Skill Hint': this.eventWeightsJunior.Hint,
+            'Skill Pts': this.eventWeightsJunior['Skill Points']
+          },
+          classic: {
+            Friendship: this.eventWeightsClassic.Friendship,
+            Speed: this.eventWeightsClassic.Speed,
+            Stamina: this.eventWeightsClassic.Stamina,
+            Power: this.eventWeightsClassic.Power,
+            Guts: this.eventWeightsClassic.Guts,
+            Wisdom: this.eventWeightsClassic.Wits,
+            'Skill Hint': this.eventWeightsClassic.Hint,
+            'Skill Pts': this.eventWeightsClassic['Skill Points']
+          },
+          senior: {
+            Friendship: this.eventWeightsSenior.Friendship,
+            Speed: this.eventWeightsSenior.Speed,
+            Stamina: this.eventWeightsSenior.Stamina,
+            Power: this.eventWeightsSenior.Power,
+            Guts: this.eventWeightsSenior.Guts,
+            Wisdom: this.eventWeightsSenior.Wits,
+            'Skill Hint': this.eventWeightsSenior.Hint,
+            'Skill Pts': this.eventWeightsSenior['Skill Points']
+          }
+        },
         cureAsapConditions: this.cureAsapConditions,
         expect_attribute: [this.expectSpeedValue, this.expectStaminaValue, this.expectPowerValue, this.expectWillValue, this.expectIntelligenceValue],
         follow_support_card: this.selectedSupportCard,
@@ -4386,5 +4650,152 @@ export default {
 .race-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important}
 .race-toggle.selected{background:transparent!important;border:2px solid var(--accent)!important;box-shadow:0 0 0 2px rgba(255,45,163,.35) inset,0 0 14px rgba(255,45,163,.35)!important}
 .btn-outline-primary.dropdown-toggle,.show>.btn-outline-primary.dropdown-toggle{border-color:var(--accent)!important;color:var(--accent)!important;background:transparent!important}
+
+.event-weights-section {
+  background: var(--surface-2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-weights-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.event-weights-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.event-weights-title i {
+  color: var(--accent);
+  font-size: 20px;
+}
+
+.reset-weights-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  transition: all 0.2s ease;
+}
+
+.reset-weights-btn:hover {
+  background: var(--accent) !important;
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(255, 45, 163, 0.3);
+}
+
+.event-weights-description {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.description-text {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.calculation-formula {
+  background: rgba(52, 133, 227, 0.1);
+  border-left: 3px solid #3485E3;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.calculation-formula code {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #7dd3fc;
+}
+
+.special-cases {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.special-cases strong {
+  color: var(--accent);
+}
+
+.special-cases ul {
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.special-cases li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.special-cases li strong {
+  color: #7dd3fc;
+  font-weight: 600;
+}
+
+.event-weights-table {
+  font-size: 13px;
+  margin-bottom: 0;
+  background: transparent;
+}
+
+.event-weights-table thead {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.event-weights-table th {
+  font-weight: 600;
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  padding: 10px;
+}
+
+.event-weights-table td {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  padding: 8px;
+  color: var(--text);
+}
+
+.event-weights-table td strong {
+  color: var(--accent);
+}
+
+.event-weights-table input.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.event-weights-table input.form-control:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255, 45, 163, 0.2);
+  color: var(--text);
+}
 
 </style>

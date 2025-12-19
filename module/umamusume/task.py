@@ -35,7 +35,7 @@ class TaskDetail:
     pal_card_multiplier: float
     score_value: list
     compensate_failure: bool
-    # 剧本相关配置
+    event_weights: dict
     scenario_config: ScenarioConfig
     # 限时: 富士奇石的表演秀
     fujikiseki_show_mode: bool
@@ -121,6 +121,12 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
         td.event_overrides = eo if isinstance(eo, dict) else {}
     except Exception:
         td.event_overrides = {}
+    
+    try:
+        ew = attachment_data.get('event_weights', None)
+        td.event_weights = ew if isinstance(ew, dict) else None
+    except Exception:
+        td.event_weights = None
 
     td.fujikiseki_show_difficulty = attachment_data['fujikiseki_show_difficulty']
     ut.detail = td

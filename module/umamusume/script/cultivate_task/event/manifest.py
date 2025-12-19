@@ -250,26 +250,56 @@ def calculate_optimal_choice_from_db(ctx: UmamusumeContext, event_data: dict) ->
     mood_text = f"Level {mood_val}" if mood_val is not None else "Unknown"
     log.info(f"HP: {energy}, Year: {year_text}, Mood: {mood_text}")
 
-    weights = {
-        'Power': 10,
-        'Speed': 10,
-        'Guts': 20,
-        'Stamina': 10,
-        'Wisdom': 1,
-        'Friendship': 15,
-        'Mood': 9999,
-        'Max Energy': 50,
-        'HP': 16,
-        'Skill': 10,
-        'Skill Hint': 100,
-        'Skill Pts': 10
-    }
+    custom_weights = None
+    try:
+        if hasattr(ctx, 'task') and hasattr(ctx.task, 'detail') and hasattr(ctx.task.detail, 'event_weights'):
+            custom_weights = ctx.task.detail.event_weights
+    except Exception:
+        pass
 
-    if year_text == "Junior":
-        weights['Friendship'] = 35
-    elif year_text == "Senior":
-        weights['Friendship'] = 0
-        weights['Max Energy'] = 0
+    if custom_weights and isinstance(custom_weights, dict):
+        if year_text == "Junior" and 'junior' in custom_weights:
+            weights = dict(custom_weights['junior'])
+        elif year_text == "Classic" and 'classic' in custom_weights:
+            weights = dict(custom_weights['classic'])
+        elif year_text == "Senior" and 'senior' in custom_weights:
+            weights = dict(custom_weights['senior'])
+        else:
+            weights = {
+                'Power': 10,
+                'Speed': 10,
+                'Guts': 20,
+                'Stamina': 10,
+                'Wisdom': 1,
+                'Friendship': 15,
+                'Mood': 9999,
+                'Max Energy': 50,
+                'HP': 16,
+                'Skill': 10,
+                'Skill Hint': 100,
+                'Skill Pts': 10
+            }
+    else:
+        weights = {
+            'Power': 10,
+            'Speed': 10,
+            'Guts': 20,
+            'Stamina': 10,
+            'Wisdom': 1,
+            'Friendship': 15,
+            'Mood': 9999,
+            'Max Energy': 50,
+            'HP': 16,
+            'Skill': 10,
+            'Skill Hint': 100,
+            'Skill Pts': 10
+        }
+
+        if year_text == "Junior":
+            weights['Friendship'] = 35
+        elif year_text == "Senior":
+            weights['Friendship'] = 0
+            weights['Max Energy'] = 0
 
     if mood_val == 5:
         weights['Mood'] = 0
@@ -281,6 +311,12 @@ def calculate_optimal_choice_from_db(ctx: UmamusumeContext, event_data: dict) ->
     elif 40 <= energy <= 60:
         weights['HP'] = 30
         log.info("Focusing on energy to avoid rest")
+    else:
+        if 'HP' not in weights:
+            weights['HP'] = 16
+
+    weight_str = ", ".join(f"{k}:{v}" for k, v in sorted(weights.items()))
+    log.info(f"Event weights: {weight_str}")
 
     best_choice = None
     best_score = -1
