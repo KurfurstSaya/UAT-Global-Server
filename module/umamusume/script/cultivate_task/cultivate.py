@@ -262,6 +262,14 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 ctx.ctrl.click_by_point(CULTIVATE_MEDIC_SUMMER)
             else:
                 ctx.ctrl.click_by_point(CULTIVATE_MEDIC)
+            time.sleep(0.5)
+            img = ctx.ctrl.get_screen()
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            is_summer = (36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64)
+            check_point = img_rgb[1130, 200] if is_summer else img_rgb[1125, 105]
+            if not (check_point[0] > 200 and check_point[1] > 200 and check_point[2] > 200):
+                log.info("not sick resetting decision")
+                ctx.ctrl.trigger_decision_reset = True
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRIP:
             if 36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64:
                 ctx.ctrl.click(68, 991, "Summer Camp")
