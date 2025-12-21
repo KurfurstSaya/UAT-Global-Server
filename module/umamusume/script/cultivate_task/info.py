@@ -643,6 +643,7 @@ def script_info(ctx: UmamusumeContext):
                 ctx.ctrl.click(214, 832, "Auto Select")
         if title_text == TITLE[46]:  # Session Error
             log.info("User login from somewhere else")
-            ctx.task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
+            from bot.engine import scheduler
+            scheduler.scheduler.stop()
             return
         time.sleep(1)
