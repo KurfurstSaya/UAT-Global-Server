@@ -149,7 +149,8 @@ Something Something this is for educational purposes only. Please do not misuse 
 
 ## Changelogs
 - **21/12/2025**  
-Logging in from your phone/another device now causes the current task to pause.     
+Logging in from your phone/another device now causes the current task to pause.
+Forced brightness check again everytime infirmary is pressed.
 
 - **19/12/2025**  
 Exposed event weight to webui for user to configure.     
@@ -263,7 +264,7 @@ Team trials execution mode. not tested and held together by hopes and dreams so 
 Maybe fix card selection breaking
 
 ## Planned/In progress (In order from top to bottom)
-
+- starting work on full auto mode gonna have no other updates for a while   
 - im going to uma my musumes 
 
 
@@ -271,3 +272,7 @@ Maybe fix card selection breaking
 - **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
 
 - **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
+
+
+Stop shilling this shit on /vg/ with the retarded forced meme ur making me look bad
+
