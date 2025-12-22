@@ -8,6 +8,8 @@ from module.umamusume.asset.point import *
 from module.umamusume.asset.template import *
 from module.umamusume.asset.template import UI_INFO
 from bot.recog.ocr import ocr_line, find_similar_text
+from bot.base.task import TaskStatus, EndTaskReason
+from bot.base.common import Area, ImageMatchConfig
 import bot.base.log as logger
 
 log = logger.get_logger(__name__)
@@ -48,8 +50,16 @@ def tt_next_sequence(ctx: UmamusumeContext):
     except Exception:
         pass
 
+def complete_team_trials(ctx: UmamusumeContext):
+    log.info("TT tally - ending task")
+    ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
+
+REF_CANT_TT_REGION = Template("cant_tt", UMAMUSUME_REF_TEMPLATE_PATH, 
+                               ImageMatchConfig(match_area=Area(369, 584, 720, 1280)))
+
 RULES_BY_MODE = {
     "TASK_EXECUTE_MODE_TEAM_TRIALS": [
+        {"type": "image", "ref": REF_CANT_TT_REGION, "action": complete_team_trials},
         {"type": "image", "ref": REF_HOME_GIFT, "action": lambda ctx: ctx.ctrl.click(522, 1228, "team trials resume")},
         {"type": "image", "ref": REF_TEAM_TRIALS, "action": lambda ctx: ctx.ctrl.click(106, 812, "team trials resume2")},
         {"type": "image", "ref": REF_TEAM_RACE, "action": lambda ctx: ctx.ctrl.click(351, 839, "team trials resume3")},
