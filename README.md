@@ -54,7 +54,7 @@ you can edit the start and end time in `main.py` (24 hours format) to dictate wh
 Just cd into any folder and run 
 
 ```bash
-git clone https://github.com/oofmatoes/UAT-Global-Server
+git clone https://github.com/KurfurstSaya/UAT-Global-Server
 ```
 
 Then ensure python 3.10 is installed:
