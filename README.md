@@ -1,4 +1,6 @@
 ![uma musume](docs/umabike.gif)
+This UAT was discarded by a previous dev. 
+
 # UMAMUSUME AUTO TRAINER
 
 
