@@ -1,5 +1,4 @@
-<div align="center">
-<img src="docs/Lick.gif" width="500" height="500" alt="Satono lick">
+![uma musume](docs/umabike.gif)
 # UMAMUSUME AUTO TRAINER
 
 
