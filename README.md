@@ -1,5 +1,6 @@
-![uma musume](docs/umabike.gif)
-This UAT was discarded by a previous dev, soo no more update. 
+![umabike](https://github.com/user-attachments/assets/7c99d64e-06bf-47dc-a235-d5acfdb1de75)
+This UAT was discarded by![Uploading umabike.gif…]()
+ a previous dev, soo no more update. 
 
 # UMAMUSUME AUTO TRAINER
 
