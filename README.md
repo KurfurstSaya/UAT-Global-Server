@@ -1,5 +1,6 @@
 <div align="center">
 <img src="docs/Lick.gif" width="500" height="500" alt="Satono lick">
+# UMAMUSUME AUTO TRAINER
 
 
 ![UAT](docs/main.png)
