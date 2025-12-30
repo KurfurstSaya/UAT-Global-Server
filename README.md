@@ -1,7 +1,8 @@
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1ee700a0-b7cd-4513-91e8-7ea5f52d0068">
+</p>
 
 This UAT was abandoned bya previous dev, soo no more update. 
-![umabike](https://github.com/user-attachments/assets/fe2e99f5-764b-4104-a27d-41123deef844)
 
 # UMAMUSUME AUTO TRAINER
 
