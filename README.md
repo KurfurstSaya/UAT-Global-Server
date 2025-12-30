@@ -1,5 +1,5 @@
 ![uma musume](docs/umabike.gif)
-This UAT was discarded by a previous dev. 
+This UAT was discarded by a previous dev, soo no more update. 
 
 # UMAMUSUME AUTO TRAINER
 
