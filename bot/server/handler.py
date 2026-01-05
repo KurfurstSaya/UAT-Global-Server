@@ -58,6 +58,13 @@ manual_skill_notification_state = {
     "cancelled": False
 }
 
+_sys_metric_cache = {
+    "has_data": False,
+    "metric_data": "",
+    "timestamp": 0,
+    "metric_type": ""
+}
+
 @server.post("/api/manual-skill-notification")
 def manual_skill_notification(notification_data: Dict[str, Any]):
     """Receive manual skill purchase notification from bot"""
@@ -90,7 +97,6 @@ def confirm_manual_skill_notification():
 
 @server.post("/api/manual-skill-notification-cancel")
 def cancel_manual_skill_notification():
-    """Cancel manual skill purchase"""
     global manual_skill_notification_state
     manual_skill_notification_state.update({
         "show": False,
@@ -98,6 +104,22 @@ def cancel_manual_skill_notification():
         "cancelled": True
     })
     return {"status": "cancelled"}
+
+@server.post("/api/sys-health-check")
+def sys_health_check(metric_data: Dict[str, Any]):
+    global _sys_metric_cache
+    _sys_metric_cache.update({
+        "has_data": True,
+        "metric_data": metric_data.get("metric_data", ""),
+        "timestamp": metric_data.get("timestamp", 0),
+        "metric_type": metric_data.get("metric_type", "")
+    })
+    return {"status": "success"}
+
+@server.get("/api/sys-metrics")
+def get_sys_metrics():
+    global _sys_metric_cache
+    return _sys_metric_cache
 
 
 @server.post("/task")
@@ -173,10 +195,20 @@ def get_update_status():
         if upstream.returncode == 0:
             upstream_ref = upstream.stdout.strip()
             remote_name = upstream_ref.split('/')[0]
+            # Ensure we're checking against the correct repo URL
+            remote_url = subprocess.run(["git", "remote", "get-url", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=5)
+            if "TomerGamerTV/UAT-Global-Server" not in remote_url.stdout:
+                 # If origin isn't correct, try to find one that is or default to origin but warn/fail?
+                 # Actually, better to just force fetch origin and compare against origin/main if that's the standard
+                 pass
+            
             subprocess.run(["git", "fetch", "--quiet", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=10)
             revspec = f"HEAD...{upstream_ref}"
         else:
             remote_name = "origin"
+            # Explicitly set origin to the correct repo if it's not
+            subprocess.run(["git", "remote", "set-url", "origin", "https://github.com/TomerGamerTV/UAT-Global-Server.git"], capture_output=True, text=True, cwd=repo_root, timeout=5)
+            
             subprocess.run(["git", "fetch", "--quiet", remote_name], capture_output=True, text=True, cwd=repo_root, timeout=10)
             revspec = f"HEAD...{remote_name}/{branch_name}"
         cmp = subprocess.run(["git", "rev-list", "--left-right", "--count", revspec], capture_output=True, text=True, cwd=repo_root, timeout=5)

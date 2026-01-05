@@ -27,6 +27,7 @@
                   <option :value="1">Single Execution (Depricated)</option>
                   <option :value="3">Loop until canceled</option>
                   <option :value="4">Team Trials</option>
+                  <option :value="5">Full Auto (Career + Team Trials Loop)</option>
                 </select>
               </div>
               <div class="row">
@@ -36,6 +37,7 @@
                     <select v-model.number="selectedScenario" class="form-control" id="selectScenario">
                       <option :value="1">URA</option>
                       <option :value="2">Aoharu Cup</option>
+                      <option :value="3">MANT</option>
                     </select>
                   </div>
                 </div>

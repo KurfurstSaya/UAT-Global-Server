@@ -918,8 +918,16 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
 def script_main_menu(ctx: UmamusumeContext):
     if ctx.cultivate_detail.cultivate_finish:
-        ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
-        return
+        mode_name = getattr(ctx.task.task_execute_mode, "name", None)
+        if mode_name == "TASK_EXECUTE_MODE_FULL_AUTO":
+            log.info("career run completed in full auto mode - resetting for next run")
+            ctx.cultivate_detail.cultivate_finish = False
+            ctx.cultivate_detail.turn_info = None
+            ctx.cultivate_detail.turn_info_history = []
+            return
+        else:
+            ctx.task.end_task(TaskStatus.TASK_STATUS_SUCCESS, EndTaskReason.COMPLETE)
+            return
     ctx.ctrl.click_by_point(TO_CULTIVATE_SCENARIO_CHOOSE)
 
 
@@ -1069,38 +1077,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 return
     except Exception:
         pass
-    try:
-        if isinstance(event_name, str) and event_name.strip().lower() == "tutorial":
-            try:
-                _, choices = parse_cultivate_event(ctx, img)
-            except Exception:
-                choices = []
-
-            if not isinstance(choices, list):
-                choices = []
-            if len(choices) == 0 or len(choices) > 5:
-                try:
-                    time.sleep(0.25)
-                    img_retry = ctx.ctrl.get_screen()
-                    _, choices2 = parse_cultivate_event(ctx, img_retry)
-                    if isinstance(choices2, list) and len(choices2) > 0:
-                        choices = choices2
-                except Exception:
-                    pass
-
-            if len(choices) == 5:
-                target_pt = choices[4]
-                ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), "tutorial choice 5 override")
-                ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
-                return
-    except Exception:
-        pass
-    choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
-    if not isinstance(choice_index, int) or choice_index <= 0:
-        return
-    if choice_index > 5:
-        choice_index = 2
-
+    
     try:
         _, selectors = parse_cultivate_event(ctx, img)
     except Exception:
@@ -1118,6 +1095,22 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 log.info(len(selectors))
         except Exception:
             pass
+    
+    try:
+        if isinstance(event_name, str) and event_name.strip().lower() == "tutorial":
+            if isinstance(selectors, list) and len(selectors) == 5:
+                target_pt = selectors[4]
+                ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), "tutorial choice 5 override")
+                ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
+                return
+    except Exception:
+        pass
+    
+    choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
+    if not isinstance(choice_index, int) or choice_index <= 0:
+        return
+    if choice_index > 5:
+        choice_index = 2
     if isinstance(selectors, list) and len(selectors) > 0:
         idx = int(choice_index)
         if idx < 1:
@@ -1203,9 +1196,21 @@ def script_cultivate_goal_race(ctx: UmamusumeContext):
     log.info("Entering goal race function")
     img = ctx.current_screen
     current_date = parse_date(img, ctx)
+    
     if current_date == -1:
-        log.warning("Failed to parse date")
+        if not hasattr(ctx.cultivate_detail, 'goal_race_parse_failures'):
+            ctx.cultivate_detail.goal_race_parse_failures = 0
+        
+        ctx.cultivate_detail.goal_race_parse_failures += 1
+        log.warning(f"Failed to parse date (attempt {ctx.cultivate_detail.goal_race_parse_failures})")
+        
+        if ctx.cultivate_detail.goal_race_parse_failures >= 3:
+            ctx.ctrl.trigger_decision_reset = True
+            ctx.cultivate_detail.goal_race_parse_failures = 0
         return
+    
+    ctx.cultivate_detail.goal_race_parse_failures = 0
+    
     # 如果进入新的一回合，记录旧的回合信息并创建新的
     if ctx.cultivate_detail.turn_info is None or current_date != ctx.cultivate_detail.turn_info.date:
         if ctx.cultivate_detail.turn_info is not None:
@@ -1956,8 +1961,17 @@ def script_not_found_ui(ctx: UmamusumeContext):
             
     except Exception as e:
         log.debug(f"Goal detection fallback failed: {str(e)}")
-    img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
-            # Original fallback if goal detection fails
+    try:
+        from module.umamusume.asset.template import REF_NEXT
+        img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+        next_match = image_match(img, REF_NEXT)
+        if next_match.find_match:
+            center_x = next_match.center_point[0]
+            center_y = next_match.center_point[1]
+            ctx.ctrl.click(center_x, center_y, "Next button")
+            return
+    except Exception:
+        pass
     log.debug("🔍 No specific UI detected - using default fallback click")
     ctx.ctrl.click(719, 1, "Default fallback click")
 

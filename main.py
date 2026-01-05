@@ -8,6 +8,7 @@ import cv2
 import random
 import datetime
 import bot.base.log as logger
+import bot.base.gpu_utils as gpu_utils
 import os
 
 try:
@@ -17,7 +18,6 @@ try:
     os.environ.setdefault("VECLIB_MAXIMUM_THREADS", cores)
     cv2.setUseOptimized(True)
     cv2.setNumThreads(int(cores))
-    cv2.ocl.setUseOpenCL(False)
    
     try:
         cv2.utils.logging.setLogLevel(cv2.utils.logging.LOG_LEVEL_SILENT)
@@ -39,6 +39,11 @@ from uvicorn import run
 
 log = logger.get_logger(__name__)
 
+_gpu_available = gpu_utils.detect_gpu_capabilities()
+_opencv_gpu = gpu_utils.configure_opencv_gpu()
+if _gpu_available:
+    log.info(f"GPU acceleration enabled: PaddleOCR=Yes, OpenCV={'Yes' if _opencv_gpu else 'No'}")
+
 start_time = 0
 end_time = 24
 KEEPALIVE_ACTIVE = True
@@ -51,7 +56,7 @@ def _get_adb_path():
     return os.path.join("deps", "adb", "adb.exe")
 
 
-def _run_adb(args, timeout=10, capture_output=True, text=True):
+def _run_adb(args, timeout=15, capture_output=True, text=True):
     """Run an adb command with the bundled binary and return CompletedProcess."""
     adb_path = _get_adb_path()
     return subprocess.run([adb_path] + args, capture_output=capture_output, text=text, timeout=timeout)
@@ -68,21 +73,64 @@ def _soft_recover_device(device_id):
     """
     try:
         print("   ♻️  Attempting auto-recovery (safe)…")
+        
+        # 1. Try simple reconnect for offline devices
+        try:
+            print("   🔄 Attempting 'adb reconnect offline'...")
+            _run_adb(["reconnect", "offline"], timeout=10)
+            # Give it a moment to reconnect
+            time.sleep(2)
+            # Check if it worked
+            res = _run_adb(["devices"], timeout=5)
+            if device_id in res.stdout and "offline" not in res.stdout:
+                print("   ✅ Device seems back online!")
+                return
+        except Exception:
+            pass
+            
+        # 1.5 Special handling for emulators (often stuck offline)
+        if device_id.startswith("emulator-"):
+            try:
+                # emulator-5554 -> port 5554 (console) -> port 5555 (adb)
+                serial_port = int(device_id.split("-")[1])
+                adb_port = serial_port + 1
+                print(f"   💊 attempting to re-engage emulator via TCP {adb_port}...")
+                _run_adb(["connect", f"127.0.0.1:{adb_port}"], timeout=10)
+                time.sleep(1)
+            except Exception:
+                pass
+
+        # 2. Heavier recovery
         # Best-effort forward removal (ignore failures)
         try:
             _run_adb(["-s", device_id, "forward", "--remove-all"], timeout=5)
         except Exception:
             pass
 
-        # Restart adb server
+        # Kill any existing adb processes to clear stale connections
         try:
-            _run_adb(["kill-server"], timeout=5)
+            print("   🧹 Cleaning up stale ADB processes...")
+            subprocess.run(["taskkill", "/F", "/IM", "adb.exe", "/T"], capture_output=True, timeout=5)
+            time.sleep(1)
         except Exception:
             pass
-        _run_adb(["start-server"], timeout=10)
 
-        # Ensure target device comes back online
-        _run_adb(["-s", device_id, "wait-for-device"], timeout=20)
+        # Restart adb server
+        try:
+            _run_adb(["kill-server"], timeout=10)
+        except Exception:
+            pass
+        _run_adb(["start-server"], timeout=15)
+
+        # Ensure target device comes back online - increased timeout to 60s
+        print(f"   ⏳ Waiting for device {device_id} to reconnect (up to 60s)...")
+        try:
+            _run_adb(["-s", device_id, "wait-for-device"], timeout=60)
+        except subprocess.TimeoutExpired:
+            print("   🥶 Device still unresponsive.")
+            if device_id.startswith("emulator-"):
+                print("   👉 ACTION REQUIRED: Your emulator appears frozen. Please restart the emulator manually.")
+            raise
 
         # Ping device quickly
         pong = _run_adb(["-s", device_id, "shell", "echo", "pong"], timeout=5)
@@ -191,7 +239,8 @@ def get_adb_devices():
         for line in lines:
             if line.strip() and '\t' in line:
                 device_id, status = line.split('\t')
-                if status == 'device':
+                # Accept offline devices so we can try to recover them
+                if status == 'device' or status == 'offline':
                     devices.append(device_id)
         
         # If no devices found, try restarting ADB server
@@ -209,7 +258,7 @@ def get_adb_devices():
                 for line in lines:
                     if line.strip() and '\t' in line:
                         device_id, status = line.split('\t')
-                        if status == 'device':
+                        if status == 'device' or status == 'offline':
                             devices.append(device_id)
         
         return devices
@@ -323,13 +372,22 @@ def run_health_checks():
     """Run health checks after device selection"""
     print(" Running connection health checks...")
     
-    # Test ADB connection
+    # Test ADB connection - increased timeout to 20s
     try:
         adb_path = _get_adb_path()
         result = subprocess.run([adb_path, "devices"], 
-                              capture_output=True, text=True, timeout=10)
-        if result.returncode == 0 and selected_device in result.stdout:
-            print("✅ ADB connection: OK")
+                              capture_output=True, text=True, timeout=20)
+        
+        if result.returncode == 0:
+            output = result.stdout
+            if selected_device in output:
+                if "offline" in output:
+                     print("❌ ADB connection: OK but device is OFFLINE")
+                     return False
+                print("✅ ADB connection: OK")
+            else:
+                 print("❌ ADB connection: Device not listed")
+                 return False
         else:
             print("❌ ADB connection: FAILED")
             return False
@@ -337,18 +395,29 @@ def run_health_checks():
         print(f"❌ ADB health check failed: {e}")
         return False
     
-    # Test device responsiveness
-    try:
-        result = subprocess.run([adb_path, "-s", selected_device, "shell", "echo", "test"], 
-                              capture_output=True, text=True, timeout=10)
-        if result.returncode == 0:
-            print("✅ Device responsiveness: OK")
-        else:
-            print("❌ Device responsiveness: FAILED")
-            return False
-    except Exception as e:
-        print(f"❌ Device health check failed: {e}")
-        return False
+    # Test device responsiveness - increased timeout to 20s with retries
+    retry_count = 3
+    for attempt in range(retry_count):
+        try:
+            result = subprocess.run([adb_path, "-s", selected_device, "shell", "echo", "test"], 
+                                  capture_output=True, text=True, timeout=20)
+            if result.returncode == 0:
+                print("✅ Device responsiveness: OK")
+                break
+            else:
+                if attempt < retry_count - 1:
+                    print(f"⚠️  Device responsiveness check failed (attempt {attempt+1}/{retry_count}). Retrying...")
+                    time.sleep(2)
+                else:
+                    print("❌ Device responsiveness: FAILED")
+                    return False
+        except Exception as e:
+            if attempt < retry_count - 1:
+                print(f"⚠️  Device responsiveness check error: {e}. Retrying...")
+                time.sleep(2)
+            else:
+                print(f"❌ Device health check failed: {e}")
+                return False
     
     # Test Umamusume detection
     if check_umamusume_running(selected_device):
@@ -489,8 +558,12 @@ if __name__ == '__main__':
     
     # Run health checks
     if not run_health_checks():
-        print("❌ Health checks failed. Please check your setup and try again.")
-        sys.exit(1)
+        print("⚠️ Health checks failed. Attempting auto-recovery...")
+        _soft_recover_device(selected_device)
+        print("🔄 Retrying health checks...")
+        if not run_health_checks():
+            print("❌ Health checks failed again after recovery. Please check your setup.")
+            sys.exit(1)
     
     # Final stabilization pass before starting services
     print("🔧 Finalizing device services…")
@@ -509,7 +582,6 @@ if __name__ == '__main__':
 
     from module.umamusume.script.cultivate_task.event.manifest import warmup_event_index
     warmup_event_index()
-
     # Start the bot
     register_app(UmamusumeManifest)
     restored = False
@@ -521,7 +593,7 @@ if __name__ == '__main__':
     except Exception:
         restored = False
         was_active = None
-    scheduler_thread = threading.Thread(target=scheduler.init, args=())
+    scheduler_thread = threading.Thread(target=scheduler.init, args=(), daemon=True)
     scheduler_thread.start()
     try:
         if was_active is True or (was_active is None and restored):

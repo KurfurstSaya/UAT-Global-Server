@@ -4,10 +4,12 @@ from difflib import SequenceMatcher
 import cv2
 import numpy
 import time
-from collections import Counter
+from collections import Counter, OrderedDict
 import unicodedata
 import json
 import os
+from functools import lru_cache
+import hashlib
 
 from bot.base.task import TaskStatus, EndTaskReason
 from bot.recog.image_matcher import image_match, compare_color_equal
@@ -21,6 +23,51 @@ import bot.base.log as logger
 from module.umamusume.script.cultivate_task.const import DATE_YEAR, DATE_MONTH
 
 log = logger.get_logger(__name__)
+
+class LRUCache:
+    def __init__(self, maxsize=1000):
+        self.cache = OrderedDict()
+        self.maxsize = maxsize
+    
+    def get(self, key):
+        if key not in self.cache:
+            return None
+        self.cache.move_to_end(key)
+        return self.cache[key]
+    
+    def set(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.maxsize:
+            self.cache.popitem(last=False)
+    
+    def clear(self):
+        self.cache.clear()
+    
+    def __contains__(self, key):
+        return key in self.cache
+
+_parse_event_cache = LRUCache(maxsize=1000)
+_ocr_cache = LRUCache(maxsize=1500)
+_gray_image_cache = LRUCache(maxsize=600)
+_template_match_cache = LRUCache(maxsize=1500)
+
+def _compute_image_hash(img):
+    try:
+        if img is None:
+            return None
+        h = hashlib.md5(img.tobytes()).hexdigest()
+        return h
+    except:
+        return None
+
+def clear_parse_caches():
+    global _parse_event_cache, _ocr_cache, _gray_image_cache, _template_match_cache
+    _parse_event_cache.clear()
+    _ocr_cache.clear()
+    _gray_image_cache.clear()
+    _template_match_cache.clear()
 
 
 def normalize_skill_name(skill_name: str) -> str:
@@ -618,12 +665,42 @@ def find_support_card(ctx: UmamusumeContext, img):
 
 # 111 237 480 283
 def parse_cultivate_event(ctx: UmamusumeContext, img) -> tuple[str, list[int]]:
+    img_hash = _compute_image_hash(img)
+    if img_hash:
+        cached = _parse_event_cache.get(img_hash)
+        if cached is not None:
+            return cached
+    
     event_name_img = img[237:283, 111:480]
-    event_name = ocr_line(event_name_img)
+    
+    name_hash = _compute_image_hash(event_name_img)
+    if name_hash:
+        cached_name = _ocr_cache.get(name_hash)
+        if cached_name is not None:
+            event_name = cached_name
+        else:
+            event_name = ocr_line(event_name_img)
+            _ocr_cache.set(name_hash, event_name)
+    else:
+        event_name = ocr_line(event_name_img)
+    
     if not isinstance(event_name, str) or event_name.strip() == "":
+        if img_hash:
+            _parse_event_cache.set(img_hash, ("", []))
         return "", []
+    
     event_selector_list = []
-    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    gray_hash = _compute_image_hash(img) if img_hash else None
+    if gray_hash:
+        cached_gray = _gray_image_cache.get(gray_hash)
+        if cached_gray is not None:
+            img_gray = cached_gray
+        else:
+            img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            _gray_image_cache.set(gray_hash, img_gray)
+    else:
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     # Method 1: Original Chinese server template matching
     img_temp = img_gray.copy()
@@ -692,7 +769,10 @@ def parse_cultivate_event(ctx: UmamusumeContext, img) -> tuple[str, list[int]]:
             return event_name, []
     
     event_selector_list.sort(key=lambda x: x[1])
-    return event_name, event_selector_list
+    result = (event_name, event_selector_list)
+    if img_hash:
+        _parse_event_cache.set(img_hash, result)
+    return result
 
 
 def convert_race_name_to_ingame_format(race_id: int) -> str:

@@ -211,11 +211,23 @@ def load_scheduler_state():
 def save_scheduler_tasks():
     try:
         from bot.engine.scheduler import scheduler
+        from bot.base.task import TaskExecuteMode as TEM, TaskStatus as TS
         tasks = []
         for t in scheduler.get_task_list() or []:
             try:
                 app = getattr(t, 'app_name', None)
-                mode = getattr(getattr(t, 'task_execute_mode', None), 'value', None)
+                mode_enum = getattr(t, 'task_execute_mode', None)
+                mode = getattr(mode_enum, 'value', None)
+                status = getattr(t, 'task_status', None)
+                
+                if mode_enum in (TEM.TASK_EXECUTE_MODE_ONE_TIME, TEM.TASK_EXECUTE_MODE_TEAM_TRIALS):
+                    if status in (TS.TASK_STATUS_SUCCESS, TS.TASK_STATUS_FAILED):
+                        continue
+                
+                if mode_enum == TEM.TASK_EXECUTE_MODE_FULL_AUTO:
+                    if status in (TS.TASK_STATUS_SUCCESS, TS.TASK_STATUS_FAILED):
+                        continue
+                
                 ttype = getattr(getattr(t, 'task_type', None), 'value', None)
                 desc = getattr(t, 'task_desc', '')
                 cron = getattr(t, 'cron_job_config', None)
@@ -284,7 +296,7 @@ def load_saved_tasks():
                     tid = it.get('task_id')
                     if tid:
                         t.task_id = tid
-                    if mode in (TEM.TASK_EXECUTE_MODE_ONE_TIME, TEM.TASK_EXECUTE_MODE_LOOP, TEM.TASK_EXECUTE_MODE_TEAM_TRIALS):
+                    if mode in (TEM.TASK_EXECUTE_MODE_ONE_TIME, TEM.TASK_EXECUTE_MODE_LOOP):
                         from bot.base.task import TaskStatus as TS
                         t.task_status = TS.TASK_STATUS_PENDING
                 except Exception:
@@ -304,19 +316,28 @@ def purge_all(reason: str = ""):
     try:
         if os.environ.get('UAT_DISABLE_MKLDNN', None) is None:
             os.environ['UAT_DISABLE_MKLDNN'] = '1'
-            log.info("purge: set UAT_DISABLE_MKLDNN=1 for next OCR init")
     except Exception:
         pass
 
     try:
-        from bot.recog.ocr import reset_ocr
+        from bot.recog.ocr import reset_ocr, clear_ocr_cache
+        clear_ocr_cache()
         reset_ocr()
         log.info("purge: OCR reset")
     except Exception:
         pass
 
     try:
+        from bot.recog.image_matcher import clear_image_match_cache
+        clear_image_match_cache()
+        log.info("purge: image match cache cleared")
+    except Exception:
         pass
+
+    try:
+        from module.umamusume.script.cultivate_task.parse import clear_parse_caches
+        clear_parse_caches()
+        log.info("purge: parse caches cleared")
     except Exception:
         pass
 

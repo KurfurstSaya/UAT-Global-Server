@@ -21,14 +21,11 @@ export default {
         return 'URA';
       } else if (this.task.detail?.scenario === 2) {
         return 'Aoharu Cup';
+      } else if (this.task.detail?.scenario === 3) {
+        return 'MANT';
       }
-      // Add more scenarios here as needed
       return 'Unknown Scenario';
     }
   }
 }
 </script>
-
-<style scoped>
-
-</style>

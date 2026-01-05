@@ -1,16 +1,57 @@
 import cv2
 import importlib, sys, threading
+from functools import lru_cache
+from collections import OrderedDict
 paddleocr = None
 from difflib import SequenceMatcher
 import bot.base.log as logger
 import os
 from config import CONFIG
-os.environ['FLAGS_allocator_strategy'] = 'naive_best_fit'
-os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.27'
-
+import bot.base.gpu_utils as gpu_utils
+from bot.recog.timeout_tracker import reset_timeout
+import hashlib
 
 log = logger.get_logger(__name__)
 _paddleocr_import_lock = threading.RLock()
+_USE_GPU = False
+_GPU_INITIALIZED = False
+
+class LRUCache:
+    def __init__(self, maxsize=7000):
+        self.cache = OrderedDict()
+        self.maxsize = maxsize
+    
+    def get(self, key):
+        if key not in self.cache:
+            return None
+        self.cache.move_to_end(key)
+        return self.cache[key]
+    
+    def set(self, key, value):
+        if key in self.cache:
+            self.cache.move_to_end(key)
+        self.cache[key] = value
+        if len(self.cache) > self.maxsize:
+            self.cache.popitem(last=False)
+    
+    def clear(self):
+        self.cache.clear()
+    
+    def __contains__(self, key):
+        return key in self.cache
+
+_ocr_result_cache = LRUCache(maxsize=7000)
+
+def _compute_ocr_cache_key(img, lang):
+    try:
+        h = hashlib.md5(img.tobytes()).hexdigest()
+        return f"{lang}:{h}"
+    except:
+        return None
+
+def clear_ocr_cache():
+    global _ocr_result_cache
+    _ocr_result_cache.clear()
 
 
 
@@ -27,16 +68,50 @@ OCR_CH = None
 OCR_EN = None
 
 
+def initialize_gpu_mode():
+    global _USE_GPU, _GPU_INITIALIZED
+    
+    if _GPU_INITIALIZED:
+        return
+    
+    _GPU_INITIALIZED = True
+    
+    try:
+        gpu_config = getattr(CONFIG.bot, 'gpu', None)
+        if gpu_config is None:
+            _USE_GPU = False
+            return
+        
+        gpu_enabled = getattr(gpu_config, 'enabled', 'auto')
+        
+        if gpu_enabled == 'false' or gpu_enabled is False:
+            _USE_GPU = False
+            return
+        
+        if gpu_enabled == 'auto' or gpu_enabled == 'true' or gpu_enabled is True:
+            if gpu_utils.is_gpu_available():
+                memory_fraction = float(getattr(gpu_config, 'memory_fraction', 0.5))
+                device_id = int(getattr(gpu_config, 'device_id', 0))
+                
+                gpu_utils.set_gpu_config(memory_fraction, device_id)
+                gpu_utils.configure_paddle_gpu()
+                
+                _USE_GPU = True
+            else:
+                _USE_GPU = False
+        else:
+            _USE_GPU = False
+    
+    except Exception as e:
+        _USE_GPU = False
+
 def ensure_paddleocr():
     global paddleocr
     try:
-        # If already imported, nothing to do
         if paddleocr is not None and 'paddleocr' in sys.modules:
             return
-        # Avoid importing during interpreter shutdown to prevent atexit registration errors
         if hasattr(sys, "is_finalizing") and sys.is_finalizing():
             raise RuntimeError("Interpreter finalizing; skip paddleocr import")
-        # Prevent concurrent imports from multiple threads
         with _paddleocr_import_lock:
             if paddleocr is None or 'paddleocr' not in sys.modules:
                 paddleocr = importlib.import_module('paddleocr')
@@ -45,29 +120,61 @@ def ensure_paddleocr():
         raise
 
 def init_ocr_if_needed():
-    global OCR_JP, OCR_CH, OCR_EN
+    initialize_gpu_mode()
     ensure_paddleocr()
+
+def _create_ocr_instance(lang):
     try:
-        if OCR_EN is None:
-            OCR_EN = paddleocr.PaddleOCR(lang="en", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
-        if OCR_JP is None:
-            OCR_JP = paddleocr.PaddleOCR(lang="japan", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
-        if OCR_CH is None:
-            OCR_CH = paddleocr.PaddleOCR(lang="ch", show_log=False, use_angle_cls=False, use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads())
+        if _USE_GPU:
+            return paddleocr.PaddleOCR(
+                lang=lang, 
+                show_log=False, 
+                use_angle_cls=False, 
+                use_gpu=True, 
+                gpu_mem=250,
+                rec_batch_num=1,
+                det_db_box_thresh=0.5,
+                use_tensorrt=False,
+                enable_mkldnn=False
+            )
+        else:
+            os.environ['FLAGS_allocator_strategy'] = 'naive_best_fit'
+            os.environ['FLAGS_fraction_of_cpu_memory_to_use'] = '0.27'
+            
+            return paddleocr.PaddleOCR(
+                lang=lang, 
+                show_log=False, 
+                use_angle_cls=False, 
+                use_gpu=False, 
+                enable_mkldnn=True, 
+                cpu_threads=cpu_threads()
+            )
     except Exception as e:
-        log.error(f"Failed to initialize PaddleOCR: {e}")
+        log.error(f"Failed to initialize PaddleOCR for {lang}: {e}")
         raise
 
 
 def get_ocr(lang: str):
+    global OCR_EN, OCR_JP, OCR_CH
+    
     init_ocr_if_needed()
+    
     if lang == "en":
+        if OCR_EN is None:
+            OCR_EN = _create_ocr_instance("en")
         return OCR_EN
-    if lang == "japan":
+    elif lang == "japan":
+        if OCR_JP is None:
+            OCR_JP = _create_ocr_instance("japan")
         return OCR_JP
-    if lang == "ch":
+    elif lang == "ch":
+        if OCR_CH is None:
+            OCR_CH = _create_ocr_instance("ch")
         return OCR_CH
-    return OCR_EN
+    else:
+        if OCR_EN is None:
+            OCR_EN = _create_ocr_instance("en")
+        return OCR_EN
 
 
 
@@ -126,16 +233,25 @@ def reset_ocr():
         except Exception:
             pass
         paddleocr = None
-        try:
-            import gc as _gc
-            _gc.collect()
-        except Exception:
-            pass
+
 
 
 def ocr(img, lang="en"):
+    reset_timeout()
+    gpu_utils.clear_gpu_cache()
+    
+    cache_key = _compute_ocr_cache_key(img, lang)
+    if cache_key:
+        cached = _ocr_result_cache.get(cache_key)
+        if cached is not None:
+            return cached
     o = get_ocr(lang)
-    return o.ocr(img, cls=False)
+    result = o.ocr(img, cls=False)
+    if cache_key:
+        _ocr_result_cache.set(cache_key, result)
+    if _USE_GPU:
+        gpu_utils.clear_gpu_cache()
+    return result
 
 
 
@@ -183,21 +299,47 @@ def parse_text_items(result):
 # ocr_line 文字识别图片，返回所有出现的文字
 
 def ocr_line(img, lang="en"):
+    reset_timeout()
+    cache_key = _compute_ocr_cache_key(img, lang)
+    if cache_key:
+        line_key = f"line:{cache_key}"
+        cached = _ocr_result_cache.get(line_key)
+        if cached is not None:
+            return cached
     raw = ocr(img, lang)
     items = parse_text_items(raw)
     text = ""
     for candidate, _ in (items or []):
         text += candidate
+    if cache_key:
+        line_key = f"line:{cache_key}"
+        _ocr_result_cache.set(line_key, text)
+    if _USE_GPU:
+        gpu_utils.clear_gpu_cache()
     return text
 
 
 def ocr_digits(img):
+    reset_timeout()
+    cache_key = _compute_ocr_cache_key(img, "en")
+    if cache_key:
+        digit_key = f"digit:{cache_key}"
+        cached = _ocr_result_cache.get(digit_key)
+        if cached is not None:
+            return cached
     raw = get_ocr("en").ocr(img, cls=False)
     items = parse_text_items(raw)
+    if _USE_GPU:
+        gpu_utils.clear_gpu_cache()
     if not items:
-        return ""
-    best, _ = max(items, key=lambda x: x[1])
-    return best
+        result = ""
+    else:
+        best, _ = max(items, key=lambda x: x[1])
+        result = best
+    if cache_key:
+        digit_key = f"digit:{cache_key}"
+        _ocr_result_cache.set(digit_key, result)
+    return result
 
 # find_text_pos 查找目标文字在图片中的位置
 def find_text_pos(ocr_result, target):
