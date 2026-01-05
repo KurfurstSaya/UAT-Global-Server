@@ -1,7 +1,8 @@
 # UMAMUSUME AUTO TRAINER
 
-<div align="center">
-<img src="docs/agnesyap.gif" width="500" height="100" alt="Tachyon Dance">
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1ee700a0-b7cd-4513-91e8-7ea5f52d0068">
+</p>
 
 [![Discord](https://img.shields.io/badge/Discord-join-green?logo=discord&logoColor=white)](https://discord.gg/8nwNZdxd72)
 **Official Discord of this fork**
